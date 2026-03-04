@@ -1,0 +1,1 @@
+curl -X POST https://n8n.srv1425478.hstgr.cloud/webhook/dental-lead -H "Content-Type: application/json" -d '{"first_name":"Jane","last_name":"Smith","full_name":"Jane Smith","email":"tgiammarella@gmail.com","phone":"5551234567","reason":"new_patient_exam","source":"website_form"}'
