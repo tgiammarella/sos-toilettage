@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const CreateJobSchema = z.object({
   title:          z.string().min(1),
@@ -11,10 +12,12 @@ const CreateJobSchema = z.object({
   description:    z.string().min(1),
   payInfo:        z.string().optional(),
   requirements:   z.string().optional(),
-  publishNow:     z.boolean().default(true),
 });
 
 export async function POST(req: NextRequest) {
+  const limited = await checkRateLimit(req, "moderate");
+  if (limited) return limited;
+
   const session = await auth();
   if (!session || session.user.role !== "SALON") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -43,7 +46,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { title, employmentType, city, region, description, payInfo, requirements, publishNow } =
+  const { title, employmentType, city, region, description, payInfo, requirements } =
     parsed.data;
 
   const job = await prisma.jobPost.create({
@@ -56,8 +59,7 @@ export async function POST(req: NextRequest) {
       description,
       payInfo:      payInfo      ?? null,
       requirements: requirements ?? null,
-      status:      publishNow ? "PUBLISHED" : "DRAFT",
-      publishedAt: publishNow ? new Date() : null,
+      status:       "DRAFT",
     },
     select: { id: true },
   });

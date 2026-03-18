@@ -1,15 +1,15 @@
 export const dynamic = "force-dynamic";
 
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
 import { requireRole } from "@/lib/auth-guards";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle } from "lucide-react";
 import { SalonSidebar } from "@/components/dashboard/SalonSidebar";
+import { ReviewForm } from "@/components/reviews/ReviewForm";
 
 export default async function SalonConfirmedPage({
   params,
@@ -18,30 +18,29 @@ export default async function SalonConfirmedPage({
 }) {
   const { locale } = await params;
   const session = await requireRole(locale, "SALON");
-
-  const tDashboard = await getTranslations("dashboard.salon");
+  const t = await getTranslations("confirmed");
 
   const salon = await prisma.salonProfile.findUnique({
     where: { userId: session.user.id },
     select: {
+      id: true,
       name: true,
-      shiftPosts: {
-        where: { status: "FILLED" },
-        orderBy: { date: "desc" },
-        take: 10,
-      },
-      jobPosts: {
-        where: { status: "FILLED" },
-        orderBy: { createdAt: "desc" },
-        take: 10,
+      engagements: {
+        orderBy: { startsAt: "desc" },
+        take: 30,
+        include: {
+          groomer: { select: { id: true, fullName: true, city: true } },
+          shiftPost: { select: { city: true, date: true, startTime: true } },
+          jobPost: { select: { title: true } },
+          reviews: { select: { reviewerUserId: true } },
+        },
       },
     },
   });
 
   if (!salon) notFound();
 
-  const confirmedLabel = locale === "fr" ? "Confirmé" : "Confirmed";
-  const filledLabel = locale === "fr" ? "Comblé" : "Filled";
+  const dateLocale = locale === "fr" ? "fr-CA" : "en-CA";
 
   return (
     <div className="flex min-h-screen bg-muted/30">
@@ -50,91 +49,64 @@ export default async function SalonConfirmedPage({
       <main className="flex-1 p-6 md:p-8 overflow-auto">
         <div className="max-w-5xl mx-auto space-y-6">
           <div>
-            <h1 className="text-2xl font-bold">{tDashboard("confirmed")}</h1>
-            <p className="text-sm text-muted-foreground">
-              Historique récent des remplacements et postes confirmés.
-            </p>
+            <h1 className="text-2xl font-bold text-[#1F2933]">{t("salon_title")}</h1>
+            <p className="text-sm text-muted-foreground">{t("salon_description")}</p>
           </div>
 
           <Separator />
 
-          <section className="space-y-3">
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-              Remplacements confirmés
-            </h2>
-            {salon.shiftPosts.length === 0 ? (
-              <Card className="border-dashed shadow-none">
-                <CardContent className="py-8 text-center text-sm text-muted-foreground">
-                  Aucun remplacement confirmé pour l&apos;instant.
-                </CardContent>
-              </Card>
-            ) : (
-              salon.shiftPosts.map((shift) => (
-                <Link
-                  key={shift.id}
-                  href={`/${locale}/dashboard/salon/shifts/${shift.id}`}
-                  className="block"
-                >
-                  <Card className="border shadow-none hover:shadow-sm transition-shadow cursor-pointer">
-                    <CardContent className="py-3 px-5 flex items-center justify-between gap-4">
-                      <div className="text-sm">
-                        <p className="font-medium">
-                          {shift.city} —{" "}
-                          {new Date(shift.date).toLocaleDateString(
-                            locale === "fr" ? "fr-CA" : "en-CA"
-                          )}
-                        </p>
-                        <p className="text-xs text-muted-foreground">{shift.startTime}</p>
-                      </div>
-                      <Badge variant="secondary" className="inline-flex items-center gap-1 text-xs">
-                        <CheckCircle className="h-3.5 w-3.5" />
-                        {confirmedLabel}
-                      </Badge>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))
-            )}
-          </section>
+          {salon.engagements.length === 0 ? (
+            <Card className="border-dashed shadow-none">
+              <CardContent className="py-12 text-center text-sm text-muted-foreground">
+                {t("salon_empty")}
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-4">
+              {salon.engagements.map((eng) => {
+                const alreadyReviewed = eng.reviews.some(
+                  (r) => r.reviewerUserId === session.user.id,
+                );
 
-          <section className="space-y-3">
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-              Postes comblés
-            </h2>
-            {salon.jobPosts.length === 0 ? (
-              <Card className="border-dashed shadow-none">
-                <CardContent className="py-8 text-center text-sm text-muted-foreground">
-                  Aucun poste comblé pour l&apos;instant.
-                </CardContent>
-              </Card>
-            ) : (
-              salon.jobPosts.map((job) => (
-                <Link
-                  key={job.id}
-                  href={`/${locale}/dashboard/salon/jobs/${job.id}`}
-                  className="block"
-                >
-                  <Card className="border shadow-none hover:shadow-sm transition-shadow cursor-pointer">
-                    <CardContent className="py-3 px-5 flex items-center justify-between gap-4">
-                      <div className="text-sm">
-                        <p className="font-medium truncate">{job.title}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {job.city} ·{" "}
-                          {new Date(job.createdAt).toLocaleDateString(
-                            locale === "fr" ? "fr-CA" : "en-CA"
-                          )}
-                        </p>
+                const postLabel = eng.shiftPost
+                  ? `${eng.shiftPost.city} — ${new Date(eng.shiftPost.date).toLocaleDateString(
+                      dateLocale,
+                      { year: "numeric", month: "short", day: "numeric" },
+                    )}${eng.shiftPost.startTime ? ` · ${eng.shiftPost.startTime}` : ""}`
+                  : eng.jobPost?.title ?? "—";
+
+                return (
+                  <Card key={eng.id} className="border shadow-none">
+                    <CardContent className="py-4 px-5 space-y-3">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="min-w-0">
+                          <p className="font-medium truncate">{eng.groomer.fullName}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {eng.groomer.city} · {postLabel}
+                          </p>
+                        </div>
+                        <Badge
+                          variant="secondary"
+                          className="shrink-0 inline-flex items-center gap-1 text-xs"
+                        >
+                          <CheckCircle className="h-3.5 w-3.5" />
+                          {t("confirmed_badge")}
+                        </Badge>
                       </div>
-                      <Badge variant="secondary" className="inline-flex items-center gap-1 text-xs">
-                        <CheckCircle className="h-3.5 w-3.5" />
-                        {filledLabel}
-                      </Badge>
+
+                      {!alreadyReviewed ? (
+                        <ReviewForm engagementId={eng.id} locale={locale} />
+                      ) : (
+                        <p className="text-xs text-muted-foreground italic">
+                          {t("review_sent")}
+                        </p>
+                      )}
                     </CardContent>
                   </Card>
-                </Link>
-              ))
-            )}
-          </section>
+                );
+              })}
+            </div>
+          )}
         </div>
       </main>
     </div>

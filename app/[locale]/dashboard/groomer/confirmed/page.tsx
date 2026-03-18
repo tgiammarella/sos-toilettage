@@ -3,7 +3,6 @@ export const dynamic = "force-dynamic";
 import { requireRole } from "@/lib/auth-guards";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -20,6 +19,7 @@ export default async function GroomerConfirmedPage({
 
   const t = await getTranslations("dashboard.groomer");
   const tDashboard = await getTranslations("dashboard");
+  const tConfirmed = await getTranslations("confirmed");
 
   const groomer = await prisma.groomerProfile.findUnique({
     where: { userId: session.user.id },
@@ -28,7 +28,7 @@ export default async function GroomerConfirmedPage({
         orderBy: { startsAt: "desc" },
         take: 20,
         include: {
-          salon: { select: { name: true, city: true, region: true } },
+          salon: { select: { name: true, city: true } },
         },
       },
     },
@@ -47,7 +47,7 @@ export default async function GroomerConfirmedPage({
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold">
+              <h1 className="text-2xl font-bold text-[#1F2933]">
                 {tDashboard("welcome")}, {groomer.fullName} 👋
               </h1>
               <p className="text-muted-foreground text-sm mt-0.5">
@@ -61,7 +61,7 @@ export default async function GroomerConfirmedPage({
           {groomer.engagements.length === 0 ? (
             <Card className="border-dashed shadow-none">
               <CardContent className="py-10 text-center text-muted-foreground text-sm">
-                Aucun remplacement confirmé pour l&apos;instant.
+                {tConfirmed("groomer_empty")}
               </CardContent>
             </Card>
           ) : (
@@ -74,7 +74,7 @@ export default async function GroomerConfirmedPage({
                         {eng.salon.name}
                       </p>
                       <p className="text-sm text-muted-foreground mt-0.5">
-                        {eng.salon.city}, {eng.salon.region} ·{" "}
+                        {eng.salon.city} ·{" "}
                         {new Date(eng.startsAt).toLocaleDateString(
                           locale === "fr" ? "fr-CA" : "en-CA",
                           {
@@ -90,7 +90,7 @@ export default async function GroomerConfirmedPage({
                       className="inline-flex items-center gap-1 text-xs"
                     >
                       <CheckCircle className="h-3.5 w-3.5" />
-                      Confirmé
+                      {tConfirmed("confirmed_badge")}
                     </Badge>
                   </CardContent>
                 </Card>

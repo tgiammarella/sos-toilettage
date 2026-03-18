@@ -45,7 +45,7 @@ export default async function GroomerCvPage({
                 {lang === "fr" ? "Retour au tableau de bord" : "Back to dashboard"}
               </Link>
             </Button>
-            <h1 className="text-2xl font-bold">
+            <h1 className="text-2xl font-bold text-[#1F2933]">
               {tDashboard("welcome")}, {groomer.fullName} 👋
             </h1>
             <p className="text-muted-foreground text-sm mt-0.5">

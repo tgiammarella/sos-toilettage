@@ -3,6 +3,8 @@ import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { deductCredit } from "@/lib/credits";
+import { notifyUrgentShiftToGroomers } from "@/lib/notifications";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const CreateShiftSchema = z.object({
   date: z.string().min(1, "Date required"),
@@ -23,6 +25,9 @@ const CreateShiftSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const limited = await checkRateLimit(req, "moderate");
+  if (limited) return limited;
+
   const session = await auth();
   if (!session || session.user.role !== "SALON") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -30,18 +35,11 @@ export async function POST(req: NextRequest) {
 
   const salon = await prisma.salonProfile.findUnique({
     where: { userId: session.user.id },
-    select: { id: true, creditsAvailable: true },
+    select: { id: true, name: true },
   });
 
   if (!salon) {
     return NextResponse.json({ error: "Salon profile not found" }, { status: 404 });
-  }
-
-  if (salon.creditsAvailable < 1) {
-    return NextResponse.json(
-      { error: "INSUFFICIENT_CREDITS", message: "Vous n'avez pas assez de crédits pour publier un remplacement." },
-      { status: 402 }
-    );
   }
 
   let body: unknown;
@@ -58,47 +56,97 @@ export async function POST(req: NextRequest) {
 
   const data = parsed.data;
 
-  // Create shift as PUBLISHED and deduct credit atomically
-  const shift = await prisma.$transaction(async (tx) => {
-    const created = await tx.shiftPost.create({
-      data: {
-        salonId: salon.id,
-        date: new Date(data.date),
-        startTime: data.startTime,
-        address: data.address,
+  // Create shift, check credits, deduct, and write ledger — all inside one transaction
+  try {
+    const shift = await prisma.$transaction(async (tx) => {
+      // Re-fetch credits inside the transaction to prevent race conditions
+      const currentSalon = await tx.salonProfile.findUnique({
+        where: { id: salon.id },
+        select: { creditsAvailable: true },
+      });
+
+      const totalCost = data.isUrgent ? 2 : 1;
+
+      if (!currentSalon || currentSalon.creditsAvailable < totalCost) {
+        throw new Error("INSUFFICIENT_CREDITS");
+      }
+
+      const created = await tx.shiftPost.create({
+        data: {
+          salonId: salon.id,
+          date: new Date(data.date),
+          startTime: data.startTime,
+          address: data.address,
+          city: data.city,
+          region: data.region,
+          postalCode: data.postalCode,
+          numberOfAppointments: data.numberOfAppointments,
+          payType: data.payType,
+          payRateCents: data.payRateCents,
+          requiredExperienceYears: data.requiredExperienceYears,
+          criteriaTags: data.criteriaTags,
+          equipmentProvided: data.equipmentProvided,
+          isUrgent: data.isUrgent,
+          urgentActivatedAt: data.isUrgent ? new Date() : null,
+          notes: data.notes,
+          status: "PUBLISHED",
+          publishedAt: new Date(),
+        },
+      });
+
+      await tx.salonProfile.update({
+        where: { id: salon.id },
+        data: { creditsAvailable: { decrement: totalCost } },
+      });
+
+      // Ledger: 1 entry for the shift publication
+      await tx.creditLedger.create({
+        data: {
+          salonId: salon.id,
+          type: "DEBIT",
+          amount: -1,
+          reason: "SHIFT_PUBLISHED",
+          shiftId: created.id,
+        },
+      });
+
+      // Ledger: separate entry for urgent priority if applicable
+      if (data.isUrgent) {
+        await tx.creditLedger.create({
+          data: {
+            salonId: salon.id,
+            type: "DEBIT",
+            amount: -1,
+            reason: "URGENT_PRIORITY",
+            shiftId: created.id,
+          },
+        });
+      }
+
+      return created;
+    });
+
+    // Fire-and-forget: alert groomers if urgent
+    if (data.isUrgent) {
+      notifyUrgentShiftToGroomers({
+        shiftId: shift.id,
+        salonName: salon.name,
         city: data.city,
-        region: data.region,
-        postalCode: data.postalCode,
-        numberOfAppointments: data.numberOfAppointments,
-        payType: data.payType,
+        date: data.date,
+        startTime: data.startTime,
         payRateCents: data.payRateCents,
-        requiredExperienceYears: data.requiredExperienceYears,
-        criteriaTags: data.criteriaTags,
-        equipmentProvided: data.equipmentProvided,
-        isUrgent: data.isUrgent,
-        notes: data.notes,
-        status: "PUBLISHED",
-        publishedAt: new Date(),
-      },
-    });
+        payType: data.payType,
+      }).catch((err) => console.error("[URGENT ALERT] Failed", err));
+    }
 
-    await tx.salonProfile.update({
-      where: { id: salon.id },
-      data: { creditsAvailable: { decrement: 1 } },
-    });
-
-    await tx.creditLedger.create({
-      data: {
-        salonId: salon.id,
-        type: "DEBIT",
-        amount: -1,
-        reason: "SHIFT_PUBLISHED",
-        shiftId: created.id,
-      },
-    });
-
-    return created;
-  });
-
-  return NextResponse.json({ shift }, { status: 201 });
+    return NextResponse.json({ shift }, { status: 201 });
+  } catch (err) {
+    if (err instanceof Error && err.message === "INSUFFICIENT_CREDITS") {
+      return NextResponse.json(
+        { error: "INSUFFICIENT_CREDITS", message: "Crédits insuffisants pour publier ce remplacement." },
+        { status: 402 }
+      );
+    }
+    throw err;
+  }
 }

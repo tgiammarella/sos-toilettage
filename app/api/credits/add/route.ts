@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/auth";
 import { addCredits } from "@/lib/credits";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const AddCreditsSchema = z.object({
   salonId: z.string().min(1),
@@ -15,6 +16,9 @@ const AddCreditsSchema = z.object({
  * Stripe webhooks will call addCredits() directly in the webhook handler.
  */
 export async function POST(req: NextRequest) {
+  const limited = await checkRateLimit(req, "moderate");
+  if (limited) return limited;
+
   const session = await auth();
   if (!session || session.user.role !== "ADMIN") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

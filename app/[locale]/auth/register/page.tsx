@@ -24,7 +24,6 @@ type SalonForm = {
   salonName: string;
   address: string;
   city: string;
-  region: string;
   postalCode: string;
   phone?: string;
 };
@@ -35,7 +34,6 @@ type GroomerForm = {
   confirmPassword: string;
   fullName: string;
   city: string;
-  region: string;
 };
 
 export default function RegisterPage() {
@@ -68,7 +66,7 @@ export default function RegisterPage() {
       const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, role: "SALON" }),
+        body: JSON.stringify({ ...data, region: data.city, role: "SALON" }),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -98,7 +96,7 @@ export default function RegisterPage() {
       const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, role: "GROOMER" }),
+        body: JSON.stringify({ ...data, region: data.city, role: "GROOMER" }),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -124,7 +122,7 @@ export default function RegisterPage() {
         <div className="text-center mb-8">
           <Link href={`/${locale}`} className="inline-flex items-center gap-2 text-primary font-bold text-2xl">
             <Scissors className="h-6 w-6" />
-            SOS Toilettage
+            Tout Toilettage
           </Link>
         </div>
 
@@ -244,16 +242,10 @@ export default function RegisterPage() {
                   <ErrMsg msg={salonForm.formState.errors.address?.message} />
                 </FieldRow>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <FieldRow label={t("city")}>
-                    <Input {...salonForm.register("city", { required: tErr("required") })} placeholder="Montréal" />
-                    <ErrMsg msg={salonForm.formState.errors.city?.message} />
-                  </FieldRow>
-                  <FieldRow label={t("region")}>
-                    <Input {...salonForm.register("region", { required: tErr("required") })} placeholder="Montréal" />
-                    <ErrMsg msg={salonForm.formState.errors.region?.message} />
-                  </FieldRow>
-                </div>
+                <FieldRow label={t("city")}>
+                  <Input {...salonForm.register("city", { required: tErr("required") })} placeholder="Montréal" />
+                  <ErrMsg msg={salonForm.formState.errors.city?.message} />
+                </FieldRow>
 
                 <div className="grid grid-cols-2 gap-3">
                   <FieldRow label={t("postal_code")}>
@@ -334,16 +326,10 @@ export default function RegisterPage() {
                   </FieldRow>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <FieldRow label={t("city")}>
-                    <Input {...groomerForm.register("city", { required: tErr("required") })} placeholder="Québec" />
-                    <ErrMsg msg={groomerForm.formState.errors.city?.message} />
-                  </FieldRow>
-                  <FieldRow label={t("region")}>
-                    <Input {...groomerForm.register("region", { required: tErr("required") })} placeholder="Capitale-Nationale" />
-                    <ErrMsg msg={groomerForm.formState.errors.region?.message} />
-                  </FieldRow>
-                </div>
+                <FieldRow label={t("city")}>
+                  <Input {...groomerForm.register("city", { required: tErr("required") })} placeholder="Montréal" />
+                  <ErrMsg msg={groomerForm.formState.errors.city?.message} />
+                </FieldRow>
 
                 <Button type="submit" className="w-full mt-2" disabled={loading}>
                   {loading ? t("creating_account") : t("create_account")}

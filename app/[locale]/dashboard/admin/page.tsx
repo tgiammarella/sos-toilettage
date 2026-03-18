@@ -18,6 +18,7 @@ import {
   Plus,
   Shield,
 } from "lucide-react";
+import { AdminSidebar } from "@/components/dashboard/AdminSidebar";
 
 export default async function AdminDashboardPage({
   params,
@@ -48,39 +49,9 @@ export default async function AdminDashboardPage({
     take: 5,
   });
 
-  const navItems = [
-    { href: `/${locale}/dashboard/admin`, icon: Shield, label: t("title") },
-    { href: `/${locale}/dashboard/admin/directory`, icon: BookOpen, label: t("directory") },
-    { href: `/${locale}/dashboard/admin/posts`, icon: FileText, label: t("posts") },
-    { href: `/${locale}/dashboard/admin/reviews`, icon: Star, label: t("reviews") },
-    { href: `/${locale}/dashboard/admin/users`, icon: Users, label: t("users") },
-    { href: `/${locale}/dashboard/admin/credits`, icon: Coins, label: t("credits") },
-  ];
-
   return (
     <div className="flex min-h-screen bg-muted/30">
-      {/* Sidebar */}
-      <aside className="hidden md:flex w-64 flex-col bg-white border-r shrink-0">
-        <div className="p-6 border-b">
-          <Link href={`/${locale}`} className="flex items-center gap-2 text-primary font-bold text-lg">
-            <Scissors className="h-5 w-5" />
-            SOS Toilettage
-          </Link>
-          <p className="text-xs text-muted-foreground mt-1">Administration</p>
-        </div>
-        <nav className="flex-1 p-4 space-y-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-            >
-              <item.icon className="h-4 w-4 shrink-0" />
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-      </aside>
+      <AdminSidebar locale={locale} />
 
       {/* Main */}
       <main className="flex-1 p-6 md:p-8 overflow-auto">
@@ -88,7 +59,7 @@ export default async function AdminDashboardPage({
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold flex items-center gap-2">
+              <h1 className="text-2xl font-bold flex items-center gap-2 text-[#1F2933]">
                 <Shield className="h-6 w-6 text-primary" />
                 {t("title")}
               </h1>
@@ -129,7 +100,7 @@ export default async function AdminDashboardPage({
                       <div className="flex-1 min-w-0">
                         <p className="font-medium truncate">{listing.name}</p>
                         <p className="text-sm text-muted-foreground mt-0.5">
-                          {listing.city}, {listing.region}
+                          {listing.city}
                         </p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">

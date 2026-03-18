@@ -1,0 +1,251 @@
+import { getTranslations } from "next-intl/server";
+import { Check, ArrowRight, Zap, FileText, Users } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { PRICING_TIERS } from "@/lib/pricing";
+import { GroomerStatsSection } from "@/components/marketing/GroomerStatsSection";
+import { PricingPlansSection } from "@/components/pricing/PricingPlansSection";
+import { Navbar } from "@/components/nav/Navbar";
+
+export default async function PricingPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "pricing" });
+
+  return (
+    <div className="flex flex-col min-h-screen">
+    <Navbar />
+    <main className="flex-1 bg-background">
+
+      {/* ── Hero ─────────────────────────────────────── */}
+      <section className="bg-primary text-primary-foreground px-4 py-20 text-center">
+        <span className="inline-block bg-accent text-accent-foreground text-xs font-semibold px-3 py-1 rounded-full mb-6">
+          {t("hero.badge")}
+        </span>
+        <h1 className="mx-auto mb-5 max-w-3xl text-4xl md:text-5xl font-bold leading-tight">
+          {t("hero.title")}
+        </h1>
+        <p className="mx-auto mb-8 max-w-xl text-lg text-primary-foreground/75">
+          {t("hero.subtitle")}
+        </p>
+        <div className="flex justify-center gap-6 mb-10 flex-wrap text-sm text-primary-foreground/80">
+          {(["bullet1", "bullet2", "bullet3"] as const).map((k) => (
+            <span key={k} className="flex items-center gap-1.5">
+              <Check className="h-4 w-4 text-accent" /> {t(`hero.${k}`)}
+            </span>
+          ))}
+        </div>
+        <div className="flex gap-4 justify-center flex-wrap">
+          <Button
+            size="lg"
+            className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold"
+            asChild
+          >
+            <a href={`/${locale}/auth/register`}>
+              {t("hero.cta_primary")} <ArrowRight className="h-4 w-4 ml-2" />
+            </a>
+          </Button>
+          <Button
+            size="lg"
+            className="bg-transparent border border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10"
+            asChild
+          >
+            <a href="#plans">{t("hero.cta_secondary")}</a>
+          </Button>
+        </div>
+        <p className="text-xs text-primary-foreground/40 mt-10">{t("hero.taxNote")}</p>
+      </section>
+
+      {/* ── Credit explainer ──────────────────────────── */}
+      <section className="bg-card py-16 px-4">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-2xl font-bold text-center text-[#1F2933] mb-12">
+            {t("credits.title")}
+          </h2>
+          <div className="grid md:grid-cols-3 gap-6 relative">
+            {[
+              { icon: FileText, title: t("credits.step1_title"), desc: t("credits.step1_desc"), step: "1" },
+              { icon: Zap,      title: t("credits.step2_title"), desc: t("credits.step2_desc"), step: "2" },
+              { icon: Users,    title: t("credits.step3_title"), desc: t("credits.step3_desc"), step: "3" },
+            ].map(({ icon: Icon, title, desc, step }, i) => (
+              <div key={step} className="relative flex flex-col items-center text-center p-6 rounded-xl border border-border bg-white">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-lg mb-4">
+                  {step}
+                </div>
+                <Icon className="h-6 w-6 text-accent mb-3" />
+                <p className="font-semibold text-[#1F2933] mb-2">{title}</p>
+                <p className="text-sm text-[#4a6260]">{desc}</p>
+                {i < 2 && (
+                  <div className="hidden md:block absolute top-1/2 -right-3 -translate-y-1/2 text-border z-10">
+                    <ArrowRight className="h-6 w-6" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-sm font-medium text-secondary mt-8 bg-muted rounded-lg py-3 px-6">
+            {t("credits.explanation")}
+          </p>
+        </div>
+      </section>
+
+      {/* ── Découverte Offer ───────────────────────────── */}
+      <section className="bg-background px-4 py-10">
+        <div className="max-w-4xl mx-auto rounded-2xl border-[1.5px] border-solid border-[#055864] bg-accent/10 p-6 md:flex md:items-center md:justify-between md:gap-8">
+          <div className="mb-4 md:mb-0">
+            <Badge className="mb-2 bg-accent text-accent-foreground hover:bg-accent/90">
+              {t("decouverte.badge")}
+            </Badge>
+            <h2 className="mb-0.5 text-xl font-bold text-[#1F2933]">{t("decouverte.title")}</h2>
+            <p className="text-sm font-medium text-[#4a6260] mb-2">{t("decouverte.subtitle")}</p>
+            <p className="mb-3 text-sm text-[#4a6260]">{t("decouverte.description")}</p>
+            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+              <span className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-success-foreground" />{t("decouverte.validity")}</span>
+              <span className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-success-foreground" />{t("decouverte.noCommitment")}</span>
+              <span className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-success-foreground" />{t("decouverte.perCredit")}</span>
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground italic">{t("decouverte.valueNote")}</p>
+          </div>
+          <div className="flex flex-col items-start gap-3 md:items-end md:text-right shrink-0">
+            <div>
+              <span className="text-4xl font-bold text-foreground">{t("decouverte.price")}</span>
+              <p className="text-sm text-muted-foreground">{t("decouverte.credits")} · {t("decouverte.priceNote")}</p>
+            </div>
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
+              <a href={`/${locale}/auth/register`}>
+                <Zap className="mr-2 h-4 w-4" />
+                {t("decouverte.cta")}
+              </a>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Groomer stats (right above plan cards) ────── */}
+      <GroomerStatsSection locale={locale} />
+
+      {/* ── Subscription plans (client — billing toggle) ─ */}
+      <section id="plans" className="scroll-mt-24">
+        <PricingPlansSection locale={locale} />
+      </section>
+
+      {/* ── Comparison table ───────────────────────────── */}
+      <section className="bg-card py-16 px-4">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-2xl font-bold text-center text-[#1F2933] mb-10">
+            {t("comparison.title")}
+          </h2>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse min-w-[560px] text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left py-3 px-4 font-semibold text-foreground w-[35%]"></th>
+                  {PRICING_TIERS.map((tier) => (
+                    <th key={tier.key} className={`text-center py-3 px-4 font-semibold ${tier.recommended ? "text-primary" : "text-foreground"}`}>
+                      {t(`tiers.${tier.key}.name`)}
+                      {tier.recommended && (
+                        <span className="ml-1 inline-block w-2 h-2 rounded-full bg-accent align-middle" />
+                      )}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <ComparisonRow label={t("comparison.credits")} values={PRICING_TIERS.map(tier => `${tier.creditsPerMonth}`)} />
+                <ComparisonRow label={t("comparison.locations")} values={PRICING_TIERS.map(tier => tier.maxSalonProfiles >= 999 ? t("comparison.unlimited") : `${tier.maxSalonProfiles}`)} />
+                <ComparisonRow label={t("comparison.stats")} values={PRICING_TIERS.map(tier => tier.hasStats)} />
+                <ComparisonRow label={t("comparison.priority_support")} values={PRICING_TIERS.map(tier => tier.hasPrioritySupport)} />
+                <ComparisonRow label={t("comparison.multi_site")} values={PRICING_TIERS.map(tier => tier.creditPooled)} />
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Social proof ───────────────────────────────── */}
+      <section className="bg-muted py-16 px-4">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-2xl font-bold text-center text-[#1F2933] mb-10">
+            {t("social.title")}
+          </h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { name: "Salon Élite, Montréal",      quote: locale === "fr" ? "\"Nous avons trouvé un remplaçant en moins de 2 heures. Ça a sauvé notre journée.\""  : "\"We found a replacement in under 2 hours. It saved our day.\"" },
+              { name: "Toilettage Prestige, Laval",  quote: locale === "fr" ? "\"La qualité des candidats est impressionnante. Je recommande à tous les salons.\""   : "\"The quality of candidates is impressive. I recommend it to all salons.\"" },
+              { name: "Le Salon Canin, Québec",      quote: locale === "fr" ? "\"Publication simple, candidatures rapides. Exactement ce qu'il nous fallait.\""      : "\"Simple posting, quick applications. Exactly what we needed.\"" },
+            ].map(({ name, quote }) => (
+              <div key={name} className="bg-white border border-border rounded-xl p-6 shadow-sm">
+                <p className="text-sm text-[#4a6260] italic mb-4">{quote}</p>
+                <p className="text-sm font-semibold text-[#1F2933]">{name}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ────────────────────────────────────────── */}
+      <section className="bg-background py-16 px-4">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-2xl font-bold text-center text-[#1F2933] mb-10">
+            {t("faq.title")}
+          </h2>
+          <div className="space-y-4">
+            {(["q1", "q2", "q3", "q4"] as const).map((qKey) => (
+              <div key={qKey} className="rounded-xl border border-border bg-white p-5 shadow-sm">
+                <p className="font-semibold text-[#1F2933] mb-2">{t(`faq.${qKey}`)}</p>
+                <p className="text-sm text-[#4a6260]">
+                  {t(`faq.${qKey.replace("q", "a") as "a1" | "a2" | "a3" | "a4"}`)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Final CTA ──────────────────────────────────── */}
+      <section className="bg-primary text-primary-foreground py-16 px-4 text-center">
+        <h2 className="text-2xl font-bold mb-4">
+          {locale === "fr" ? "Prêt à ne plus jamais annuler une journée?" : "Ready to never cancel a day again?"}
+        </h2>
+        <p className="text-primary-foreground/75 mb-8 max-w-md mx-auto text-sm">
+          {locale === "fr"
+            ? "Commencez avec l'Offre Découverte — 29 $ une seule fois, sans engagement."
+            : "Start with the Discovery Offer — $29 one-time, no commitment."}
+        </p>
+        <Button
+          size="lg"
+          className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold"
+          asChild
+        >
+          <a href={`/${locale}/auth/register`}>
+            {t("hero.cta_primary")} <ArrowRight className="h-4 w-4 ml-2" />
+          </a>
+        </Button>
+      </section>
+
+    </main>
+    </div>
+  );
+}
+
+function ComparisonRow({ label, values }: { label: string; values: (string | boolean)[] }) {
+  return (
+    <tr className="border-b border-border last:border-0 hover:bg-muted/40 transition-colors">
+      <td className="py-3 px-4 text-[#4a6260] font-medium">{label}</td>
+      {values.map((val, i) => (
+        <td key={i} className="py-3 px-4 text-center">
+          {typeof val === "boolean" ? (
+            val
+              ? <Check className="h-4 w-4 text-success-foreground mx-auto" />
+              : <span className="text-muted-foreground/50 text-lg leading-none">—</span>
+          ) : (
+            <span className="font-medium text-foreground">{val}</span>
+          )}
+        </td>
+      ))}
+    </tr>
+  );
+}

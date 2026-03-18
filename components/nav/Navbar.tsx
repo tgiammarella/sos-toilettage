@@ -32,6 +32,7 @@ export function Navbar() {
     { href: `/${locale}/shifts`, label: t("shifts") },
     { href: `/${locale}/jobs`, label: t("jobs") },
     { href: `/${locale}/schools`, label: t("schools") },
+    { href: `/${locale}/pricing`, label: t("pricing") },
   ];
 
   return (
@@ -42,7 +43,7 @@ export function Navbar() {
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-primary">
             <Scissors className="h-4 w-4" />
           </div>
-          <span className="tracking-tight">SOS Toilettage</span>
+          <span className="tracking-tight">Tout Toilettage</span>
         </Link>
 
         {/* Desktop nav */}
@@ -51,7 +52,7 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground hover:underline underline-offset-4 transition-colors"
+              className="text-sm font-semibold text-[#055864] hover:text-[#055864]/75 hover:underline underline-offset-4 transition-colors"
             >
               {link.label}
             </Link>
@@ -83,9 +84,9 @@ export function Navbar() {
             </DropdownMenu>
           ) : (
             <>
-              <Button variant="ghost" size="sm" asChild>
-                <Link href={`/${locale}/auth/login`}>{t("login")}</Link>
-              </Button>
+              <Link href={`/${locale}/auth/login`} className="inline-flex items-center justify-center rounded-md h-8 px-3 text-sm font-medium text-[#055864] hover:bg-[#055864]/10 transition-colors">
+                {t("login")}
+              </Link>
               <Button size="sm" asChild>
                 <Link href={`/${locale}/auth/register`}>{t("register")}</Link>
               </Button>
@@ -110,7 +111,7 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium py-1"
+              className="text-sm font-semibold text-[#055864] py-1"
               onClick={() => setMobileOpen(false)}
             >
               {link.label}
@@ -136,11 +137,9 @@ export function Navbar() {
               </>
             ) : (
               <>
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href={`/${locale}/auth/login`} onClick={() => setMobileOpen(false)}>
-                    {t("login")}
-                  </Link>
-                </Button>
+                <Link href={`/${locale}/auth/login`} onClick={() => setMobileOpen(false)} className="inline-flex items-center justify-center rounded-md h-8 px-3 text-sm font-medium text-[#055864] hover:bg-[#055864]/10 transition-colors">
+                  {t("login")}
+                </Link>
                 <Button size="sm" asChild>
                   <Link href={`/${locale}/auth/register`} onClick={() => setMobileOpen(false)}>
                     {t("register")}

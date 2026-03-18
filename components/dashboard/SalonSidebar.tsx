@@ -5,11 +5,13 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import {
   Scissors,
+  Home,
   Briefcase,
   Users,
   CheckCircle,
   CreditCard,
   Settings,
+  Calendar,
 } from "lucide-react";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 
@@ -25,8 +27,10 @@ export function SalonSidebar({ locale, salonName }: SalonSidebarProps) {
   const base = `/${locale}/dashboard/salon`;
 
   const items = [
+    { href: base,                 icon: Home,        label: t("dashboard"), exact: true },
     { href: `${base}/shifts`,     icon: Scissors,    label: t("my_shifts") },
     { href: `${base}/jobs`,       icon: Briefcase,   label: t("my_jobs") },
+    { href: `${base}/creneaux`,   icon: Calendar,    label: t("open_slots") },
     { href: `${base}/applicants`, icon: Users,       label: t("applicants") },
     { href: `${base}/confirmed`,  icon: CheckCircle, label: t("confirmed") },
     { href: `${base}/billing`,    icon: CreditCard,  label: t("billing") },
@@ -34,28 +38,28 @@ export function SalonSidebar({ locale, salonName }: SalonSidebarProps) {
   ];
 
   return (
-    <aside className="hidden md:flex w-64 flex-col bg-white border-r shrink-0">
-      <div className="p-6 border-b">
+    <aside className="hidden md:flex w-64 flex-col bg-sidebar border-r border-sidebar-border shrink-0">
+      <div className="p-6 border-b border-sidebar-border">
         <Link
           href={`/${locale}`}
-          className="flex items-center gap-2 text-primary font-bold text-lg"
+          className="flex items-center gap-2 text-sidebar-foreground font-bold text-lg"
         >
           <Scissors className="h-5 w-5" />
-          SOS Toilettage
+          Tout Toilettage
         </Link>
-        <p className="text-xs text-muted-foreground mt-1 truncate">{salonName}</p>
+        <p className="text-xs text-sidebar-foreground/60 mt-1 truncate">{salonName}</p>
       </div>
       <nav className="flex-1 p-4 space-y-1">
-        {items.map(({ href, icon: Icon, label }) => {
-          const active = pathname.startsWith(href);
+        {items.map(({ href, icon: Icon, label, exact }) => {
+          const active = exact ? pathname === href : pathname.startsWith(href);
           return (
             <Link
               key={href}
               href={href}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                 active
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium"
+                  : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
               }`}
             >
               <Icon className="h-4 w-4 shrink-0" />
@@ -65,7 +69,7 @@ export function SalonSidebar({ locale, salonName }: SalonSidebarProps) {
         })}
       </nav>
 
-      <div className="p-4 border-t">
+      <div className="p-4 border-t border-sidebar-border">
         <LogoutButton />
       </div>
     </aside>

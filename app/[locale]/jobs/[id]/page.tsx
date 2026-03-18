@@ -34,8 +34,10 @@ export default async function PublicJobDetailPage({
 
   const job = await prisma.jobPost.findUnique({
     where: { id },
-    include: {
-      salon: { select: { name: true } },
+    select: {
+      id: true, title: true, city: true, region: true, description: true,
+      employmentType: true, payInfo: true, requirements: true,
+      status: true, publishedAt: true, createdAt: true, salonId: true,
     },
   });
 
@@ -88,25 +90,39 @@ export default async function PublicJobDetailPage({
           {/* Header */}
           <div className="mb-6">
             <div className="flex items-center gap-2 flex-wrap mb-2">
-              <Badge variant="secondary" className="text-xs">{employmentLabel}</Badge>
+              {(() => {
+                const empType = job.employmentType;
+                const styles = empType === "FULL_TIME"
+                  ? "bg-[#d1ede6] text-[#055864]"
+                  : empType === "PART_TIME"
+                  ? "bg-[#fef3c7] text-[#854d0e]"
+                  : "bg-[#f1f5f9] text-[#475569]";
+                return (
+                  <span className={`inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-medium ${styles}`}>
+                    {employmentLabel}
+                  </span>
+                );
+              })()}
               {isFilled && (
                 <Badge variant="outline" className="text-xs text-muted-foreground">
                   Poste comblé
                 </Badge>
               )}
             </div>
-            <h1 className="text-2xl font-bold leading-snug">{job.title}</h1>
+            <h1 className="text-2xl font-bold leading-snug text-[#1F2933]">{job.title}</h1>
             <p className="text-base font-medium text-muted-foreground mt-1">
-              {job.salon.name}
+              {locale === "fr"
+                ? `Salon partenaire à ${job.city}`
+                : `Partner salon in ${job.city}`}
             </p>
             <div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-1">
               <MapPin className="h-3.5 w-3.5 shrink-0" />
-              {job.city}, {job.region}
+              {job.city}
             </div>
           </div>
 
           {/* Details card */}
-          <Card className="border border-border/80 shadow-sm mb-6 bg-card/95">
+          <Card className="border border-border/80 shadow-sm mb-6 bg-white">
             <CardContent className="py-5 px-6 space-y-4">
               <div>
                 <p className="text-xs font-semibold uppercase text-muted-foreground mb-1">

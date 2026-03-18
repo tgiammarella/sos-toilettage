@@ -10,6 +10,7 @@ import { ApplyButton } from "@/components/shifts/ApplyButton";
 import { MapPin, Clock, Wrench, AlertTriangle, Users, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { CRITERIA_LABEL, getLang, getLabel } from "@/lib/labels";
 
 export default async function PublicShiftDetailPage({
   params,
@@ -21,8 +22,12 @@ export default async function PublicShiftDetailPage({
 
   const shift = await prisma.shiftPost.findUnique({
     where: { id },
-    include: {
-      salon: { select: { name: true, city: true, region: true } },
+    select: {
+      id: true, city: true, region: true, address: true, postalCode: true,
+      date: true, startTime: true, isUrgent: true, status: true,
+      payType: true, payRateCents: true, numberOfAppointments: true,
+      requiredExperienceYears: true, criteriaTags: true,
+      equipmentProvided: true, notes: true, salonId: true,
     },
   });
 
@@ -74,26 +79,32 @@ export default async function PublicShiftDetailPage({
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap mb-1">
                 {shift.isUrgent && (
-                  <Badge variant="destructive" className="text-xs flex items-center gap-1">
-                    <AlertTriangle className="h-3 w-3" /> URGENT
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="destructive" className="text-xs font-bold flex items-center gap-1">
+                      <AlertTriangle className="h-3 w-3" /> URGENT
+                    </Badge>
+                    <span className="text-xs text-destructive/80">
+                      {locale === "fr" ? "Priorité élevée" : "High priority"}
+                    </span>
+                  </div>
                 )}
                 {isFilled && (
                   <Badge variant="secondary" className="text-xs">Comblé</Badge>
                 )}
               </div>
-              {/* Hide salon name when FILLED */}
-              <h1 className="text-2xl font-bold">
-                {isFilled ? "Salon confidentiel" : shift.salon.name}
+              <h1 className="text-2xl font-bold text-[#1F2933]">
+                {locale === "fr"
+                  ? `Salon partenaire à ${shift.city}`
+                  : `Partner salon in ${shift.city}`}
               </h1>
               <div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-1">
                 <MapPin className="h-3.5 w-3.5 shrink-0" />
-                {shift.city}, {shift.region}
+                {shift.city}
               </div>
             </div>
           </div>
 
-          <Card className="border border-border/80 shadow-sm mb-6 bg-card/95">
+          <Card className="border border-border/80 shadow-sm mb-6 bg-white">
             <CardContent className="py-5 px-6 space-y-4">
               {/* Date & time */}
               <div>
@@ -136,7 +147,9 @@ export default async function PublicShiftDetailPage({
                   <p className="text-xs font-semibold uppercase text-muted-foreground mb-2">Spécialisations demandées</p>
                   <div className="flex flex-wrap gap-1.5">
                     {tags.map((tag) => (
-                      <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
+                      <span key={tag} className="inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-medium bg-[#F6EFE6] text-[#055864]">
+                        {getLabel(CRITERIA_LABEL, tag, getLang(locale))}
+                      </span>
                     ))}
                   </div>
                 </div>

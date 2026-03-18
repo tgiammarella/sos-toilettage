@@ -4,6 +4,8 @@
     "shifts": "Remplacements",
     "jobs": "Offres d'emploi",
     "schools": "Écoles & formations",
+    "open_slots": "Rendez-vous de toilettage disponibles",
+    "pricing": "Tarifs",
     "login": "Connexion",
     "register": "Inscription",
     "dashboard": "Tableau de bord",
@@ -28,7 +30,15 @@
     "step2_desc": "Le toiletteur voit l'annonce et postule en un clic, gratuitement.",
     "step3_title": "Confirmation",
     "step3_desc": "Le salon accepte un candidat. Les deux parties reçoivent une confirmation par courriel.",
-    "trusted_by": "Des salons au Québec nous font confiance"
+    "trusted_by": "Des salons au Québec nous font confiance",
+    "groomers_section_title": "Des toiletteurs disponibles, rapidement.",
+    "groomers_section_subtitle": "Recevez des candidatures de pros qualifiés dans votre région, en quelques minutes.",
+    "groomers_bullet1": "Profils vérifiés (expérience, spécialités, CV)",
+    "groomers_bullet2": "Candidatures centralisées, réponse en 1 clic",
+    "groomers_bullet3": "Aucun frais de commission",
+    "stat_groomers_label": "Toiletteurs inscrits",
+    "stat_new_week_label": "Nouveaux profils cette semaine",
+    "stat_avg_response_label": "Temps moyen — 1re candidature"
   },
   "auth": {
     "login": "Connexion",
@@ -51,20 +61,64 @@
     "salon_name": "Nom du salon",
     "address": "Adresse",
     "city": "Ville",
-    "region": "Région",
+    "region": "Province",
     "postal_code": "Code postal",
     "phone": "Téléphone",
     "full_name": "Nom complet",
     "next": "Suivant",
-    "back": "Retour"
+    "back": "Retour",
+    "forgot_password": "Mot de passe oublié",
+    "forgot_password_desc": "Entrez votre courriel et nous vous enverrons un lien de réinitialisation.",
+    "forgot_password_sent": "Si un compte existe avec ce courriel, un lien de réinitialisation a été envoyé. Vérifiez votre boîte de réception.",
+    "forgot_password_link": "Mot de passe oublié ?",
+    "send_reset_link": "Envoyer le lien",
+    "sending": "Envoi en cours…",
+    "back_to_login": "Retour à la connexion",
+    "reset_password": "Nouveau mot de passe",
+    "reset_password_desc": "Choisissez un nouveau mot de passe pour votre compte.",
+    "reset_password_submit": "Réinitialiser le mot de passe",
+    "reset_password_success": "Votre mot de passe a été réinitialisé. Vous pouvez maintenant vous connecter.",
+    "reset_token_invalid": "Ce lien est invalide ou a expiré. Veuillez demander un nouveau lien.",
+    "request_new_link": "Demander un nouveau lien",
+    "new_password": "Nouveau mot de passe",
+    "password_min_length": "Le mot de passe doit contenir au moins 8 caractères",
+    "passwords_no_match": "Les mots de passe ne correspondent pas",
+    "resetting": "Réinitialisation…"
+  },
+  "reviews": {
+    "no_reviews": "Vous n'avez pas encore reçu d'évaluations.",
+    "leave_review": "Laisser un avis",
+    "review_sent": "Avis déjà envoyé",
+    "rating_label": "Votre évaluation",
+    "submit": "Envoyer l'avis",
+    "submitting": "Envoi…",
+    "success": "Avis envoyé ✓",
+    "error": "Erreur lors de l'envoi.",
+    "optional_comment": "Commentaire (optionnel)"
+  },
+  "confirmed": {
+    "salon_title": "Confirmés",
+    "salon_description": "Historique de vos remplacements et postes confirmés.",
+    "salon_empty": "Aucun engagement confirmé pour l'instant.",
+    "groomer_empty": "Aucun remplacement confirmé pour l'instant.",
+    "confirmed_badge": "Confirmé",
+    "review_sent": "Avis déjà envoyé"
+  },
+  "forbidden": {
+    "title": "Accès refusé",
+    "description": "Vous n'avez pas les permissions nécessaires pour accéder à cette page.",
+    "home": "Accueil",
+    "login": "Se connecter"
   },
   "dashboard": {
     "welcome": "Bonjour",
     "salon": {
       "title": "Tableau de bord — Salon",
+      "dashboard": "Tableau de bord",
       "my_shifts": "Mes remplacements",
       "my_jobs": "Mes offres d'emploi",
       "applicants": "Candidats",
+      "open_slots": "Rendez-vous de toilettage disponibles",
       "billing": "Facturation",
       "confirmed": "Confirmés",
       "settings": "Paramètres",
@@ -73,17 +127,40 @@
       "credits_available": "Crédits disponibles",
       "subscription": "Abonnement",
       "no_shifts": "Aucun remplacement publié pour l'instant.",
-      "no_jobs": "Aucune offre d'emploi publiée pour l'instant."
+      "no_jobs": "Aucune offre d'emploi publiée pour l'instant.",
+      "billing_plan": "Forfait actuel",
+      "billing_plan_none": "Aucun forfait",
+      "billing_renewal": "Prochain renouvellement",
+      "billing_credits_monthly": "Crédits mensuels inclus",
+      "billing_ledger_title": "Historique des transactions",
+      "billing_ledger_date": "Date",
+      "billing_ledger_reason": "Description",
+      "billing_ledger_amount": "Crédits",
+      "billing_ledger_empty": "Aucune transaction pour le moment.",
+      "billing_coupon_title": "Code promotionnel",
+      "billing_coupon_placeholder": "Code coupon",
+      "billing_coupon_apply": "Appliquer",
+      "billing_coupon_success": "Code appliqué avec succès !",
+      "billing_coupon_invalid": "Code invalide ou expiré.",
+      "billing_coupon_used": "Ce code a déjà été utilisé.",
+      "billing_plan_title": "Changer de forfait",
+      "billing_plan_select": "Sélectionner",
+      "billing_plan_current": "Forfait actuel",
+      "billing_plan_success": "Forfait mis à jour !",
+      "billing_plan_credits": "crédits/mois",
+      "billing_plan_renewal_none": "Aucun renouvellement planifié"
     },
     "groomer": {
       "title": "Tableau de bord — Toiletteur",
+      "dashboard": "Tableau de bord",
       "my_profile": "Mon profil",
       "my_applications": "Mes candidatures",
       "confirmed": "Confirmés",
       "reviews": "Mes évaluations",
       "edit_profile": "Modifier mon profil",
       "upload_cv": "Téléverser mon CV",
-      "no_applications": "Vous n'avez pas encore postulé à des remplacements."
+      "no_applications": "Vous n'avez pas encore postulé à des remplacements.",
+      "view_shifts": "Voir les remplacements"
     },
     "admin": {
       "title": "Administration",
@@ -92,7 +169,28 @@
       "reviews": "Évaluations",
       "users": "Utilisateurs",
       "credits": "Crédits",
-      "new_listing": "Nouvelle entrée"
+      "new_listing": "Nouvelle entrée",
+      "ops": "Opérations",
+      "ops_title": "Tableau de bord opérationnel",
+      "ops_7d": "7 jours",
+      "ops_30d": "30 jours",
+      "health_title": "Santé de la marketplace",
+      "health_shifts": "Remplacements publiés",
+      "health_jobs": "Offres publiées",
+      "health_apps": "Candidatures soumises",
+      "health_fill_rate": "Taux de complétion",
+      "health_median": "Délai médian — 1re candidature",
+      "funnel_title": "Entonnoir d'acquisition",
+      "funnel_new_groomers": "Nouveaux toiletteurs",
+      "funnel_new_salons": "Nouveaux salons",
+      "funnel_active_groomers": "Toiletteurs activés",
+      "funnel_active_salons": "Salons activés",
+      "credits_title": "Utilisation des crédits",
+      "credits_consumed": "Crédits consommés",
+      "credits_top_salons": "Top salons par usage",
+      "moderation_title": "Modération",
+      "moderation_empty": "Aucun signalement actif.",
+      "export_csv": "Exporter CSV"
     }
   },
   "shifts": {
@@ -118,11 +216,11 @@
     "notes": "Notes",
     "filters": {
       "title": "Filtres",
-      "region": "Région",
+      "region": "Province",
       "city": "Ville",
       "date_range": "Période",
       "pay_type": "Type de rémunération",
-      "all_regions": "Toutes les régions",
+      "all_regions": "Toutes les provinces",
       "hourly": "À l'heure",
       "flat": "Forfait",
       "clear": "Effacer les filtres"
@@ -173,5 +271,150 @@
     "yes": "Oui",
     "no": "Non",
     "or": "ou"
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Une question? Une demande de partenariat? \u00c9crivez-nous.",
+    "name": "Nom",
+    "email": "Courriel",
+    "subject": "Sujet",
+    "subject_general": "Demande g\u00e9n\u00e9rale",
+    "subject_partner": "Devenir partenaire",
+    "subject_support": "Support technique",
+    "subject_other": "Autre",
+    "message": "Message",
+    "submit": "Envoyer le message",
+    "note": "Nous r\u00e9pondons dans les 24 heures ouvrables.",
+    "sending": "Envoi en cours\u2026",
+    "error": "Une erreur est survenue. Veuillez r\u00e9essayer.",
+    "success": "Merci! Nous vous r\u00e9pondrons bient\u00f4t."
+  },
+  "partners": {
+    "title": "Nos partenaires",
+    "subtitle": "Des marques qui soutiennent la communaut\u00e9 des toiletteurs au Qu\u00e9bec.",
+    "no_partners": "Aucun partenaire pour l'instant.",
+    "visit_site": "Visiter le site",
+    "cta_title": "Vous souhaitez devenir partenaire ?",
+    "cta_subtitle": "Rejoignez notre r\u00e9seau et gagnez en visibilit\u00e9 aupr\u00e8s de la communaut\u00e9 des toiletteurs du Qu\u00e9bec.",
+    "cta_button": "Nous contacter",
+    "trusted_strip": "Ils nous font confiance",
+    "see_all": "Voir tous nos partenaires"
+  },
+  "pricing": {
+    "meta": {
+      "title": "Tarifs — Tout Toilettage",
+      "description": "Choisissez le plan adapté à votre salon. Un seul crédit pour publier un remplacement."
+    },
+    "hero": {
+      "badge": "Tarification transparente",
+      "title": "Un remplacement raté coûte une journée de revenus.",
+      "subtitle": "Tout Toilettage vous aide à trouver un toiletteur rapidement grâce à une plateforme spécialisée.",
+      "bullet1": "Candidats qualifiés",
+      "bullet2": "Publication en 30 secondes",
+      "bullet3": "Aucun frais de commission",
+      "cta_primary": "Publier un remplacement",
+      "cta_secondary": "Voir les plans",
+      "taxNote": "Tous les prix en CAD, avant taxes (TPS 5 % + TVQ 9,975 %)"
+    },
+    "credits": {
+      "title": "Comment fonctionnent les crédits",
+      "step1_title": "Vous publiez un remplacement",
+      "step1_desc": "Créez votre annonce en 30 secondes et choisissez quand la publier.",
+      "step2_title": "1 crédit est utilisé",
+      "step2_desc": "Un seul crédit est débité à la publication, peu importe la durée ou les candidatures.",
+      "step3_title": "Vous recevez des candidatures",
+      "step3_desc": "Les toiletteurs qualifiés de votre région voient et postulent à votre annonce.",
+      "explanation": "Un crédit = une publication de remplacement ou d'offre d'emploi."
+    },
+    "toggle": {
+      "monthly": "Mensuel",
+      "annual": "Annuel",
+      "save": "Économisez 17 %"
+    },
+    "decouverte": {
+      "badge": "Commencez ici",
+      "title": "Offre découverte",
+      "subtitle": "Testez la plateforme",
+      "credits": "3 crédits",
+      "price": "29 $",
+      "priceNote": "achat unique · sans engagement",
+      "perCredit": "9,67 $ / crédit",
+      "validity": "Valide 12 mois",
+      "noCommitment": "Aucun abonnement requis",
+      "cta": "Commencer l'essai",
+      "description": "Publiez jusqu'à 3 remplacements pour découvrir la qualité des candidatures dans votre région.",
+      "valueNote": "Un remplacement sauvé peut représenter 300 $ à 700 $ de revenus."
+    },
+    "riskReduction": "Si vous ne recevez aucune candidature, votre crédit n'est pas utilisé.",
+    "perPublication": "≈ {price} $ par publication",
+    "tiers": {
+      "ESSENTIEL": {
+        "name": "Starter",
+        "target": "Salon solo · 1 emplacement",
+        "cta": "Démarrer"
+      },
+      "SALON": {
+        "name": "Salon",
+        "target": "Salon établi · 1-2 emplacements",
+        "cta": "Choisir ce plan",
+        "badge": "Le plus populaire"
+      },
+      "RESEAU": {
+        "name": "Réseau",
+        "target": "Réseau régional · jusqu'à 5 sites",
+        "cta": "Nous contacter"
+      },
+      "CHAINE": {
+        "name": "Chaîne",
+        "target": "Grande chaîne · 8+ emplacements",
+        "cta": "Nous contacter"
+      }
+    },
+    "features": {
+      "creditsPerMonth": "{n} crédits / mois",
+      "perCredit": "{price} $ / crédit inclus",
+      "extraCredit": "Crédit suppl. : {price} $",
+      "profiles": "{n} profil salon",
+      "profilesPlural": "{n} profils salon",
+      "profilesUnlimited": "Profils illimités",
+      "creditPool": "Crédits poolés entre sites",
+      "rollover": "Report jusqu'à 3 mois",
+      "stats": "Statistiques et rapports",
+      "priorityListing": "Affichage prioritaire",
+      "topListing": "Affichage en tête de liste",
+      "prioritySupport": "Support prioritaire (< 24 h)",
+      "dedicatedManager": "Gestionnaire de compte dédié",
+      "api": "API + export CSV",
+      "jobPosts": "Publications d'emploi incluses",
+      "openSlots": "Publier des créneaux disponibles pour clients de dernière minute"
+    },
+    "comparison": {
+      "title": "Comparez les plans",
+      "credits": "Crédits / mois",
+      "price_per_credit": "Prix par crédit inclus",
+      "locations": "Emplacements",
+      "stats": "Statistiques",
+      "priority_support": "Support prioritaire",
+      "multi_site": "Gestion multi-sites",
+      "unlimited": "Illimité"
+    },
+    "social": {
+      "title": "Des salons au Québec nous font confiance"
+    },
+    "perMonth": "/ mois",
+    "billedAnnually": "facturé annuellement",
+    "billedMonthly": "facturé mensuellement",
+    "recommended": "Recommandé",
+    "faq": {
+      "title": "Questions fréquentes",
+      "q1": "Qu'est-ce qu'un crédit?",
+      "a1": "Un crédit = une publication de remplacement ou d'offre d'emploi. Chaque publication coûte 1 crédit, peu importe la durée ou le nombre de candidatures reçues.",
+      "q2": "Les crédits expirent-ils?",
+      "a2": "Les crédits d'abonnement se reportent jusqu'à 3 mois. Les crédits du Pack Découverte sont valides 12 mois.",
+      "q3": "Puis-je changer de plan?",
+      "a3": "Oui, en tout temps. La mise à niveau est immédiate. Le rétrogradage prend effet au prochain cycle de facturation.",
+      "q4": "Combien de candidats vais-je recevoir?",
+      "a4": "La plupart des remplacements reçoivent entre 3 et 10 candidatures en 24 heures, selon la région et le type de poste."
+    }
   }
 }

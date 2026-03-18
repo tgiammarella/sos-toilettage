@@ -19,38 +19,21 @@ import {
   CalendarDays,
   MessageSquare,
   Clock,
+  Pencil,
+  FileText,
 } from "lucide-react";
 import { SalonSidebar } from "@/components/dashboard/SalonSidebar";
-
-const EMPLOYMENT_LABELS: Record<string, string> = {
-  FULL_TIME: "Temps plein",
-  PART_TIME: "Temps partiel",
-  CONTRACT:  "Contrat",
-};
-
-const APP_STATUS_MAP: Record<
-  string,
-  { label: { fr: string; en: string }; variant: "default" | "secondary" | "destructive" | "outline" }
-> = {
-  APPLIED:   { label: { fr: "En attente",  en: "Pending"   }, variant: "outline" },
-  ACCEPTED:  { label: { fr: "Accepté",     en: "Accepted"  }, variant: "default" },
-  REJECTED:  { label: { fr: "Non retenu",  en: "Rejected"  }, variant: "secondary" },
-  WITHDRAWN: { label: { fr: "Retiré",      en: "Withdrawn" }, variant: "outline" },
-};
-
-const JOB_STATUS_LABEL: Record<string, { fr: string; en: string }> = {
-  PUBLISHED: { fr: "Publié",    en: "Published" },
-  FILLED:    { fr: "Comblé",    en: "Filled"    },
-  DRAFT:     { fr: "Brouillon", en: "Draft"     },
-  ARCHIVED:  { fr: "Archivé",   en: "Archived"  },
-};
-
-const JOB_STATUS_COLOR: Record<string, string> = {
-  PUBLISHED: "bg-green-100 text-green-700 border-green-300",
-  FILLED:    "bg-blue-100 text-blue-700 border-blue-300",
-  DRAFT:     "bg-gray-100 text-gray-600 border-gray-300",
-  ARCHIVED:  "bg-gray-100 text-gray-500 border-gray-200",
-};
+import { PublishJobButton } from "@/components/jobs/PublishJobButton";
+import {
+  getLang,
+  POST_STATUS_LABEL,
+  POST_STATUS_BADGE_CLASS,
+  EMPLOYMENT_TYPE_LABEL,
+  APP_STATUS_LABEL,
+  APP_STATUS_VARIANT,
+  SPEC_LABEL,
+  getLabel,
+} from "@/lib/labels";
 
 export default async function SalonJobDetailPage({
   params,
@@ -62,6 +45,7 @@ export default async function SalonJobDetailPage({
   const { locale, id } = await params;
   const { filter } = await searchParams;
   const session = await requireRole(locale, "SALON");
+  const lang = getLang(locale);
 
   const salon = await prisma.salonProfile.findUnique({
     where: { userId: session.user.id },
@@ -81,9 +65,9 @@ export default async function SalonJobDetailPage({
               id: true,
               fullName: true,
               city: true,
-              region: true,
               yearsExperience: true,
               specializations: true,
+              bio: true,
               cvFileUrl: true,
             },
           },
@@ -97,9 +81,6 @@ export default async function SalonJobDetailPage({
 
   if (!job || job.salonId !== salon.id) notFound();
 
-  const lang = locale === "en" ? "en" : "fr";
-
-  // Filter tabs
   const allApps = job.applications;
   const filteredApps =
     filter === "shortlisted"
@@ -110,12 +91,11 @@ export default async function SalonJobDetailPage({
 
   const shortlistedCount = allApps.filter((a) => a.shortlisted).length;
   const pendingCount = allApps.filter((a) => a.status === "APPLIED").length;
-
   const baseHref = `/${locale}/dashboard/salon/jobs/${id}`;
 
   const tabs = [
-    { key: undefined,         label: lang === "fr" ? "Tout"           : "All",           count: allApps.length },
-    { key: "shortlisted",     label: lang === "fr" ? "Sélectionnés"   : "Shortlisted",   count: shortlistedCount },
+    { key: undefined,         label: lang === "fr" ? "Tout"             : "All",             count: allApps.length },
+    { key: "shortlisted",     label: lang === "fr" ? "Sélectionnés"     : "Shortlisted",     count: shortlistedCount },
     { key: "not_shortlisted", label: lang === "fr" ? "Non sélectionnés" : "Not shortlisted", count: allApps.length - shortlistedCount },
   ];
 
@@ -133,10 +113,16 @@ export default async function SalonJobDetailPage({
               </Link>
             </Button>
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl font-bold">{job.title}</h1>
-              <span className={`text-xs border rounded-full px-2.5 py-0.5 font-medium ${JOB_STATUS_COLOR[job.status]}`}>
-                {JOB_STATUS_LABEL[job.status]?.[lang] ?? job.status}
+              <h1 className="text-2xl font-bold text-[#1F2933]">{job.title}</h1>
+              <span className={`text-xs border rounded-full px-2.5 py-0.5 font-medium ${POST_STATUS_BADGE_CLASS[job.status] ?? ""}`}>
+                {getLabel(POST_STATUS_LABEL, job.status, lang)}
               </span>
+              <Button size="sm" variant="outline" asChild className="ml-auto">
+                <Link href={`/${locale}/dashboard/salon/jobs/${id}/edit`}>
+                  <Pencil className="h-3.5 w-3.5 mr-1" />
+                  {lang === "fr" ? "Modifier l'offre" : "Edit job"}
+                </Link>
+              </Button>
             </div>
           </div>
 
@@ -144,11 +130,11 @@ export default async function SalonJobDetailPage({
             <CardContent className="py-5 px-6 space-y-3">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Briefcase className="h-4 w-4 shrink-0" />
-                {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}
+                {getLabel(EMPLOYMENT_TYPE_LABEL, job.employmentType, lang)}
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4 shrink-0" />
-                {job.city}, {job.region}
+                {job.city}
               </div>
               {job.payInfo && (
                 <Badge variant="outline" className="text-xs">{job.payInfo}</Badge>
@@ -169,15 +155,67 @@ export default async function SalonJobDetailPage({
             </CardContent>
           </Card>
 
-          {job.status === "FILLED" && job.engagement && (
-            <Card className="shadow-none border border-green-200 bg-green-50">
-              <CardContent className="py-4 px-5 flex items-center gap-3">
-                <CheckCircle className="h-5 w-5 text-green-600 shrink-0" />
+          {job.status === "DRAFT" && (
+            <Card className="shadow-none border border-primary/30 bg-primary/5">
+              <CardContent className="py-4 px-5 flex items-center justify-between gap-4">
                 <div>
-                  <p className="font-semibold text-green-800 text-sm">
+                  <p className="font-semibold text-sm">
+                    {lang === "fr"
+                      ? "Cette offre est en brouillon"
+                      : "This job is a draft"}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {lang === "fr"
+                      ? "Publiez-la pour la rendre visible aux toiletteurs pendant 30 jours."
+                      : "Publish it to make it visible to groomers for 30 days."}
+                  </p>
+                </div>
+                <PublishJobButton jobId={job.id} locale={locale} />
+              </CardContent>
+            </Card>
+          )}
+
+          {job.status === "PUBLISHED" && job.expiresAt && (
+            <Card className="shadow-none border">
+              <CardContent className="py-3 px-5 flex items-center gap-2 text-sm text-muted-foreground">
+                <Clock className="h-4 w-4 shrink-0" />
+                {(() => {
+                  const daysLeft = Math.ceil(
+                    (new Date(job.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24),
+                  );
+                  if (daysLeft <= 0) return lang === "fr" ? "Expire aujourd'hui" : "Expires today";
+                  return lang === "fr"
+                    ? `Expire dans ${daysLeft} jour${daysLeft > 1 ? "s" : ""}`
+                    : `Expires in ${daysLeft} day${daysLeft > 1 ? "s" : ""}`;
+                })()}
+              </CardContent>
+            </Card>
+          )}
+
+          {job.status === "EXPIRED" && (
+            <Card className="shadow-none border border-orange-300 bg-orange-50">
+              <CardContent className="py-4 px-5 text-sm">
+                <p className="font-semibold text-orange-700">
+                  {lang === "fr" ? "Cette offre est expirée" : "This job has expired"}
+                </p>
+                <p className="text-xs text-orange-600 mt-0.5">
+                  {lang === "fr"
+                    ? "Elle n'est plus visible par les toiletteurs. Créez une nouvelle offre pour la republier."
+                    : "It is no longer visible to groomers. Create a new posting to re-publish."}
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {job.status === "FILLED" && job.engagement && (
+            <Card className="shadow-none border border-success-border bg-success">
+              <CardContent className="py-4 px-5 flex items-center gap-3">
+                <CheckCircle className="h-5 w-5 text-success-foreground shrink-0" />
+                <div>
+                  <p className="font-semibold text-success-foreground text-sm">
                     {lang === "fr" ? "Poste comblé" : "Position filled"}
                   </p>
-                  <p className="text-sm text-green-700">
+                  <p className="text-sm text-success-foreground/80">
                     {lang === "fr" ? "Confirmé avec" : "Confirmed with"}{" "}
                     <strong>{job.engagement.groomer.fullName}</strong>
                   </p>
@@ -200,7 +238,6 @@ export default async function SalonJobDetailPage({
               </h2>
             </div>
 
-            {/* Filter tabs */}
             <div className="flex gap-2 mb-4 flex-wrap">
               {tabs.map((tab) => {
                 const href = tab.key ? `${baseHref}?filter=${tab.key}` : baseHref;
@@ -237,23 +274,11 @@ export default async function SalonJobDetailPage({
                   try {
                     const parsed = JSON.parse(app.groomer.specializations || "[]");
                     specs = Array.isArray(parsed) ? parsed : [];
-                  } catch {
-                    specs = [];
-                  }
-                  const statusInfo = APP_STATUS_MAP[app.status] ?? APP_STATUS_MAP.APPLIED;
+                  } catch { specs = []; }
                   const isOpen = job.status === "PUBLISHED" && app.status === "APPLIED";
 
                   return (
-                    <Card
-                      key={app.id}
-                      className={`border shadow-none ${
-                        app.status === "ACCEPTED"
-                          ? "border-green-200 bg-green-50"
-                          : app.status === "REJECTED"
-                          ? "opacity-60"
-                          : ""
-                      }`}
-                    >
+                    <Card key={app.id} className={`border shadow-none ${app.status === "ACCEPTED" ? "border-success-border bg-success" : app.status === "REJECTED" ? "opacity-60" : ""}`}>
                       <CardContent className="py-4 px-5 space-y-3">
                         <div className="flex items-start gap-4">
                           <Avatar className="h-10 w-10 shrink-0">
@@ -265,8 +290,8 @@ export default async function SalonJobDetailPage({
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
                               <p className="font-medium">{app.groomer.fullName}</p>
-                              <Badge variant={statusInfo.variant} className="text-xs">
-                                {statusInfo.label[lang]}
+                              <Badge variant={APP_STATUS_VARIANT[app.status] ?? "outline"} className="text-xs">
+                                {getLabel(APP_STATUS_LABEL, app.status, lang)}
                               </Badge>
                               {app.shortlisted && (
                                 <Badge variant="secondary" className="text-xs">
@@ -281,33 +306,34 @@ export default async function SalonJobDetailPage({
                             {specs.length > 0 && (
                               <div className="flex flex-wrap gap-1 mt-1.5">
                                 {specs.map((s) => (
-                                  <Badge key={s} variant="outline" className="text-xs">{s}</Badge>
+                                  <span key={s} className="inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-medium bg-[#F6EFE6] text-[#055864]">
+                                    {getLabel(SPEC_LABEL, s, lang)}
+                                  </span>
                                 ))}
                               </div>
                             )}
+                            {app.groomer.bio ? (
+                              <p className="text-xs text-muted-foreground mt-1.5 line-clamp-2">
+                                {app.groomer.bio}
+                              </p>
+                            ) : (
+                              <p className="text-xs text-muted-foreground/60 mt-1.5 italic">
+                                {lang === "fr" ? "Aucune bio fournie" : "No bio provided"}
+                              </p>
+                            )}
                             {app.groomer.cvFileUrl && (
-                              <a
-                                href={app.groomer.cvFileUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-xs text-primary underline mt-1 inline-block"
-                              >
+                              <a href={app.groomer.cvFileUrl} target="_blank" rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-xs text-primary underline mt-1">
+                                <FileText className="h-3.5 w-3.5" />
                                 {lang === "fr" ? "Voir le CV" : "View CV"}
                               </a>
                             )}
                           </div>
 
                           <div className="flex flex-col items-end gap-2 shrink-0">
-                            <ShortlistButton
-                              applicationId={app.id}
-                              shortlisted={app.shortlisted}
-                            />
+                            <ShortlistButton applicationId={app.id} shortlisted={app.shortlisted} />
                             {isOpen && (
-                              <JobDecisionButtons
-                                jobId={job.id}
-                                applicationId={app.id}
-                                groomerName={app.groomer.fullName}
-                              />
+                              <JobDecisionButtons jobId={job.id} applicationId={app.id} groomerName={app.groomer.fullName} />
                             )}
                           </div>
                         </div>

@@ -2,11 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { notifyApplicationReceived } from "@/lib/notifications";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const limited = await checkRateLimit(req, "moderate");
+  if (limited) return limited;
+
   const session = await auth();
   if (!session || session.user.role !== "GROOMER") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -30,7 +34,15 @@ export async function POST(
     },
   });
 
-  if (!shift || shift.status !== "PUBLISHED") {
+  if (!shift) {
+    return NextResponse.json({ error: "Shift not found" }, { status: 404 });
+  }
+
+  if (shift.status === "FILLED") {
+    return NextResponse.json({ error: "This shift has already been filled" }, { status: 400 });
+  }
+
+  if (shift.status !== "PUBLISHED") {
     return NextResponse.json({ error: "Shift not available" }, { status: 404 });
   }
 
@@ -43,17 +55,25 @@ export async function POST(
     return NextResponse.json({ error: "ALREADY_APPLIED" }, { status: 409 });
   }
 
-  const application = await prisma.application.create({
-    data: {
-      postType: "SHIFT",
-      shiftPostId: shiftId,
-      salonId: shift.salon.id,
-      groomerId: groomer.id,
-      status: "APPLIED",
-    },
-  });
+  let application;
+  try {
+    application = await prisma.application.create({
+      data: {
+        postType: "SHIFT",
+        shiftPostId: shiftId,
+        salonId: shift.salon.id,
+        groomerId: groomer.id,
+        status: "APPLIED",
+      },
+    });
+  } catch (e: unknown) {
+    if ((e as { code?: string })?.code === "P2002") {
+      return NextResponse.json({ error: "ALREADY_APPLIED" }, { status: 409 });
+    }
+    throw e;
+  }
 
-  // Notify salon (stub)
+  // Notify salon
   const salonProfile = await prisma.salonProfile.findUnique({
     where: { id: shift.salon.id },
     select: { userId: true },
@@ -75,7 +95,8 @@ export async function POST(
       groomerName: groomer.fullName,
       shiftDate: shift.date.toISOString().split("T")[0],
       shiftCity: shift.city,
-    });
+      shiftId,
+    }).catch((err) => console.error("Notification failed", err));
   }
 
   return NextResponse.json({ application }, { status: 201 });

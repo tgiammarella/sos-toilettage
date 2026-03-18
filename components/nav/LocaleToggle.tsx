@@ -26,7 +26,7 @@ export function LocaleToggle() {
       {LOCALES.map((loc) => (
         <Button
           key={loc}
-          variant={loc === currentLocale ? "secondary" : "ghost"}
+          variant={loc === currentLocale ? "default" : "ghost"}
           size="sm"
           onClick={() => switchTo(loc)}
           className="text-xs font-semibold px-2.5 uppercase"

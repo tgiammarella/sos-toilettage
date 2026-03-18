@@ -38,6 +38,13 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  /* Semantic state tokens */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-border: var(--success-border);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-border: var(--warning-border);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -45,79 +52,129 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+
+  /* ── Brand tokens ─────────────────────────────────────────── */
+  --color-brand-teal: #055864;
+  --color-brand-teal-secondary: #3A7F87;
+  --color-brand-heading: #1F2933;
+  --color-brand-body: #4a6260;
+  --color-brand-sand: #E8D2AE;
+  --color-brand-light: #F6EFE6;
+  --color-brand-border: #CBBBA6;
+  --color-brand-urgent: #dc2626;
 }
 
 :root {
-  --radius: 0.625rem;
-  /* Light theme – khaki / purple / pink */
-  --background: #fffaf3; /* soft khaki background */
-  --foreground: #24111b; /* deep plum text */
-  --card: #ffffff;
-  --card-foreground: #24111b;
-  --popover: #ffffff;
-  --popover-foreground: #24111b;
-  /* Primary = pink, Accent = purple, Secondary = khaki */
-  --primary: #ff4fa3;
-  --primary-foreground: #fff7fb;
-  --secondary: #f5e2b8; /* khaki */
-  --secondary-foreground: #3b2230;
-  --muted: #f7eee0;
-  --muted-foreground: #6b5460;
-  --accent: #7a4bff; /* purple */
-  --accent-foreground: #fdf7ff;
-  --destructive: #f04438;
-  --border: #eddcc4;
-  --input: #f1e3cd;
-  --ring: #ff4fa3;
-  --chart-1: #ff4fa3;
-  --chart-2: #7a4bff;
-  --chart-3: #f5e2b8;
-  --chart-4: #ff9fc9;
-  --chart-5: #c9b27a;
-  /* Sidebar tuned to khaki / purple / pink */
-  --sidebar: #f9edd7;
-  --sidebar-foreground: #24111b;
-  --sidebar-primary: #ff4fa3;
-  --sidebar-primary-foreground: #fff7fb;
-  --sidebar-accent: #7a4bff;
-  --sidebar-accent-foreground: #fdf7ff;
-  --sidebar-border: #e5d2b3;
-  --sidebar-ring: #ff4fa3;
+  --radius: 0.5rem;
+
+  /* ── Palette: Brand Teal · Sand · Light ── */
+
+  --background:        #E8D2AE;  /* sand — page background           */
+  --foreground:        #1F2933;  /* dark text                        */
+  --card:              #F6EFE6;  /* light bg cards                   */
+  --card-foreground:   #1F2933;
+  --popover:           #F6EFE6;
+  --popover-foreground:#1F2933;
+
+  /* Primary = brand teal */
+  --primary:           #055864;
+  --primary-foreground:#FFFFFF;
+
+  /* Secondary = secondary teal */
+  --secondary:         #3A7F87;
+  --secondary-foreground: #FFFFFF;
+
+  /* Muted = lighter sand tint */
+  --muted:             #F6EFE6;
+  --muted-foreground:  #4a6260;
+
+  /* Accent = secondary teal */
+  --accent:            #3A7F87;
+  --accent-foreground: #FFFFFF;
+
+  --destructive:       #C0392B;
+  --destructive-foreground: #FFFFFF;
+
+  --border:            #CBBBA6;
+  --input:             #FFFFFF;
+  --ring:              #3A7F87;
+
+  /* ── Sidebar: brand teal ─────────────────────────────────────── */
+  --sidebar:           #055864;
+  --sidebar-foreground:#FFFFFF;
+  --sidebar-primary:   #3A7F87;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent:    #E8D2AE;
+  --sidebar-accent-foreground: #055864;
+  --sidebar-border:    #CBBBA6;
+  --sidebar-ring:      #3A7F87;
+
+  /* ── Semantic states ─────────────────────────────────────────── */
+  --success:           #D6EDD6;
+  --success-foreground:#1A4A1A;
+  --success-border:    #8BC67A;
+
+  --warning:           #F5E8CE;
+  --warning-foreground:#6B4A0A;
+  --warning-border:    #CBBBA6;
+
+  /* ── Charts ──────────────────────────────────────────────────── */
+  --chart-1: #055864;
+  --chart-2: #3A7F87;
+  --chart-3: #4a6260;
+  --chart-4: #CBBBA6;
+  --chart-5: #E8D2AE;
 }
 
 .dark {
-  /* Dark theme – inverted but same brand hues */
-  --background: #130b16;
-  --foreground: #fff8fd;
-  --card: #1a101f;
-  --card-foreground: #fff8fd;
-  --popover: #1a101f;
-  --popover-foreground: #fff8fd;
-  --primary: #ff7abf;
-  --primary-foreground: #240b18;
-  --secondary: #4b3a22; /* deep khaki */
-  --secondary-foreground: #fff3da;
-  --muted: #24142b;
-  --muted-foreground: #bfa6c4;
-  --accent: #a07bff;
-  --accent-foreground: #140919;
-  --destructive: #f97066;
-  --border: #34223f;
-  --input: #2b1a35;
-  --ring: #ff7abf;
-  --chart-1: #ff7abf;
-  --chart-2: #a07bff;
-  --chart-3: #c9b27a;
-  --chart-4: #ff9fc9;
-  --chart-5: #5c8f7a;
-  --sidebar: #1b101f;
-  --sidebar-foreground: #fff8fd;
-  --sidebar-primary: #ff7abf;
-  --sidebar-primary-foreground: #240b18;
-  --sidebar-accent: #a07bff;
-  --sidebar-accent-foreground: #140919;
-  --sidebar-border: #3a2644;
-  --sidebar-ring: #ff7abf;
+  --background:        #0F2E33;
+  --foreground:        #FFFFFF;
+  --card:              #12363B;
+  --card-foreground:   #FFFFFF;
+  --popover:           #12363B;
+  --popover-foreground:#FFFFFF;
+
+  --primary:           #3A7F87;
+  --primary-foreground:#FFFFFF;
+
+  --secondary:         #055864;
+  --secondary-foreground: #FFFFFF;
+
+  --muted:             #0A2227;
+  --muted-foreground:  #A8C4C8;
+
+  --accent:            #CBBBA6;
+  --accent-foreground: #0F2E33;
+
+  --destructive:       #E05349;
+  --destructive-foreground: #FFFFFF;
+
+  --border:            #2C5056;
+  --input:             #0A2227;
+  --ring:              #3A7F87;
+
+  --sidebar:           #0A2227;
+  --sidebar-foreground:#FFFFFF;
+  --sidebar-primary:   #3A7F87;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent:    #12363B;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border:    #2C5056;
+  --sidebar-ring:      #3A7F87;
+
+  --success:           #1A3D1A;
+  --success-foreground:#8BC67A;
+  --success-border:    #2A5A2A;
+
+  --warning:           #3D2E0A;
+  --warning-foreground:#CBBBA6;
+  --warning-border:    #5A4518;
+
+  --chart-1: #3A7F87;
+  --chart-2: #CBBBA6;
+  --chart-3: #4a6260;
+  --chart-4: #055864;
+  --chart-5: #E8D2AE;
 }
 
 @layer base {

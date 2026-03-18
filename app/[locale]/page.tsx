@@ -6,6 +6,9 @@ import { Navbar } from "@/components/nav/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Scissors, Briefcase, GraduationCap, CheckCircle } from "lucide-react";
+import { GroomerStatsSection } from "@/components/marketing/GroomerStatsSection";
+import { partners } from "@/lib/partners";
+import Image from "next/image";
 
 export default async function HomePage({
   params,
@@ -24,6 +27,7 @@ export default async function HomePage({
 
   const t = await getTranslations("home");
   const tNav = await getTranslations("nav");
+  const tPartners = await getTranslations("partners");
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -31,25 +35,25 @@ export default async function HomePage({
 
       <main className="flex-1">
         {/* ── Hero ── */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-accent/20 to-background py-16 md:py-28">
+        <section className="relative overflow-hidden bg-primary py-16 md:py-28">
           <div className="container mx-auto px-4 text-center max-w-3xl">
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary text-sm font-semibold px-4 py-1.5 rounded-full mb-6">
+            <div className="inline-flex items-center gap-2 bg-white/15 text-white text-sm font-semibold px-4 py-1.5 rounded-full mb-6">
               <Scissors className="h-4 w-4" />
-              SOS Toilettage
+              Tout Toilettage
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-6 [&]:text-white">
               {t("hero_title")}
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto">
               {t("hero_subtitle")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" asChild className="text-base px-8">
-                <Link href={`/${locale}/auth/register?role=SALON`}>{t("cta_salon")}</Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild className="text-base px-8">
-                <Link href={`/${locale}/auth/register?role=GROOMER`}>{t("cta_groomer")}</Link>
-              </Button>
+              <Link href={`/${locale}/auth/register?role=GROOMER`} className="inline-flex items-center justify-center whitespace-nowrap rounded-lg text-base font-medium h-10 px-8 shadow-sm bg-[#E8D2AE] text-[#055864] border-0 hover:opacity-90 transition-opacity" style={{ backgroundColor: '#E8D2AE', color: '#055864', border: 'none' }}>
+                {t("cta_groomer")}
+              </Link>
+              <Link href={`/${locale}/auth/register?role=SALON`} className="inline-flex items-center justify-center whitespace-nowrap rounded-lg text-base font-medium h-10 px-8 shadow-sm bg-[#E8D2AE] text-[#055864] border-0 hover:opacity-90 transition-opacity" style={{ backgroundColor: '#E8D2AE', color: '#055864', border: 'none' }}>
+                {t("cta_salon")}
+              </Link>
             </div>
           </div>
         </section>
@@ -58,48 +62,48 @@ export default async function HomePage({
         <section className="py-16 md:py-20">
           <div className="container mx-auto px-4 max-w-5xl">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Card className="border border-border/70 bg-card/90 shadow-sm hover:shadow-md transition-shadow">
+              <Card className="border border-border/70 bg-white shadow-sm hover:shadow-md transition-shadow">
                 <CardContent className="pt-8 pb-6 px-6 text-center">
                   <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-primary/10 mb-5">
                     <Scissors className="h-7 w-7 text-primary" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">{t("feature_shifts_title")}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
+                  <h3 className="text-xl font-semibold mb-2 text-[#1F2933]">{t("feature_shifts_title")}</h3>
+                  <p className="text-[#4a6260] text-sm leading-relaxed">
                     {t("feature_shifts_desc")}
                   </p>
-                  <Button variant="link" className="mt-4 text-primary p-0 h-auto" asChild>
-                    <Link href={`/${locale}/shifts`}>{tNav("shifts")} →</Link>
-                  </Button>
+                  <Link href={`/${locale}/shifts`} className="mt-4 inline-flex items-center text-sm font-medium text-[#055864] hover:underline underline-offset-4 p-0">
+                    {tNav("shifts")} →
+                  </Link>
                 </CardContent>
               </Card>
 
-              <Card className="border border-border/70 bg-card/90 shadow-sm hover:shadow-md transition-shadow">
+              <Card className="border border-border/70 bg-white shadow-sm hover:shadow-md transition-shadow">
                 <CardContent className="pt-8 pb-6 px-6 text-center">
                   <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-primary/10 mb-5">
                     <Briefcase className="h-7 w-7 text-primary" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">{t("feature_jobs_title")}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
+                  <h3 className="text-xl font-semibold mb-2 text-[#1F2933]">{t("feature_jobs_title")}</h3>
+                  <p className="text-[#4a6260] text-sm leading-relaxed">
                     {t("feature_jobs_desc")}
                   </p>
-                  <Button variant="link" className="mt-4 text-primary p-0 h-auto" asChild>
-                    <Link href={`/${locale}/jobs`}>{tNav("jobs")} →</Link>
-                  </Button>
+                  <Link href={`/${locale}/jobs`} className="mt-4 inline-flex items-center text-sm font-medium text-[#055864] hover:underline underline-offset-4 p-0">
+                    {tNav("jobs")} →
+                  </Link>
                 </CardContent>
               </Card>
 
-              <Card className="border border-border/70 bg-card/90 shadow-sm hover:shadow-md transition-shadow">
+              <Card className="border border-border/70 bg-white shadow-sm hover:shadow-md transition-shadow">
                 <CardContent className="pt-8 pb-6 px-6 text-center">
                   <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-primary/10 mb-5">
                     <GraduationCap className="h-7 w-7 text-primary" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">{t("feature_schools_title")}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
+                  <h3 className="text-xl font-semibold mb-2 text-[#1F2933]">{t("feature_schools_title")}</h3>
+                  <p className="text-[#4a6260] text-sm leading-relaxed">
                     {t("feature_schools_desc")}
                   </p>
-                  <Button variant="link" className="mt-4 text-primary p-0 h-auto" asChild>
-                    <Link href={`/${locale}/schools`}>{tNav("schools")} →</Link>
-                  </Button>
+                  <Link href={`/${locale}/schools`} className="mt-4 inline-flex items-center text-sm font-medium text-[#055864] hover:underline underline-offset-4 p-0">
+                    {tNav("schools")} →
+                  </Link>
                 </CardContent>
               </Card>
             </div>
@@ -109,7 +113,7 @@ export default async function HomePage({
         {/* ── How it works ── */}
         <section className="py-16 md:py-24 bg-muted/60">
           <div className="container mx-auto px-4 max-w-4xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-14 text-[#1F2933]">
               {t("how_it_works")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -122,13 +126,16 @@ export default async function HomePage({
                   <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xl mb-5">
                     {step.num}
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">{step.title}</h3>
-                  <p className="text-muted-foreground text-sm">{step.desc}</p>
+                  <h3 className="font-semibold text-lg mb-2 text-[#1F2933]">{step.title}</h3>
+                  <p className="text-[#4a6260] text-sm">{step.desc}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
+
+        {/* ── Groomer Stats ── */}
+        <GroomerStatsSection locale={locale} />
 
         {/* ── CTA Banner ── */}
         <section className="py-16 bg-gradient-to-r from-primary to-accent">
@@ -153,18 +160,52 @@ export default async function HomePage({
                 size="lg"
                 variant="outline"
                 asChild
-                className="text-base px-8 border-white text-white hover:bg-white/10"
+                className="text-base px-8 border-[1.5px] border-white/80 text-white hover:bg-white/10 bg-transparent"
               >
                 <Link href={`/${locale}/auth/register?role=GROOMER`}>{t("cta_groomer")}</Link>
               </Button>
             </div>
           </div>
         </section>
+
+        {/* ── Partners Strip ── */}
+        {partners.filter((p) => p.featured).length > 0 && (
+          <section className="py-10 bg-[#F6EFE6]">
+            <div className="container mx-auto px-4 text-center">
+              <p className="text-sm text-[#4a6260] mb-6">{tPartners("trusted_strip")}</p>
+              <div className="flex items-center justify-center gap-8 flex-wrap mb-6">
+                {partners
+                  .filter((p) => p.featured)
+                  .map((p) => (
+                    <Image
+                      key={p.id}
+                      src={p.logo}
+                      alt={p.name}
+                      width={120}
+                      height={40}
+                      className="max-w-[120px] max-h-[40px] object-contain grayscale hover:grayscale-0 transition-all"
+                    />
+                  ))}
+              </div>
+              <Link
+                href={`/${locale}/partenaires`}
+                className="text-sm font-medium text-[#055864] hover:underline underline-offset-4"
+              >
+                {tPartners("see_all")} →
+              </Link>
+            </div>
+          </section>
+        )}
       </main>
 
-      <footer className="border-t py-8 text-center text-sm text-muted-foreground bg-white">
-        <div className="container mx-auto px-4">
-          <p>© {new Date().getFullYear()} SOS Toilettage. Tous droits réservés.</p>
+      <footer className="border-t py-8 text-sm text-[#4a6260] bg-white">
+        <div className="container mx-auto px-4 flex flex-col items-center gap-3">
+          <div className="flex items-center gap-4">
+            <Link href={`/${locale}/contact`} className="hover:underline underline-offset-4">
+              {locale === "fr" ? "Contact" : "Contact"}
+            </Link>
+          </div>
+          <p>© {new Date().getFullYear()} Tout Toilettage. Tous droits réservés.</p>
         </div>
       </footer>
     </div>

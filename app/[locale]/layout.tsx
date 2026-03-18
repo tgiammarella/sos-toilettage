@@ -1,3 +1,4 @@
+import "@/lib/env";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
@@ -11,7 +12,7 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SOS Toilettage — Remplacements & emplois au Québec",
+  title: "Tout Toilettage — Remplacements & emplois au Québec",
   description:
     "La plateforme de remplacement pour salons de toilettage et toiletteurs indépendants au Québec.",
 };

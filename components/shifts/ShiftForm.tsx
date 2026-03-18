@@ -13,7 +13,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertCircle, Coins } from "lucide-react";
+import { AlertCircle, AlertTriangle } from "lucide-react";
+import { CreditUsageHint } from "@/components/billing/CreditUsageHint";
 
 const CRITERIA_OPTIONS = [
   { value: "BIG_DOGS",       label: "Grands chiens" },
@@ -24,20 +25,11 @@ const CRITERIA_OPTIONS = [
   { value: "NORDIC_BREEDS",  label: "Races nordiques" },
 ];
 
-const REGIONS = [
-  "Abitibi-Témiscamingue", "Bas-Saint-Laurent", "Capitale-Nationale",
-  "Centre-du-Québec", "Chaudière-Appalaches", "Côte-Nord", "Estrie",
-  "Gaspésie–Îles-de-la-Madeleine", "Lanaudière", "Laurentides", "Laval",
-  "Mauricie", "Montérégie", "Montréal", "Nord-du-Québec", "Outaouais",
-  "Saguenay–Lac-Saint-Jean",
-];
-
 const formSchema = z.object({
   date:                    z.string().min(1, "Date requise"),
   startTime:               z.string().regex(/^\d{2}:\d{2}$/, "Format HH:MM requis"),
   address:                 z.string().min(1, "Adresse requise"),
   city:                    z.string().min(1, "Ville requise"),
-  region:                  z.string().min(1, "Région requise"),
   postalCode:              z.string().min(1, "Code postal requis"),
   numberOfAppointments:    z.coerce.number().int().min(1).max(30),
   payType:                 z.enum(["HOURLY", "FLAT"]),
@@ -74,6 +66,8 @@ export function ShiftForm({
   });
 
   const payType = form.watch("payType");
+  const isUrgent = form.watch("isUrgent");
+  const totalCost = isUrgent ? 2 : 1;
 
   async function onSubmit(values: FormValues) {
     setSubmitting(true);
@@ -83,13 +77,14 @@ export function ShiftForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...values,
+          region: values.city,
           payRateCents: Math.round(values.payRate * 100),
           criteriaTags: JSON.stringify(values.criteriaTags),
         }),
       });
 
       if (res.status === 402) {
-        toast.error("Crédits insuffisants pour publier ce remplacement.");
+        toast.error("Crédits insuffisants. Un remplacement urgent coûte 2 crédits.");
         return;
       }
       if (!res.ok) {
@@ -98,8 +93,9 @@ export function ShiftForm({
         return;
       }
 
+      const json = await res.json();
       toast.success("Remplacement publié !");
-      router.push(`/${locale}/dashboard/salon`);
+      router.push(`/${locale}/dashboard/salon/shifts/${json.shift.id}`);
       router.refresh();
     } finally {
       setSubmitting(false);
@@ -111,12 +107,7 @@ export function ShiftForm({
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       {/* Credit indicator */}
-      <div className={`flex items-center gap-2 rounded-lg border px-4 py-3 text-sm ${creditsAvailable === 0 ? "border-destructive/40 bg-destructive/5 text-destructive" : "border-primary/20 bg-primary/5 text-primary"}`}>
-        <Coins className="h-4 w-4 shrink-0" />
-        {creditsAvailable === 0
-          ? "Aucun crédit disponible. Achetez un forfait pour publier un remplacement."
-          : `${creditsAvailable} crédit${creditsAvailable !== 1 ? "s" : ""} disponible${creditsAvailable !== 1 ? "s" : ""}. La publication en consommera 1.`}
-      </div>
+      <CreditUsageHint creditsAvailable={creditsAvailable} costCredits={totalCost} locale={locale} />
 
       {/* Date & time */}
       <Card className="shadow-none">
@@ -148,22 +139,6 @@ export function ShiftForm({
             <Label htmlFor="city">Ville</Label>
             <Input id="city" placeholder="Montréal" {...form.register("city")} />
             {err.city && <p className="text-xs text-destructive">{err.city.message}</p>}
-          </div>
-          <div className="space-y-1.5">
-            <Label>Région</Label>
-            <Controller
-              control={form.control}
-              name="region"
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value ?? ""}>
-                  <SelectTrigger><SelectValue placeholder="Choisir une région" /></SelectTrigger>
-                  <SelectContent>
-                    {REGIONS.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {err.region && <p className="text-xs text-destructive">{err.region.message}</p>}
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="postalCode">Code postal</Label>
@@ -254,18 +229,33 @@ export function ShiftForm({
             />
             <Label htmlFor="equipmentProvided" className="cursor-pointer">Équipement fourni par le salon</Label>
           </div>
-          <div className="flex items-center gap-2">
-            <Controller
-              control={form.control}
-              name="isUrgent"
-              render={({ field }) => (
-                <Checkbox id="isUrgent" checked={field.value} onCheckedChange={field.onChange} />
-              )}
-            />
-            <Label htmlFor="isUrgent" className="cursor-pointer">
-              Marquer comme urgent
-              <Badge variant="outline" className="ml-2 text-xs border-amber-400 text-amber-600">Mise en avant à venir</Badge>
-            </Label>
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <Controller
+                control={form.control}
+                name="isUrgent"
+                render={({ field }) => (
+                  <Checkbox id="isUrgent" checked={field.value} onCheckedChange={field.onChange} />
+                )}
+              />
+              <Label htmlFor="isUrgent" className="cursor-pointer flex items-center gap-2">
+                <AlertCircle className="h-4 w-4 text-destructive" />
+                Remplacement urgent
+              </Label>
+            </div>
+            {!isUrgent && (
+              <p className="text-xs text-muted-foreground ml-6">
+                Priorité élevée pour trouver un remplaçant plus rapidement. Activer le mode urgent coûte 1 crédit supplémentaire.
+              </p>
+            )}
+            {isUrgent && (
+              <div className="ml-6 flex items-start gap-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2">
+                <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+                <p className="text-xs text-amber-800">
+                  Ce remplacement urgent utilisera <strong>2 crédits</strong> au total (1 publication + 1 priorité urgente).
+                </p>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -283,12 +273,15 @@ export function ShiftForm({
       </Card>
 
       <div className="flex items-center gap-3 pt-2">
-        <Button type="submit" disabled={submitting || creditsAvailable === 0} className="min-w-[180px]">
+        <Button type="submit" disabled={submitting || creditsAvailable < totalCost} className="min-w-[180px]">
           {submitting ? "Publication…" : "Publier le remplacement"}
         </Button>
-        {creditsAvailable === 0 && (
+        {creditsAvailable < totalCost && (
           <p className="flex items-center gap-1 text-xs text-destructive">
-            <AlertCircle className="h-3.5 w-3.5" /> Aucun crédit disponible
+            <AlertCircle className="h-3.5 w-3.5" />
+            {creditsAvailable === 0
+              ? "Aucun crédit disponible"
+              : `Crédits insuffisants (${creditsAvailable} disponible, ${totalCost} requis)`}
           </p>
         )}
       </div>

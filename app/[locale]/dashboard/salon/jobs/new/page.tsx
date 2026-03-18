@@ -39,7 +39,7 @@ export default async function NewJobPage({
                 <ArrowLeft className="h-4 w-4 mr-1" /> Retour à mes offres
               </Link>
             </Button>
-            <h1 className="text-2xl font-bold flex items-center gap-2">
+            <h1 className="text-2xl font-bold flex items-center gap-2 text-[#1F2933]">
               <Briefcase className="h-5 w-5" />
               {tDashboard("new_job")}
             </h1>

@@ -4,6 +4,8 @@
     "shifts": "Shifts",
     "jobs": "Jobs",
     "schools": "Schools & Training",
+    "open_slots": "Slots",
+    "pricing": "Pricing",
     "login": "Login",
     "register": "Sign Up",
     "dashboard": "Dashboard",
@@ -28,7 +30,15 @@
     "step2_desc": "The groomer sees the listing and applies in one click, for free.",
     "step3_title": "Confirmation",
     "step3_desc": "The salon accepts a candidate. Both parties receive an email confirmation.",
-    "trusted_by": "Trusted by salons across Quebec"
+    "trusted_by": "Trusted by salons across Quebec",
+    "groomers_section_title": "Groomers available, fast.",
+    "groomers_section_subtitle": "Receive applications from qualified professionals in your area, within minutes.",
+    "groomers_bullet1": "Verified profiles (experience, specialties, CV)",
+    "groomers_bullet2": "Centralized applications, respond in 1 click",
+    "groomers_bullet3": "No commission fees",
+    "stat_groomers_label": "Registered groomers",
+    "stat_new_week_label": "New profiles this week",
+    "stat_avg_response_label": "Avg. time to first application"
   },
   "auth": {
     "login": "Login",
@@ -51,20 +61,64 @@
     "salon_name": "Salon name",
     "address": "Address",
     "city": "City",
-    "region": "Region",
+    "region": "Province",
     "postal_code": "Postal code",
     "phone": "Phone",
     "full_name": "Full name",
     "next": "Next",
-    "back": "Back"
+    "back": "Back",
+    "forgot_password": "Forgot Password",
+    "forgot_password_desc": "Enter your email and we'll send you a reset link.",
+    "forgot_password_sent": "If an account exists with this email, a reset link has been sent. Check your inbox.",
+    "forgot_password_link": "Forgot password?",
+    "send_reset_link": "Send Reset Link",
+    "sending": "Sending…",
+    "back_to_login": "Back to login",
+    "reset_password": "New Password",
+    "reset_password_desc": "Choose a new password for your account.",
+    "reset_password_submit": "Reset Password",
+    "reset_password_success": "Your password has been reset. You can now sign in.",
+    "reset_token_invalid": "This link is invalid or has expired. Please request a new one.",
+    "request_new_link": "Request a new link",
+    "new_password": "New password",
+    "password_min_length": "Password must be at least 8 characters",
+    "passwords_no_match": "Passwords do not match",
+    "resetting": "Resetting…"
+  },
+  "reviews": {
+    "no_reviews": "You haven't received any reviews yet.",
+    "leave_review": "Leave a review",
+    "review_sent": "Review already submitted",
+    "rating_label": "Your rating",
+    "submit": "Submit review",
+    "submitting": "Submitting…",
+    "success": "Review submitted ✓",
+    "error": "Error submitting review.",
+    "optional_comment": "Comment (optional)"
+  },
+  "confirmed": {
+    "salon_title": "Confirmed",
+    "salon_description": "History of your confirmed shifts and jobs.",
+    "salon_empty": "No confirmed engagements yet.",
+    "groomer_empty": "No confirmed shifts yet.",
+    "confirmed_badge": "Confirmed",
+    "review_sent": "Review already submitted"
+  },
+  "forbidden": {
+    "title": "Access Denied",
+    "description": "You don't have permission to access this page.",
+    "home": "Home",
+    "login": "Sign In"
   },
   "dashboard": {
     "welcome": "Hello",
     "salon": {
       "title": "Dashboard — Salon",
+      "dashboard": "Dashboard",
       "my_shifts": "My Shifts",
       "my_jobs": "My Job Posts",
       "applicants": "Applicants",
+      "open_slots": "Slots",
       "billing": "Billing",
       "confirmed": "Confirmed",
       "settings": "Settings",
@@ -73,17 +127,40 @@
       "credits_available": "Credits available",
       "subscription": "Subscription",
       "no_shifts": "No replacement shifts posted yet.",
-      "no_jobs": "No job posts yet."
+      "no_jobs": "No job posts yet.",
+      "billing_plan": "Current plan",
+      "billing_plan_none": "No plan",
+      "billing_renewal": "Next renewal",
+      "billing_credits_monthly": "Monthly credits included",
+      "billing_ledger_title": "Transaction history",
+      "billing_ledger_date": "Date",
+      "billing_ledger_reason": "Description",
+      "billing_ledger_amount": "Credits",
+      "billing_ledger_empty": "No transactions yet.",
+      "billing_coupon_title": "Promo code",
+      "billing_coupon_placeholder": "Coupon code",
+      "billing_coupon_apply": "Apply",
+      "billing_coupon_success": "Code applied successfully!",
+      "billing_coupon_invalid": "Invalid or expired code.",
+      "billing_coupon_used": "This code has already been used.",
+      "billing_plan_title": "Change plan",
+      "billing_plan_select": "Select",
+      "billing_plan_current": "Current plan",
+      "billing_plan_success": "Plan updated!",
+      "billing_plan_credits": "credits/mo",
+      "billing_plan_renewal_none": "No renewal scheduled"
     },
     "groomer": {
       "title": "Dashboard — Groomer",
+      "dashboard": "Dashboard",
       "my_profile": "My Profile",
       "my_applications": "My Applications",
       "confirmed": "Confirmed",
       "reviews": "My Reviews",
       "edit_profile": "Edit Profile",
       "upload_cv": "Upload CV",
-      "no_applications": "You haven't applied to any shifts yet."
+      "no_applications": "You haven't applied to any shifts yet.",
+      "view_shifts": "View shifts"
     },
     "admin": {
       "title": "Admin",
@@ -92,7 +169,28 @@
       "reviews": "Reviews",
       "users": "Users",
       "credits": "Credits",
-      "new_listing": "New Listing"
+      "new_listing": "New Listing",
+      "ops": "Operations",
+      "ops_title": "Ops Dashboard",
+      "ops_7d": "7 days",
+      "ops_30d": "30 days",
+      "health_title": "Marketplace Health",
+      "health_shifts": "Replacements posted",
+      "health_jobs": "Job offers posted",
+      "health_apps": "Applications submitted",
+      "health_fill_rate": "Fill rate",
+      "health_median": "Median time to first applicant",
+      "funnel_title": "Acquisition Funnel",
+      "funnel_new_groomers": "New groomers",
+      "funnel_new_salons": "New salons",
+      "funnel_active_groomers": "Activated groomers",
+      "funnel_active_salons": "Activated salons",
+      "credits_title": "Credit Usage",
+      "credits_consumed": "Credits consumed",
+      "credits_top_salons": "Top salons by usage",
+      "moderation_title": "Moderation",
+      "moderation_empty": "No active reports.",
+      "export_csv": "Export CSV"
     }
   },
   "shifts": {
@@ -118,11 +216,11 @@
     "notes": "Notes",
     "filters": {
       "title": "Filters",
-      "region": "Region",
+      "region": "Province",
       "city": "City",
       "date_range": "Date range",
       "pay_type": "Pay type",
-      "all_regions": "All regions",
+      "all_regions": "All provinces",
       "hourly": "Hourly",
       "flat": "Flat rate",
       "clear": "Clear filters"
@@ -173,5 +271,150 @@
     "yes": "Yes",
     "no": "No",
     "or": "or"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Have a question? A partnership request? Write to us.",
+    "name": "Name",
+    "email": "Email",
+    "subject": "Subject",
+    "subject_general": "General inquiry",
+    "subject_partner": "Become a partner",
+    "subject_support": "Technical support",
+    "subject_other": "Other",
+    "message": "Message",
+    "submit": "Send message",
+    "note": "We respond within 24 business hours.",
+    "sending": "Sending\u2026",
+    "error": "Something went wrong. Please try again.",
+    "success": "Thank you! We'll get back to you soon."
+  },
+  "partners": {
+    "title": "Our Partners",
+    "subtitle": "Brands supporting the grooming community in Quebec.",
+    "no_partners": "No partners yet.",
+    "visit_site": "Visit website",
+    "cta_title": "Want to become a partner?",
+    "cta_subtitle": "Join our network and gain visibility with the grooming community in Quebec.",
+    "cta_button": "Contact us",
+    "trusted_strip": "They trust us",
+    "see_all": "See all our partners"
+  },
+  "pricing": {
+    "meta": {
+      "title": "Pricing — Tout Toilettage",
+      "description": "Choose the right plan for your salon. One credit to publish a replacement shift."
+    },
+    "hero": {
+      "badge": "Transparent pricing",
+      "title": "A missed replacement costs a full day of revenue.",
+      "subtitle": "Tout Toilettage helps you find a groomer quickly through a specialized platform.",
+      "bullet1": "Qualified candidates",
+      "bullet2": "Post in 30 seconds",
+      "bullet3": "No commission fees",
+      "cta_primary": "Post a replacement",
+      "cta_secondary": "See plans",
+      "taxNote": "All prices in CAD, before taxes (GST 5% + QST 9.975%)"
+    },
+    "credits": {
+      "title": "How credits work",
+      "step1_title": "You post a replacement",
+      "step1_desc": "Create your listing in 30 seconds and choose when to publish it.",
+      "step2_title": "1 credit is used",
+      "step2_desc": "One credit is deducted at publishing, regardless of duration or applications.",
+      "step3_title": "You receive applications",
+      "step3_desc": "Qualified groomers in your area see and apply to your listing.",
+      "explanation": "One credit = one replacement shift or job post."
+    },
+    "toggle": {
+      "monthly": "Monthly",
+      "annual": "Annual",
+      "save": "Save 17%"
+    },
+    "decouverte": {
+      "badge": "Start here",
+      "title": "Discovery Offer",
+      "subtitle": "Try the platform",
+      "credits": "3 credits",
+      "price": "$29",
+      "priceNote": "one-time · no commitment",
+      "perCredit": "$9.67 / credit",
+      "validity": "Valid 12 months",
+      "noCommitment": "No subscription required",
+      "cta": "Start trial",
+      "description": "Publish up to 3 replacements to discover the quality of candidates in your region.",
+      "valueNote": "One saved replacement can represent $300–$700 in revenue."
+    },
+    "riskReduction": "If you receive no applications, your credit is not used.",
+    "perPublication": "≈ ${price} per post",
+    "tiers": {
+      "ESSENTIEL": {
+        "name": "Starter",
+        "target": "Solo salon · 1 location",
+        "cta": "Get started"
+      },
+      "SALON": {
+        "name": "Salon",
+        "target": "Established salon · 1-2 locations",
+        "cta": "Choose this plan",
+        "badge": "Most popular"
+      },
+      "RESEAU": {
+        "name": "Réseau",
+        "target": "Regional network · up to 5 locations",
+        "cta": "Contact us"
+      },
+      "CHAINE": {
+        "name": "Chaîne",
+        "target": "Large chain · 8+ locations",
+        "cta": "Contact us"
+      }
+    },
+    "features": {
+      "creditsPerMonth": "{n} credits / month",
+      "perCredit": "${price} / credit included",
+      "extraCredit": "Extra credit: ${price}",
+      "profiles": "{n} salon profile",
+      "profilesPlural": "{n} salon profiles",
+      "profilesUnlimited": "Unlimited profiles",
+      "creditPool": "Credits pooled across locations",
+      "rollover": "Roll over up to 3 months",
+      "stats": "Analytics & reports",
+      "priorityListing": "Priority listing",
+      "topListing": "Top of search results",
+      "prioritySupport": "Priority support (< 24 h)",
+      "dedicatedManager": "Dedicated account manager",
+      "api": "API + CSV export",
+      "jobPosts": "Job posts included",
+      "openSlots": "Post last-minute openings for pet owner clients"
+    },
+    "comparison": {
+      "title": "Compare plans",
+      "credits": "Credits / month",
+      "price_per_credit": "Price per credit included",
+      "locations": "Locations",
+      "stats": "Analytics",
+      "priority_support": "Priority support",
+      "multi_site": "Multi-site management",
+      "unlimited": "Unlimited"
+    },
+    "social": {
+      "title": "Trusted by salons across Quebec"
+    },
+    "perMonth": "/ mo",
+    "billedAnnually": "billed annually",
+    "billedMonthly": "billed monthly",
+    "recommended": "Recommended",
+    "faq": {
+      "title": "Frequently asked questions",
+      "q1": "What is a credit?",
+      "a1": "One credit = one shift or job post. Each posting costs 1 credit, regardless of duration or number of applicants received.",
+      "q2": "Do credits expire?",
+      "a2": "Subscription credits roll over for up to 3 months. Découverte Pack credits are valid for 12 months.",
+      "q3": "Can I change plans?",
+      "a3": "Yes, at any time. Upgrades take effect immediately. Downgrades take effect at the next billing cycle.",
+      "q4": "How many applications will I receive?",
+      "a4": "Most replacements receive 3–10 applications within 24 hours, depending on your region and the type of position."
+    }
   }
 }

@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Scissors, Briefcase, CreditCard, Plus, Coins, ChevronRight } from "lucide-react";
+import { Scissors, Briefcase, CreditCard, Plus, Coins, ChevronRight, BarChart3, CheckCircle2, Radio, TrendingUp } from "lucide-react";
 import { SalonSidebar } from "@/components/dashboard/SalonSidebar";
+import { getLang, EMPLOYMENT_TYPE_LABEL, getLabel } from "@/lib/labels";
 
 export default async function SalonDashboardPage({
   params,
@@ -22,6 +23,7 @@ export default async function SalonDashboardPage({
 
   const t = await getTranslations("dashboard.salon");
   const tCommon = await getTranslations("dashboard");
+  const lang = getLang(locale);
 
   const salon = await prisma.salonProfile.findUnique({
     where: { userId: session.user.id },
@@ -39,6 +41,37 @@ export default async function SalonDashboardPage({
 
   if (!salon) notFound();
 
+  // Performance stats — counts across ALL shifts, not just latest 5
+  const [totalPosted, filledCount, completedCount, publishedCount, lastFilled] = await Promise.all([
+    prisma.shiftPost.count({ where: { salonId: salon.id } }),
+    prisma.shiftPost.count({ where: { salonId: salon.id, status: "FILLED" } }),
+    prisma.shiftPost.count({ where: { salonId: salon.id, status: "COMPLETED" } }),
+    prisma.shiftPost.count({ where: { salonId: salon.id, status: "PUBLISHED" } }),
+    prisma.shiftPost.findFirst({
+      where: { salonId: salon.id, status: { in: ["FILLED", "COMPLETED"] }, filledAt: { not: null } },
+      orderBy: { filledAt: "desc" },
+      select: { publishedAt: true, filledAt: true },
+    }),
+  ]);
+
+  const filledOrCompleted = filledCount + completedCount;
+  const fillRate = totalPosted > 0 ? Math.round((filledOrCompleted / totalPosted) * 100) : 0;
+
+  // Time-to-fill for the most recent filled shift
+  let fillTimeLabel: string | null = null;
+  if (lastFilled?.publishedAt && lastFilled.filledAt) {
+    const diffMs = lastFilled.filledAt.getTime() - lastFilled.publishedAt.getTime();
+    const diffHours = Math.round(diffMs / (1000 * 60 * 60));
+    if (diffHours < 1) {
+      fillTimeLabel = lang === "fr" ? "moins d'1 heure" : "less than 1 hour";
+    } else if (diffHours < 24) {
+      fillTimeLabel = lang === "fr" ? `${diffHours} heure${diffHours > 1 ? "s" : ""}` : `${diffHours} hour${diffHours > 1 ? "s" : ""}`;
+    } else {
+      const days = Math.round(diffHours / 24);
+      fillTimeLabel = lang === "fr" ? `${days} jour${days > 1 ? "s" : ""}` : `${days} day${days > 1 ? "s" : ""}`;
+    }
+  }
+
   return (
     <div className="flex min-h-screen bg-muted/40">
       <SalonSidebar locale={locale} salonName={salon.name} />
@@ -47,7 +80,7 @@ export default async function SalonDashboardPage({
         <div className="max-w-5xl mx-auto space-y-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold">{tCommon("welcome")}, {salon.name} 👋</h1>
+              <h1 className="text-2xl font-bold text-[#1F2933]">{tCommon("welcome")}, {salon.name} 👋</h1>
               <p className="text-muted-foreground text-sm mt-0.5">{t("title")}</p>
             </div>
             <div className="flex gap-2">
@@ -85,9 +118,57 @@ export default async function SalonDashboardPage({
             <StatCard
               icon={<CreditCard className="h-5 w-5 text-primary" />}
               label={t("subscription")}
-              value={<PlanBadge plan={salon.subscriptionPlan} status={salon.subscriptionStatus} />}
+              value={<PlanBadge planKey={salon.planKey} />}
             />
           </div>
+
+          {/* ── Performance widget ── */}
+          <section>
+            <h2 className="text-lg font-semibold mb-3">
+              {lang === "fr" ? "État de vos remplacements" : "Shift Performance"}
+            </h2>
+            {totalPosted === 0 ? (
+              <Card className="border-dashed shadow-none">
+                <CardContent className="py-8 text-center text-muted-foreground text-sm">
+                  {lang === "fr"
+                    ? "Aucun remplacement publié pour le moment."
+                    : "No shifts posted yet."}
+                </CardContent>
+              </Card>
+            ) : (
+              <>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <StatCard
+                    icon={<BarChart3 className="h-5 w-5 text-primary" />}
+                    label={lang === "fr" ? "Publiés" : "Posted"}
+                    value={totalPosted}
+                  />
+                  <StatCard
+                    icon={<CheckCircle2 className="h-5 w-5 text-emerald-500" />}
+                    label={lang === "fr" ? "Comblés" : "Filled"}
+                    value={filledOrCompleted}
+                  />
+                  <StatCard
+                    icon={<Radio className="h-5 w-5 text-blue-500" />}
+                    label={lang === "fr" ? "Actifs" : "Active"}
+                    value={publishedCount}
+                  />
+                  <StatCard
+                    icon={<TrendingUp className="h-5 w-5 text-amber-500" />}
+                    label={lang === "fr" ? "Taux de comblement" : "Fill rate"}
+                    value={`${fillRate} %`}
+                  />
+                </div>
+                {fillTimeLabel && (
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {lang === "fr"
+                      ? `Votre dernier remplacement a été comblé en ${fillTimeLabel}.`
+                      : `Your last shift was filled in ${fillTimeLabel}.`}
+                  </p>
+                )}
+              </>
+            )}
+          </section>
 
           <Separator />
 
@@ -108,7 +189,7 @@ export default async function SalonDashboardPage({
                   const pendingCount = shift._count.applications;
                   return (
                     <Link key={shift.id} href={`/${locale}/dashboard/salon/shifts/${shift.id}`}>
-                      <Card className="border shadow-none hover:shadow-sm transition-shadow cursor-pointer">
+                      <Card className={`border shadow-none hover:shadow-sm transition-shadow cursor-pointer ${shift.isUrgent ? "border-destructive/40" : ""}`}>
                         <CardContent className="py-4 px-5 flex items-center justify-between gap-4">
                           <div className="flex-1 min-w-0">
                             <p className="font-medium truncate">
@@ -118,7 +199,10 @@ export default async function SalonDashboardPage({
                               {shift.startTime} · {shift.numberOfAppointments} rdv
                               {pendingCount > 0 && (
                                 <span className="ml-2 text-primary font-medium">
-                                  {pendingCount} candidature{pendingCount !== 1 ? "s" : ""}
+                                  {pendingCount}{" "}
+                                  {lang === "fr"
+                                    ? `candidature${pendingCount !== 1 ? "s" : ""}`
+                                    : `applicant${pendingCount !== 1 ? "s" : ""}`}
                                 </span>
                               )}
                             </p>
@@ -159,7 +243,7 @@ export default async function SalonDashboardPage({
                         <div className="flex-1 min-w-0">
                           <p className="font-medium truncate">{job.title}</p>
                           <p className="text-sm text-muted-foreground mt-0.5">
-                            {job.city} · {job.employmentType.replace("_", " ")}
+                            {job.city} · {getLabel(EMPLOYMENT_TYPE_LABEL, job.employmentType, lang)}
                           </p>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
@@ -195,14 +279,17 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
   );
 }
 
-function PlanBadge({ plan, status }: { plan: string; status: string }) {
-  const active = status === "ACTIVE";
-  if (plan === "NONE" || !active) return <span className="text-muted-foreground text-sm">—</span>;
-  return (
-    <Badge className="text-sm" variant={plan === "PRO" ? "default" : "secondary"}>
-      {plan}
-    </Badge>
-  );
+function PlanBadge({ planKey }: { planKey: string }) {
+  const labels: Record<string, string> = {
+    ESSENTIEL: "Essentiel",
+    SALON:     "Salon",
+    RESEAU:    "Réseau",
+    CHAINE:    "Chaîne",
+  };
+  if (planKey === "NONE" || !labels[planKey]) {
+    return <span className="text-muted-foreground text-sm">—</span>;
+  }
+  return <Badge className="text-sm">{labels[planKey]}</Badge>;
 }
 
 function StatusBadge({ status, locale }: { status: string; locale: string }) {
@@ -210,6 +297,7 @@ function StatusBadge({ status, locale }: { status: string; locale: string }) {
     DRAFT:     { label: { fr: "Brouillon", en: "Draft" },     variant: "outline" },
     PUBLISHED: { label: { fr: "Publié",    en: "Published" }, variant: "default" },
     FILLED:    { label: { fr: "Comblé",    en: "Filled" },    variant: "secondary" },
+    COMPLETED: { label: { fr: "Complété",  en: "Completed" }, variant: "default" },
     ARCHIVED:  { label: { fr: "Archivé",   en: "Archived" },  variant: "outline" },
   };
   const item = map[status] ?? map.DRAFT;

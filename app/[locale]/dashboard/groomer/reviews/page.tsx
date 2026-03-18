@@ -20,6 +20,7 @@ export default async function GroomerReviewsPage({
 
   const t = await getTranslations("dashboard.groomer");
   const tDashboard = await getTranslations("dashboard");
+  const tReviews = await getTranslations("reviews");
 
   const groomer = await prisma.groomerProfile.findUnique({
     where: { userId: session.user.id },
@@ -51,7 +52,7 @@ export default async function GroomerReviewsPage({
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold">
+              <h1 className="text-2xl font-bold text-[#1F2933]">
                 {tDashboard("welcome")}, {groomer.fullName} 👋
               </h1>
               <p className="text-muted-foreground text-sm mt-0.5">

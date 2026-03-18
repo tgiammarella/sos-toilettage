@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ applicationId: string }> }
 ) {
+  const limited = await checkRateLimit(req, "moderate");
+  if (limited) return limited;
+
   const session = await auth();
   if (!session || session.user.role !== "SALON") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

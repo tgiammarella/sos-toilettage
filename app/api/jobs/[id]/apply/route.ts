@@ -3,6 +3,7 @@ import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { notifyJobApplicationReceived } from "@/lib/notifications";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const ApplySchema = z.object({
   message: z.string().max(500).optional(),
@@ -13,6 +14,9 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const limited = await checkRateLimit(req, "moderate");
+  if (limited) return limited;
+
   const session = await auth();
   if (!session || session.user.role !== "GROOMER") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -58,17 +62,25 @@ export async function POST(
     return NextResponse.json({ error: "Validation error", issues: parsed.error.flatten() }, { status: 422 });
   }
 
-  const application = await prisma.application.create({
-    data: {
-      postType: "JOB",
-      jobPostId: jobId,
-      salonId: job.salon.id,
-      groomerId: groomer.id,
-      status: "APPLIED",
-      message: parsed.data.message,
-      availabilityDates: parsed.data.availabilityDates,
-    },
-  });
+  let application;
+  try {
+    application = await prisma.application.create({
+      data: {
+        postType: "JOB",
+        jobPostId: jobId,
+        salonId: job.salon.id,
+        groomerId: groomer.id,
+        status: "APPLIED",
+        message: parsed.data.message,
+        availabilityDates: parsed.data.availabilityDates,
+      },
+    });
+  } catch (e: unknown) {
+    if ((e as { code?: string })?.code === "P2002") {
+      return NextResponse.json({ error: "ALREADY_APPLIED" }, { status: 409 });
+    }
+    throw e;
+  }
 
   const salonUser = await prisma.user.findUnique({
     where: { id: job.salon.userId },
@@ -82,7 +94,8 @@ export async function POST(
         salonName: job.salon.name,
         groomerName: groomer.fullName,
         jobTitle: job.title,
-        jobCity: job.city, // city exists on JobPost
+        jobCity: job.city,
+        jobId,
       });
     } catch (err) {
       console.error("Notification failed", err);

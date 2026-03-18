@@ -36,7 +36,7 @@ export default async function NewShiftPage({
                 <ArrowLeft className="h-4 w-4 mr-1" /> Retour
               </Link>
             </Button>
-            <h1 className="text-2xl font-bold">Publier un remplacement</h1>
+            <h1 className="text-2xl font-bold text-[#1F2933]">Publier un remplacement</h1>
             <p className="text-muted-foreground text-sm mt-1">
               Remplissez les informations ci-dessous. La publication consommera 1 crédit.
             </p>

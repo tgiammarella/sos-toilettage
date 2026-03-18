@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const SPECIALIZATIONS = [
   "AGGRESSIVE_DOGS",
@@ -21,6 +22,9 @@ const Schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const limited = await checkRateLimit(req, "moderate");
+  if (limited) return limited;
+
   const session = await auth();
   if (!session || session.user.role !== "GROOMER") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

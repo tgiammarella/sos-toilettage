@@ -44,6 +44,7 @@ async function main() {
       name: "Salon Canin Montréal",
       passwordHash: salon1Hash,
       role: Role.SALON,
+      emailVerified: new Date(),
     },
   });
   const salon1 = await prisma.salonProfile.upsert({
@@ -73,6 +74,7 @@ async function main() {
       name: "Toilettage Pro Québec",
       passwordHash: salon2Hash,
       role: Role.SALON,
+      emailVerified: new Date(),
     },
   });
   const salon2 = await prisma.salonProfile.upsert({
@@ -104,6 +106,7 @@ async function main() {
       name: "Marie Tremblay",
       passwordHash: groomer1Hash,
       role: Role.GROOMER,
+      emailVerified: new Date(),
     },
   });
   const groomer1 = await prisma.groomerProfile.upsert({
@@ -130,6 +133,7 @@ async function main() {
       name: "Sophie Gagnon",
       passwordHash: groomer2Hash,
       role: Role.GROOMER,
+      emailVerified: new Date(),
     },
   });
   const groomer2 = await prisma.groomerProfile.upsert({
@@ -173,7 +177,7 @@ async function main() {
         criteriaTags: JSON.stringify(["BIG_DOGS", "CATS"]),
         equipmentProvided: true,
         isUrgent: true,
-        urgentPurchasedAt: new Date(),
+        urgentActivatedAt: new Date(),
         status: ShiftStatus.PUBLISHED,
         publishedAt: new Date(),
         notes: "Remplacement urgent — toiletteuse absente pour maladie.",
@@ -299,7 +303,7 @@ async function main() {
         isActive: true,
       },
       {
-        type: TrainingType.TRAINING,
+        type: TrainingType.COURSE,
         name: "Formation Races Nordiques — Malamute & Husky",
         city: "Laval",
         region: "Laval",
@@ -309,7 +313,7 @@ async function main() {
         isActive: true,
       },
       {
-        type: TrainingType.TRAINING,
+        type: TrainingType.COURSE,
         name: "Gestion de l'anxiété chez l'animal — Toilettage sans stress",
         city: "Sherbrooke",
         region: "Estrie",
@@ -321,6 +325,24 @@ async function main() {
     ],
   });
   console.log("✅ Training listings created");
+
+  // ── Test coupons (upsert — safe to re-run) ────────────────────────────────
+  await prisma.coupon.upsert({
+    where: { code: "BIENVENUE25" },
+    update: {},
+    create: { code: "BIENVENUE25", type: "CREDITS", credits: 25, maxUses: 999 },
+  });
+  await prisma.coupon.upsert({
+    where: { code: "ESSENTIEL2025" },
+    update: {},
+    create: { code: "ESSENTIEL2025", type: "BOTH", credits: 5, planKey: "ESSENTIEL", maxUses: 100 },
+  });
+  await prisma.coupon.upsert({
+    where: { code: "SALON2025" },
+    update: {},
+    create: { code: "SALON2025", type: "PLAN", credits: 0, planKey: "SALON", maxUses: 50 },
+  });
+  console.log("✅ Coupons: BIENVENUE25 | ESSENTIEL2025 | SALON2025");
 
   console.log("\n🎉 Seed complete!");
   console.log("──────────────────────────────────────");

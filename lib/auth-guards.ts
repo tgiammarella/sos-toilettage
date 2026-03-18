@@ -13,7 +13,7 @@ import type { Session } from "next-auth";
 export async function requireRole(locale: string, role: string): Promise<Session> {
   const session = await auth();
 
-  if (!session) {
+  if (!session || !session.user.id) {
     redirect(`/${locale}/auth/login`);
   }
 

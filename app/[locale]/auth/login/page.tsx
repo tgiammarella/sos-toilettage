@@ -22,6 +22,8 @@ export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
+  const verified = searchParams.get("verified");
+  const error = searchParams.get("error");
   const [loading, setLoading] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
@@ -64,9 +66,31 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <Link href={`/${locale}`} className="inline-flex items-center gap-2 text-primary font-bold text-2xl">
             <Scissors className="h-6 w-6" />
-            SOS Toilettage
+            Tout Toilettage
           </Link>
         </div>
+
+        {verified === "true" && (
+          <div className="mb-4 rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-800 text-center">
+            {locale === "fr"
+              ? "Votre courriel a été vérifié avec succès. Vous pouvez maintenant vous connecter."
+              : "Your email has been verified successfully. You can now sign in."}
+          </div>
+        )}
+        {error === "token_expired" && (
+          <div className="mb-4 rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive text-center">
+            {locale === "fr"
+              ? "Le lien de vérification a expiré. Veuillez vous réinscrire."
+              : "The verification link has expired. Please register again."}
+          </div>
+        )}
+        {error === "invalid_token" && (
+          <div className="mb-4 rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive text-center">
+            {locale === "fr"
+              ? "Lien de vérification invalide."
+              : "Invalid verification link."}
+          </div>
+        )}
 
         <Card className="shadow-lg border border-border/80 bg-card/95">
           <CardHeader className="pb-4">
@@ -96,7 +120,12 @@ export default function LoginPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="password">{t("password")}</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password">{t("password")}</Label>
+                  <Link href={`/${locale}/auth/forgot-password`} className="text-xs text-primary hover:underline">
+                    {t("forgot_password_link")}
+                  </Link>
+                </div>
                 <Input
                   id="password"
                   type="password"

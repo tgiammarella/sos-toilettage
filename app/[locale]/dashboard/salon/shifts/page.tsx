@@ -67,9 +67,12 @@ export default async function SalonShiftsIndexPage({
         <div className="max-w-5xl mx-auto space-y-6">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold">{tDashboard("my_shifts")}</h1>
+              <h1 className="text-2xl font-bold text-[#1F2933]">{tDashboard("my_shifts")}</h1>
               <p className="text-sm text-muted-foreground">
-                {salon.shiftPosts.length} remplacement{salon.shiftPosts.length !== 1 ? "s" : ""}
+                {salon.shiftPosts.length}{" "}
+                {locale === "fr"
+                  ? `remplacement${salon.shiftPosts.length !== 1 ? "s" : ""}`
+                  : `shift${salon.shiftPosts.length !== 1 ? "s" : ""}`}
               </p>
             </div>
             <Button size="sm" asChild>
@@ -98,7 +101,7 @@ export default async function SalonShiftsIndexPage({
                 const payLabel =
                   shift.payType === "HOURLY"
                     ? `${(shift.payRateCents / 100).toFixed(2)} $ / h`
-                    : `${(shift.payRateCents / 100).toFixed(2)} $ (forfait)`;
+                    : `${(shift.payRateCents / 100).toFixed(2)} $ (${locale === "fr" ? "forfait" : "flat rate"})`;
 
                 return (
                   <Link
@@ -106,7 +109,7 @@ export default async function SalonShiftsIndexPage({
                     href={`/${locale}/dashboard/salon/shifts/${shift.id}`}
                     className="block"
                   >
-                    <Card className="border shadow-none hover:shadow-sm transition-shadow cursor-pointer">
+                    <Card className={`border shadow-none hover:shadow-sm transition-shadow cursor-pointer ${shift.isUrgent ? "border-destructive/40" : ""}`}>
                       <CardContent className="py-4 px-5 flex items-center justify-between gap-4">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -123,7 +126,10 @@ export default async function SalonShiftsIndexPage({
                             {shift.startTime} · {shift.numberOfAppointments} rdv · {payLabel}
                             {pending > 0 && (
                               <span className="ml-2 text-primary font-medium">
-                                {pending} candidature{pending !== 1 ? "s" : ""}
+                                {pending}{" "}
+                                {locale === "fr"
+                                  ? `candidature${pending !== 1 ? "s" : ""}`
+                                  : `applicant${pending !== 1 ? "s" : ""}`}
                               </span>
                             )}
                           </p>

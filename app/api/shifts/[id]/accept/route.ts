@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { notifyApplicationAccepted, notifyShiftFilled } from "@/lib/notifications";
+import { notifyApplicationAccepted, notifyApplicationRejected, notifyShiftFilled } from "@/lib/notifications";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const AcceptSchema = z.object({
   applicationId: z.string().min(1),
@@ -12,6 +13,9 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const limited = await checkRateLimit(req, "moderate");
+  if (limited) return limited;
+
   const session = await auth();
   if (!session || session.user.role !== "SALON") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -30,7 +34,7 @@ export async function POST(
 
   const shift = await prisma.shiftPost.findUnique({
     where: { id: shiftId },
-    select: { id: true, salonId: true, status: true, date: true, startTime: true },
+    select: { id: true, salonId: true, status: true, date: true, startTime: true, city: true },
   });
 
   if (!shift) {
@@ -122,7 +126,7 @@ export async function POST(
       salonAddress: salon.address,
       shiftDate,
       shiftTime: shift.startTime,
-    });
+    }).catch((err) => console.error("Notification failed", err));
   }
 
   if (salonUser?.email) {
@@ -131,7 +135,30 @@ export async function POST(
       salonName: salon.name,
       groomerName: groomerProfile?.fullName ?? "Toiletteur(se)",
       shiftDate,
-    });
+      shiftId,
+    }).catch((err) => console.error("Notification failed", err));
+  }
+
+  // Notify rejected groomers (fire-and-forget)
+  const rejectedApps = await prisma.application.findMany({
+    where: { shiftPostId: shiftId, status: "REJECTED" },
+    select: {
+      groomer: {
+        select: { fullName: true, user: { select: { email: true } } },
+      },
+    },
+  });
+
+  for (const app of rejectedApps) {
+    if (app.groomer.user.email) {
+      notifyApplicationRejected({
+        groomerEmail: app.groomer.user.email,
+        groomerName: app.groomer.fullName,
+        salonName: salon.name,
+        shiftDate,
+        shiftCity: shift.city,
+      }).catch((err) => console.error("Rejection notification failed", err));
+    }
   }
 
   return NextResponse.json({ engagement }, { status: 200 });

@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { notifyJobApplicationAccepted, notifyJobFilled } from "@/lib/notifications";
+import { notifyJobApplicationAccepted, notifyJobApplicationRejected, notifyJobFilled } from "@/lib/notifications";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string; applicationId: string }> }
 ) {
+  const limited = await checkRateLimit(req, "moderate");
+  if (limited) return limited;
+
   const session = await auth();
   if (!session || session.user.role !== "SALON") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -25,7 +29,7 @@ export async function POST(
 
   const job = await prisma.jobPost.findUnique({
     where: { id: jobId },
-    select: { id: true, salonId: true, status: true, title: true },
+    select: { id: true, salonId: true, status: true, title: true, city: true },
   });
 
   if (!job) {
@@ -114,9 +118,32 @@ export async function POST(
         salonName: salon.name,
         groomerName: groomerProfile?.fullName ?? "Toiletteur(se)",
         jobTitle: job.title,
+        jobId,
       });
     } catch (err) {
       console.error("Notification failed", err);
+    }
+  }
+
+  // Notify rejected groomers (fire-and-forget)
+  const rejectedApps = await prisma.application.findMany({
+    where: { jobPostId: jobId, status: "REJECTED" },
+    select: {
+      groomer: {
+        select: { fullName: true, user: { select: { email: true } } },
+      },
+    },
+  });
+
+  for (const app of rejectedApps) {
+    if (app.groomer.user.email) {
+      notifyJobApplicationRejected({
+        groomerEmail: app.groomer.user.email,
+        groomerName: app.groomer.fullName,
+        salonName: salon.name,
+        jobTitle: job.title,
+        jobCity: job.city,
+      }).catch((err) => console.error("Rejection notification failed", err));
     }
   }
 
