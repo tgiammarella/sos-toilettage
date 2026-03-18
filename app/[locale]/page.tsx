@@ -202,10 +202,23 @@ export default async function HomePage({
         <div className="container mx-auto px-4 flex flex-col items-center gap-3">
           <div className="flex items-center gap-4">
             <Link href={`/${locale}/contact`} className="hover:underline underline-offset-4">
-              {locale === "fr" ? "Contact" : "Contact"}
+              Contact
             </Link>
           </div>
-          <p>© {new Date().getFullYear()} Tout Toilettage. Tous droits réservés.</p>
+          <div className="flex items-center gap-2 text-xs text-[#4a6260]">
+            <Link href={`/${locale}/politique-confidentialite`} className="hover:underline underline-offset-4">
+              {locale === "fr" ? "Politique de confidentialité" : "Privacy Policy"}
+            </Link>
+            <span>·</span>
+            <Link href={`/${locale}/conditions-utilisation`} className="hover:underline underline-offset-4">
+              {locale === "fr" ? "Conditions d'utilisation" : "Terms of Service"}
+            </Link>
+            <span>·</span>
+            <Link href={`/${locale}/cookies`} className="hover:underline underline-offset-4">
+              Cookies
+            </Link>
+          </div>
+          <p className="text-xs">© {new Date().getFullYear()} ToutToilettage S.E.N.C. {locale === "fr" ? "Tous droits réservés." : "All rights reserved."}</p>
         </div>
       </footer>
     </div>
