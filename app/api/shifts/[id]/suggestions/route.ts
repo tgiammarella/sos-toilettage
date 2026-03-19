@@ -55,12 +55,12 @@ export async function GET(
     }
   })();
 
-  // Build where clause with optional filters
+  // Default to shift's region when no explicit filter — avoids fetching ALL groomers
   const where: Record<string, unknown> = {
     user: { isBanned: false },
+    region: regionFilter || shift.region,
   };
   if (availableToday === "true") where.availableToday = true;
-  if (regionFilter) where.region = regionFilter;
 
   const groomers = await prisma.groomerProfile.findMany({
     where,

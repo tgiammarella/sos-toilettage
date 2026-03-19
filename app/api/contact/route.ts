@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resend } from "@/lib/resend";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
+  const limited = await checkRateLimit(req, "strict");
+  if (limited) return limited;
+
   let body: { name?: string; email?: string; subject?: string; message?: string };
   try {
     body = await req.json();

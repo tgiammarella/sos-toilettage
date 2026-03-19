@@ -147,6 +147,101 @@ Keep responses concise and implementation-focused.
 
 ---
 
+## Partner Directory — Business Rules (Non-Negotiable)
+
+Partners are suppliers, brands, and service providers targeting grooming professionals.
+This system is completely separate from salon subscriptions and the credit system.
+Do not mix partner logic with SalonProfile, credits, or shift/job flows.
+
+### Partner Tiers
+
+| Tier | Price | Key Rules |
+|------|-------|-----------|
+| Découverte | FREE | Listed in directory. Must offer 10–15% member discount (required, enforced). |
+| Vedette | 29 $/month + taxes | Full profile + photos, priority placement, newsletter mentions. No discount required. |
+| Signature | 59 $/month + taxes | Everything in Vedette + top-of-category placement + priority access to future ad inventory. No discount required. Limited spots (admin-controlled cap). |
+
+Post-300-user price increase (grandfathered partners never pay this):
+- Vedette → 49 $/month
+- Signature → 99 $/month
+
+### Launch Pricing Lock Rule
+
+Partners who join before official launch keep their rate for life.
+This must be stored on the partner record:
+- `launchPricing Boolean @default(false)` — set to true if joined before launch
+- `lockedMonthlyRate Int` — store the rate in cents at time of signup
+- Never recalculate price from current tier pricing for grandfathered partners
+- Stripe subscription price_id must be pinned at signup, not dynamically looked up
+
+### Découverte Discount Enforcement
+
+- Partners on Découverte tier MUST provide a member discount of 10–15%
+- `memberDiscountPercent Int` — stored on PartnerProfile (must be 10–15 for Découverte)
+- Discount is displayed on their public profile and verified by admin at approval
+- If a Découverte partner removes their discount, flag for admin review
+
+### Partner Data Model (Required Fields)
+
+PartnerProfile needs at minimum:
+- tier: PartnerTier (DECOUVERTE | VEDETTE | SIGNATURE)
+- launchPricing: Boolean
+- lockedMonthlyRate: Int (cents)
+- memberDiscountPercent: Int? (required if DECOUVERTE)
+- isApproved: Boolean @default(false) — admin must approve before going live
+- isFeatured: Boolean @default(false) — admin-controlled
+- categorySlug: String — professional category for directory filtering
+- photos: String[] — up to 5 photos (Vedette+)
+- stripeCustomerId: String?
+- stripeSubscriptionId: String?
+
+### Partner Monetization Notes
+
+- Stripe not wired yet — V1 admin manually approves and tracks partners
+- When Stripe is wired: partners hit a separate /api/partners/billing endpoint
+- Newsletter mentions (Vedette+) are manually managed by admins — no automation in V1
+- Signature "limited spots" cap is enforced at the admin level, no automated waitlist in V1
+
+---
+
+## Training Ecosystem — Business Rules
+
+Schools and independent trainers are separate from salons, groomers, and partners.
+
+### School Tiers
+
+| Tier | Price | Key Rules |
+|------|-------|-----------|
+| Gratuit | FREE | Name + link in directory only. No graduate profiles. |
+| Partenaire | 49 $/month + taxes | Full profile, up to 20 graduate profiles, priority placement. Annual: 490 $/year. |
+| Élite | 99 $/month + taxes | Everything in Partenaire + unlimited graduates, auto-suggested to hiring salons, 1 newsletter mention/quarter, 1 Marie-Lou social post/quarter. Annual: 990 $/year. |
+
+No founding rates or scarcity language for schools. Standard pricing from day one.
+
+### Independent Trainers
+
+- Free forever — no subscription, no monthly fee
+- Month 1: Trainer receives leads directly, handles payment themselves. ToutToilettage takes 0%.
+- Month 2+: Stripe Connect, 10% commission per sale. Trainer receives 90% automatically.
+- Graduates (students of any trainer/school) never pay anything, ever.
+
+### Graduate Profiles
+
+- Graduates create a free profile with skills, region, availability
+- Visible to subscribed salons only (not public)
+- Schools on Partenaire can add up to 20 graduate profiles manually
+- Schools on Élite: unlimited, auto-suggested to salons hiring juniors
+- Graduates are never charged
+
+### V1 Build Priority
+
+1. Graduate profiles (20–50 min build, highest value signal)
+2. School directory
+3. Trainer listings (admin-managed leads in V1)
+4. Monetization via Stripe Connect (post-launch)
+
+---
+
 ## Audit Status — 2026-03-19
 
 Build status: PASS (zero TypeScript errors, 98 routes compiled)
@@ -154,7 +249,7 @@ Database: PostgreSQL (Neon) — migrated from SQLite, clean reset
 Deployment: Vercel — live
 Email: Verified domain (info@touttoilettage.com via Resend)
 
-### Fixed (from original audit)
+### Fixed
 
 1. ~~Job rejection email sends wrong data~~ — `notifyJobApplicationRejected()` created with correct fields
 2. ~~Job publish route has no payment enforcement~~ — Admin-only gate with 402 until Stripe
@@ -170,16 +265,13 @@ Email: Verified domain (info@touttoilettage.com via Resend)
 ### Remaining Issues
 
 #### Medium
-
-1. **Suggestions endpoint fetches ALL groomers**
-   `app/api/shifts/[id]/suggestions/route.ts` — no WHERE clause, fetches every groomer. Will degrade at scale.
+1. **Suggestions endpoint fetches ALL groomers** — `app/api/shifts/[id]/suggestions/route.ts` has no WHERE clause. Will degrade at scale.
 
 #### Low
-
-2. **Dead code** — `CardHeaderSimple` in `app/[locale]/dashboard/groomer/page.tsx` (unused, suppressed with void)
-3. **Hardcoded French strings** — Some strings in JobDecisionButtons, ShiftForm errors, groomer dashboard not going through next-intl
-4. **Missing rate limits** — shifts POST, reviews POST, jobs publish not rate-limited
-5. **Pagination** — shifts/jobs public listings load all results
+2. Dead code — `CardHeaderSimple` in groomer dashboard (unused, suppressed with void)
+3. Hardcoded French strings — JobDecisionButtons, ShiftForm errors, groomer dashboard not going through next-intl
+4. Missing rate limits — shifts POST, reviews POST, jobs publish not rate-limited
+5. Pagination — shifts/jobs public listings load all results
 
 ### What's Working
 
@@ -219,8 +311,11 @@ Email: Verified domain (info@touttoilettage.com via Resend)
 | # | Task | Effort |
 |---|------|--------|
 | 8 | Email verification flow for new accounts | Medium |
-| 9 | Featured job listings (isFeatured in schema, needs UI + pricing) | Medium |
-| 10 | Groomer availability calendar | Large |
-| 11 | Notification preferences | Medium |
-| 12 | Analytics dashboard for admins | Large |
-| 13 | Mobile-responsive sidebar | Medium |
+| 9 | Partner directory — full build (PartnerProfile schema, pages, admin approval flow) | Large |
+| 10 | Training ecosystem — school tiers, trainer listings, graduate profiles | Large |
+| 11 | Marketplace — full spec in ToutToilettage-Marketplace-Spec.docx | Large |
+| 12 | Featured job listings (isFeatured in schema, needs UI + pricing) | Medium |
+| 13 | Groomer availability calendar | Large |
+| 14 | Notification preferences | Medium |
+| 15 | Analytics dashboard for admins | Large |
+| 16 | Mobile-responsive sidebar | Medium |

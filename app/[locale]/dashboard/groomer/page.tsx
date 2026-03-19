@@ -6,7 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
@@ -524,9 +524,3 @@ function AppStatusBadge({ status, locale }: { status: string; locale: string }) 
   const item = map[status] ?? map.APPLIED;
   return <Badge variant={item.variant}>{item.label[locale] ?? status}</Badge>;
 }
-
-function CardHeaderSimple({ children }: { children: React.ReactNode }) {
-  return <CardHeader className="pb-2 pt-4 px-4">{children}</CardHeader>;
-}
-// suppress unused warning
-void CardHeaderSimple;
