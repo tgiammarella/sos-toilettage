@@ -18,38 +18,64 @@ type Partner = {
   name: string;
   taglineFr: string;
   taglineEn: string;
+  descriptionFr: string;
+  descriptionEn: string;
   website: string;
   logoUrl: string | null;
+  phone: string | null;
+  city: string;
+  region: string;
   category: string;
   tier: string;
   launchPricing: boolean;
   lockedMonthlyRate: number | null;
   memberDiscountPercent: number | null;
+  instagramUrl: string | null;
+  facebookUrl: string | null;
+  tiktokUrl: string | null;
+  photos: string;
+  tags: string;
+  bannerImageUrl: string | null;
   featured: boolean;
   isActive: boolean;
   isApproved: boolean;
   promoCode: string | null;
   promoDescFr: string | null;
   promoDescEn: string | null;
+  sponsoredContentNote: string | null;
+  mlCollabNote: string | null;
 };
 
 const EMPTY: Omit<Partner, "id"> = {
   name: "",
   taglineFr: "",
   taglineEn: "",
+  descriptionFr: "",
+  descriptionEn: "",
   website: "",
   logoUrl: null,
+  phone: null,
+  city: "",
+  region: "",
   category: "brand",
   tier: "DECOUVERTE",
   launchPricing: false,
   lockedMonthlyRate: null,
   memberDiscountPercent: null,
+  instagramUrl: null,
+  facebookUrl: null,
+  tiktokUrl: null,
+  photos: "[]",
+  tags: "[]",
+  bannerImageUrl: null,
   featured: false,
   isActive: true,
   isApproved: false,
   promoCode: null,
   promoDescFr: null,
   promoDescEn: null,
+  sponsoredContentNote: null,
+  mlCollabNote: null,
 };
 
 const CATEGORY_LABELS: Record<string, { fr: string; en: string }> = {
@@ -125,19 +151,32 @@ export function PartnersAdmin({ locale }: { locale: string }) {
       name: p.name,
       taglineFr: p.taglineFr,
       taglineEn: p.taglineEn,
+      descriptionFr: p.descriptionFr,
+      descriptionEn: p.descriptionEn,
       website: p.website,
       logoUrl: p.logoUrl,
+      phone: p.phone,
+      city: p.city,
+      region: p.region,
       category: p.category,
       tier: p.tier,
       launchPricing: p.launchPricing,
       lockedMonthlyRate: p.lockedMonthlyRate,
       memberDiscountPercent: p.memberDiscountPercent,
+      instagramUrl: p.instagramUrl,
+      facebookUrl: p.facebookUrl,
+      tiktokUrl: p.tiktokUrl,
+      photos: p.photos,
+      tags: p.tags,
+      bannerImageUrl: p.bannerImageUrl,
       featured: p.featured,
       isActive: p.isActive,
       isApproved: p.isApproved,
       promoCode: p.promoCode,
       promoDescFr: p.promoDescFr,
       promoDescEn: p.promoDescEn,
+      sponsoredContentNote: p.sponsoredContentNote,
+      mlCollabNote: p.mlCollabNote,
     });
   }
 
@@ -262,6 +301,89 @@ export function PartnersAdmin({ locale }: { locale: string }) {
                   onChange={(e) => setForm({ ...form, taglineEn: e.target.value })}
                 />
               </div>
+
+              {/* Contact */}
+              <div className="space-y-1.5">
+                <Label>{lang === "fr" ? "Ville" : "City"}</Label>
+                <Input
+                  value={form.city}
+                  onChange={(e) => setForm({ ...form, city: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>{lang === "fr" ? "Région" : "Region"}</Label>
+                <Input
+                  value={form.region}
+                  onChange={(e) => setForm({ ...form, region: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>{lang === "fr" ? "Téléphone" : "Phone"}</Label>
+                <Input
+                  value={form.phone ?? ""}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value || null })}
+                  placeholder="514-..."
+                />
+              </div>
+
+              {/* Descriptions */}
+              <div className="space-y-1.5 sm:col-span-2">
+                <Label>{lang === "fr" ? "Description complète (FR)" : "Full description (FR)"}</Label>
+                <textarea
+                  rows={3}
+                  value={form.descriptionFr}
+                  onChange={(e) => setForm({ ...form, descriptionFr: e.target.value })}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 resize-y"
+                />
+              </div>
+              <div className="space-y-1.5 sm:col-span-2">
+                <Label>{lang === "fr" ? "Description complète (EN)" : "Full description (EN)"}</Label>
+                <textarea
+                  rows={3}
+                  value={form.descriptionEn}
+                  onChange={(e) => setForm({ ...form, descriptionEn: e.target.value })}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 resize-y"
+                />
+              </div>
+
+              {/* Social links */}
+              <div className="space-y-1.5">
+                <Label>Instagram</Label>
+                <Input
+                  value={form.instagramUrl ?? ""}
+                  onChange={(e) => setForm({ ...form, instagramUrl: e.target.value || null })}
+                  placeholder="https://instagram.com/..."
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Facebook</Label>
+                <Input
+                  value={form.facebookUrl ?? ""}
+                  onChange={(e) => setForm({ ...form, facebookUrl: e.target.value || null })}
+                  placeholder="https://facebook.com/..."
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>TikTok</Label>
+                <Input
+                  value={form.tiktokUrl ?? ""}
+                  onChange={(e) => setForm({ ...form, tiktokUrl: e.target.value || null })}
+                  placeholder="https://tiktok.com/@..."
+                />
+              </div>
+
+              {/* Tags */}
+              <div className="space-y-1.5 sm:col-span-2">
+                <Label>{lang === "fr" ? "Tags (séparés par virgule)" : "Tags (comma-separated)"}</Label>
+                <Input
+                  value={(() => { try { const t = JSON.parse(form.tags || "[]"); return Array.isArray(t) ? t.join(", ") : ""; } catch { return form.tags; } })()}
+                  onChange={(e) => {
+                    const arr = e.target.value.split(",").map(t => t.trim()).filter(Boolean);
+                    setForm({ ...form, tags: JSON.stringify(arr) });
+                  }}
+                  placeholder="Toilettage, Produits, etc."
+                />
+              </div>
               <div className="space-y-1.5 sm:col-span-2">
                 <Label>{lang === "fr" ? "Logo" : "Logo"}</Label>
                 <div className="flex items-center gap-4">
@@ -355,6 +477,31 @@ export function PartnersAdmin({ locale }: { locale: string }) {
                 <Input
                   value={form.promoDescEn ?? ""}
                   onChange={(e) => setForm({ ...form, promoDescEn: e.target.value || null })}
+                />
+              </div>
+            </div>
+
+            {/* Internal notes (admin only) */}
+            <div className="rounded-lg border border-amber-200 bg-amber-50/50 p-4 space-y-3">
+              <p className="text-xs font-semibold text-amber-700">
+                {lang === "fr" ? "Notes internes (jamais affichées publiquement)" : "Internal notes (never displayed publicly)"}
+              </p>
+              <div className="space-y-1.5">
+                <Label className="text-xs">{lang === "fr" ? "Note contenu sponsorisé" : "Sponsored content note"}</Label>
+                <textarea
+                  rows={2}
+                  value={form.sponsoredContentNote ?? ""}
+                  onChange={(e) => setForm({ ...form, sponsoredContentNote: e.target.value || null })}
+                  className="w-full rounded-md border border-input bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 resize-y"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">{lang === "fr" ? "Note collaboration ML" : "ML collaboration note"}</Label>
+                <textarea
+                  rows={2}
+                  value={form.mlCollabNote ?? ""}
+                  onChange={(e) => setForm({ ...form, mlCollabNote: e.target.value || null })}
+                  className="w-full rounded-md border border-input bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 resize-y"
                 />
               </div>
             </div>

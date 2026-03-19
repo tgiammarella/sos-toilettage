@@ -7,19 +7,32 @@ const PartnerSchema = z.object({
   name: z.string().min(1).max(200),
   taglineFr: z.string().max(500).default(""),
   taglineEn: z.string().max(500).default(""),
+  descriptionFr: z.string().max(5000).default(""),
+  descriptionEn: z.string().max(5000).default(""),
   website: z.string().max(500).default(""),
   logoUrl: z.string().max(500).nullable().optional(),
+  phone: z.string().max(50).nullable().optional(),
+  city: z.string().max(200).default(""),
+  region: z.string().max(200).default(""),
   category: z.enum(["brand", "school", "tech", "industry"]).default("brand"),
   tier: z.enum(["DECOUVERTE", "VEDETTE", "SIGNATURE"]).default("DECOUVERTE"),
   launchPricing: z.boolean().default(false),
   lockedMonthlyRate: z.number().int().nullable().optional(),
   memberDiscountPercent: z.number().int().min(10).max(15).nullable().optional(),
+  instagramUrl: z.string().max(500).nullable().optional(),
+  facebookUrl: z.string().max(500).nullable().optional(),
+  tiktokUrl: z.string().max(500).nullable().optional(),
+  photos: z.string().default("[]"),
+  tags: z.string().default("[]"),
+  bannerImageUrl: z.string().max(500).nullable().optional(),
   featured: z.boolean().default(false),
   isActive: z.boolean().default(true),
   isApproved: z.boolean().default(false),
   promoCode: z.string().max(100).nullable().optional(),
   promoDescFr: z.string().max(300).nullable().optional(),
   promoDescEn: z.string().max(300).nullable().optional(),
+  sponsoredContentNote: z.string().max(2000).nullable().optional(),
+  mlCollabNote: z.string().max(2000).nullable().optional(),
 });
 
 // GET — list all partners (admin only)
@@ -30,6 +43,7 @@ export async function GET() {
   }
 
   const partners = await prisma.partner.findMany({
+    where: { deletedAt: null },
     orderBy: [{ featured: "desc" }, { name: "asc" }],
   });
 

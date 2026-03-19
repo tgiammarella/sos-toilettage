@@ -517,23 +517,39 @@ model TrainingListing {
 // ─── Partners ─────────────────────────────────────────────────────────────────
 
 model Partner {
-  id                    String   @id @default(cuid())
+  id                    String    @id @default(cuid())
   name                  String
-  taglineFr             String   @default("")
-  taglineEn             String   @default("")
-  website               String   @default("")
+  taglineFr             String    @default("")
+  taglineEn             String    @default("")
+  descriptionFr         String    @default("")
+  descriptionEn         String    @default("")
+  website               String    @default("")
   logoUrl               String?
-  category              String   @default("brand") // brand | school | tech | industry
-  tier                  String   @default("DECOUVERTE") // DECOUVERTE | VEDETTE | SIGNATURE
-  launchPricing         Boolean  @default(false)
-  lockedMonthlyRate     Int?     // cents — pinned at signup for grandfathered partners
-  memberDiscountPercent Int?     // 10-15 required for DECOUVERTE
-  featured              Boolean  @default(false)
-  isActive              Boolean  @default(true)
-  isApproved            Boolean  @default(false)
+  phone                 String?
+  city                  String    @default("")
+  region                String    @default("")
+  category              String    @default("brand") // brand | school | tech | industry
+  tier                  String    @default("DECOUVERTE") // DECOUVERTE | VEDETTE | SIGNATURE
+  launchPricing         Boolean   @default(false)
+  lockedMonthlyRate     Int?      // cents — pinned at signup for grandfathered partners
+  memberDiscountPercent Int?      // 10-15 required for DECOUVERTE
+  instagramUrl          String?
+  facebookUrl           String?
+  tiktokUrl             String?
+  photos                String    @default("[]") // JSON string array of URLs
+  tags                  String    @default("[]") // JSON string array
+  bannerImageUrl        String?
+  viewCount             Int       @default(0)
+  featured              Boolean   @default(false)
+  isActive              Boolean   @default(true)
+  isApproved            Boolean   @default(false)
   promoCode             String?
   promoDescFr           String?
   promoDescEn           String?
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  sponsoredContentNote  String?   // admin-only — never expose publicly
+  mlCollabNote          String?   // admin-only — never expose publicly
+  deletedAt             DateTime? // soft delete for Stripe billing disputes
+  // Stripe fields — add Monday
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 }

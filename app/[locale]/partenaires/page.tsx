@@ -3,10 +3,9 @@ export const dynamic = "force-dynamic";
 import { getTranslations } from "next-intl/server";
 import { Navbar } from "@/components/nav/Navbar";
 import { getPartners } from "@/lib/partners";
-import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import Image from "next/image";
+import { PartnerDirectory } from "@/components/partners/PartnerDirectory";
 
 export default async function PartenairesPage({
   params,
@@ -15,7 +14,6 @@ export default async function PartenairesPage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "partners" });
-  const lang = locale === "en" ? "en" : "fr";
   const partners = await getPartners();
 
   return (
@@ -26,73 +24,18 @@ export default async function PartenairesPage({
         <section className="py-16 md:py-20">
           <div className="container mx-auto px-4 max-w-5xl text-center">
             <h1 className="text-3xl md:text-4xl font-bold text-[#1F2933] mb-4">
-              {t("title")}
+              {t("directory_title")}
             </h1>
             <p className="text-lg text-[#4a6260] max-w-2xl mx-auto">
-              {t("subtitle")}
+              {t("directory_subtitle")}
             </p>
           </div>
         </section>
 
-        {/* Partner cards */}
+        {/* Directory with client-side filtering */}
         <section className="pb-16">
-          <div className="container mx-auto px-4 max-w-5xl">
-            {partners.length === 0 ? (
-              <p className="text-center text-[#4a6260] text-sm">
-                {t("no_partners")}
-              </p>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {partners.map((partner) => (
-                  <div
-                    key={partner.id}
-                    className="bg-white border border-[#CBBBA6] rounded-lg p-6 flex flex-col"
-                  >
-                    {partner.logoUrl && (
-                      <div className="flex items-center justify-center h-16 mb-4">
-                        <Image
-                          src={partner.logoUrl}
-                          alt={partner.name}
-                          width={120}
-                          height={60}
-                          className="max-h-[60px] w-auto object-contain"
-                        />
-                      </div>
-                    )}
-                    <h3 className="text-base font-semibold text-[#1F2933] mb-1">
-                      {partner.name}
-                    </h3>
-                    <p className="text-sm text-[#4a6260] mb-4 flex-1">
-                      {lang === "fr" ? partner.taglineFr : partner.taglineEn}
-                    </p>
-                    {partner.promoCode && (
-                      <div className="mb-4">
-                        <div className="rounded-md bg-[#F6EFE6] text-[#055864] px-3 py-2 text-xs">
-                          <span className="font-bold">{partner.promoCode}</span>
-                          {(lang === "fr" ? partner.promoDescFr : partner.promoDescEn) && (
-                            <>
-                              {" — "}
-                              {lang === "fr" ? partner.promoDescFr : partner.promoDescEn}
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                    {partner.website && (
-                      <a
-                        href={partner.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-sm font-medium text-[#055864] hover:underline underline-offset-4"
-                      >
-                        <ExternalLink className="h-3.5 w-3.5" />
-                        {t("visit_site")}
-                      </a>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+          <div className="container mx-auto px-4 max-w-6xl">
+            <PartnerDirectory partners={partners} locale={locale} />
           </div>
         </section>
 

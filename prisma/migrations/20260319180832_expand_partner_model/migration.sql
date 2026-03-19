@@ -1,0 +1,16 @@
+-- AlterTable
+ALTER TABLE "Partner" ADD COLUMN     "bannerImageUrl" TEXT,
+ADD COLUMN     "city" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "deletedAt" TIMESTAMP(3),
+ADD COLUMN     "descriptionEn" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "descriptionFr" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "facebookUrl" TEXT,
+ADD COLUMN     "instagramUrl" TEXT,
+ADD COLUMN     "mlCollabNote" TEXT,
+ADD COLUMN     "phone" TEXT,
+ADD COLUMN     "photos" TEXT NOT NULL DEFAULT '[]',
+ADD COLUMN     "region" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "sponsoredContentNote" TEXT,
+ADD COLUMN     "tags" TEXT NOT NULL DEFAULT '[]',
+ADD COLUMN     "tiktokUrl" TEXT,
+ADD COLUMN     "viewCount" INTEGER NOT NULL DEFAULT 0;
