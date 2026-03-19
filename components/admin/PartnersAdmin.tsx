@@ -122,6 +122,44 @@ export function PartnersAdmin({ locale }: { locale: string }) {
     },
   });
 
+  const [uploadingPhotos, setUploadingPhotos] = useState(false);
+  const photosInputRef = useRef<HTMLInputElement>(null);
+  const bannerInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingBanner, setUploadingBanner] = useState(false);
+
+  const { startUpload: startPhotoUpload } = useUploadThing("partnerPhotos", {
+    onClientUploadComplete: (res) => {
+      if (res?.length) {
+        const currentPhotos: string[] = (() => {
+          try { const p = JSON.parse(form.photos || "[]"); return Array.isArray(p) ? p : []; }
+          catch { return []; }
+        })();
+        const newUrls = res.map(r => r.ufsUrl);
+        setForm((prev) => ({ ...prev, photos: JSON.stringify([...currentPhotos, ...newUrls]) }));
+        toast.success(lang === "fr" ? `${res.length} photo(s) ajoutée(s)` : `${res.length} photo(s) added`);
+      }
+      setUploadingPhotos(false);
+    },
+    onUploadError: (err) => {
+      toast.error(err.message || (lang === "fr" ? "Échec du téléversement" : "Upload failed"));
+      setUploadingPhotos(false);
+    },
+  });
+
+  const { startUpload: startBannerUpload } = useUploadThing("partnerPhotos", {
+    onClientUploadComplete: (res) => {
+      if (res?.[0]) {
+        setForm((prev) => ({ ...prev, bannerImageUrl: res[0].ufsUrl }));
+        toast.success(lang === "fr" ? "Bannière téléversée" : "Banner uploaded");
+      }
+      setUploadingBanner(false);
+    },
+    onUploadError: (err) => {
+      toast.error(err.message || (lang === "fr" ? "Échec du téléversement" : "Upload failed"));
+      setUploadingBanner(false);
+    },
+  });
+
   function handleLogoFile(file: File) {
     if (!file.type.startsWith("image/") || file.size > 4 * 1024 * 1024) {
       toast.error(lang === "fr" ? "Image uniquement, max 4 Mo" : "Image only, max 4 MB");
@@ -465,6 +503,167 @@ export function PartnersAdmin({ locale }: { locale: string }) {
                   }}
                 />
               </div>
+
+              {/* Photo gallery (Vedette + Signature) */}
+              {(form.tier === "VEDETTE" || form.tier === "SIGNATURE") && (
+                <div className="space-y-2 sm:col-span-2">
+                  <div className="flex items-center justify-between">
+                    <Label>
+                      {lang === "fr" ? "Photos" : "Photos"}
+                      <span className="text-xs text-[#4a6260] ml-1.5">
+                        ({form.tier === "SIGNATURE" ? "max 10" : "max 5"})
+                      </span>
+                    </Label>
+                    {(() => {
+                      const currentPhotos: string[] = (() => {
+                        try { const p = JSON.parse(form.photos || "[]"); return Array.isArray(p) ? p : []; }
+                        catch { return []; }
+                      })();
+                      const max = form.tier === "SIGNATURE" ? 10 : 5;
+                      return currentPhotos.length < max ? (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          disabled={uploadingPhotos}
+                          onClick={() => photosInputRef.current?.click()}
+                        >
+                          {uploadingPhotos ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" /> : <Plus className="h-3.5 w-3.5 mr-1" />}
+                          {lang === "fr" ? "Ajouter" : "Add"}
+                        </Button>
+                      ) : null;
+                    })()}
+                  </div>
+                  {(() => {
+                    const currentPhotos: string[] = (() => {
+                      try { const p = JSON.parse(form.photos || "[]"); return Array.isArray(p) ? p : []; }
+                      catch { return []; }
+                    })();
+                    return currentPhotos.length > 0 ? (
+                      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                        {currentPhotos.map((url, i) => (
+                          <div key={i} className="relative aspect-square rounded-lg border border-[#CBBBA6] overflow-hidden group">
+                            <Image src={url} alt="" fill className="object-cover" />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = currentPhotos.filter((_, idx) => idx !== i);
+                                setForm({ ...form, photos: JSON.stringify(updated) });
+                              }}
+                              className="absolute top-1 right-1 h-5 w-5 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div
+                        onClick={() => !uploadingPhotos && photosInputRef.current?.click()}
+                        className="h-24 rounded-lg border-2 border-dashed border-[#CBBBA6] flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-[#055864] hover:bg-[#055864]/5 transition-colors"
+                      >
+                        {uploadingPhotos ? (
+                          <Loader2 className="h-5 w-5 text-[#055864] animate-spin" />
+                        ) : (
+                          <>
+                            <ImageIcon className="h-5 w-5 text-[#4a6260]" />
+                            <span className="text-xs text-[#4a6260]">
+                              {lang === "fr" ? "Ajouter des photos" : "Add photos"}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    );
+                  })()}
+                  <input
+                    ref={photosInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => {
+                      const files = e.target.files;
+                      if (files?.length) {
+                        const currentPhotos: string[] = (() => {
+                          try { const p = JSON.parse(form.photos || "[]"); return Array.isArray(p) ? p : []; }
+                          catch { return []; }
+                        })();
+                        const max = form.tier === "SIGNATURE" ? 10 : 5;
+                        const remaining = max - currentPhotos.length;
+                        const toUpload = Array.from(files).slice(0, remaining);
+                        if (toUpload.length > 0) {
+                          setUploadingPhotos(true);
+                          startPhotoUpload(toUpload);
+                        }
+                      }
+                      e.target.value = "";
+                    }}
+                  />
+                </div>
+              )}
+
+              {/* Banner image (Signature only) */}
+              {form.tier === "SIGNATURE" && (
+                <div className="space-y-2 sm:col-span-2">
+                  <Label>{lang === "fr" ? "Image bannière" : "Banner image"}</Label>
+                  {form.bannerImageUrl ? (
+                    <div className="relative h-32 w-full rounded-lg border border-[#CBBBA6] overflow-hidden">
+                      <Image src={form.bannerImageUrl} alt="" fill className="object-cover" />
+                      <div className="absolute top-2 right-2 flex gap-1">
+                        <button
+                          type="button"
+                          onClick={() => !uploadingBanner && bannerInputRef.current?.click()}
+                          className="h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80"
+                        >
+                          <Pencil className="h-3 w-3" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setForm({ ...form, bannerImageUrl: null })}
+                          className="h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => !uploadingBanner && bannerInputRef.current?.click()}
+                      className="h-24 rounded-lg border-2 border-dashed border-[#CBBBA6] flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-[#055864] hover:bg-[#055864]/5 transition-colors"
+                    >
+                      {uploadingBanner ? (
+                        <Loader2 className="h-5 w-5 text-[#055864] animate-spin" />
+                      ) : (
+                        <>
+                          <ImageIcon className="h-5 w-5 text-[#4a6260]" />
+                          <span className="text-xs text-[#4a6260]">
+                            {lang === "fr" ? "Ajouter une bannière" : "Add banner"}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  )}
+                  <input
+                    ref={bannerInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        if (!file.type.startsWith("image/") || file.size > 4 * 1024 * 1024) {
+                          toast.error(lang === "fr" ? "Image uniquement, max 4 Mo" : "Image only, max 4 MB");
+                          return;
+                        }
+                        setUploadingBanner(true);
+                        startBannerUpload([file]);
+                      }
+                      e.target.value = "";
+                    }}
+                  />
+                </div>
+              )}
+
               <div className="space-y-1.5">
                 <Label>{lang === "fr" ? "Catégorie" : "Category"}</Label>
                 <select
