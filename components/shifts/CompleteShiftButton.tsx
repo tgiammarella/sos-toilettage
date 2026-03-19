@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
@@ -11,8 +12,9 @@ interface Props {
   locale: string;
 }
 
-export function CompleteShiftButton({ shiftId, locale }: Props) {
+export function CompleteShiftButton({ shiftId }: Props) {
   const router = useRouter();
+  const t = useTranslations("ui");
   const [confirming, setConfirming] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -25,25 +27,15 @@ export function CompleteShiftButton({ shiftId, locale }: Props) {
         const body = await res.json().catch(() => ({}));
         const code = (body as { error?: string }).error;
         if (code === "TOO_EARLY") {
-          toast.error(
-            locale === "fr"
-              ? "Le remplacement ne peut pas être complété avant l'heure prévue."
-              : "The shift cannot be completed before the scheduled time.",
-          );
+          toast.error(t("shift_too_early"));
         } else {
-          toast.error(
-            locale === "fr" ? "Une erreur est survenue." : "An error occurred.",
-          );
+          toast.error(t("error_generic"));
         }
         setConfirming(false);
         return;
       }
 
-      toast.success(
-        locale === "fr"
-          ? "Remplacement marqué comme complété !"
-          : "Shift marked as completed!",
-      );
+      toast.success(t("shift_completed"));
       router.refresh();
     } finally {
       setLoading(false);
@@ -55,9 +47,7 @@ export function CompleteShiftButton({ shiftId, locale }: Props) {
     return (
       <Button size="sm" variant="outline" onClick={() => setConfirming(true)}>
         <CheckCircle2 className="h-4 w-4 mr-1.5" />
-        {locale === "fr"
-          ? "Confirmer que le remplacement a été complété"
-          : "Confirm shift was completed"}
+        {t("shift_confirm_complete")}
       </Button>
     );
   }
@@ -65,15 +55,13 @@ export function CompleteShiftButton({ shiftId, locale }: Props) {
   return (
     <div className="flex items-center gap-2">
       <span className="text-sm text-muted-foreground">
-        {locale === "fr" ? "Confirmer ?" : "Confirm?"}
+        {t("confirm_q")}
       </span>
       <Button size="sm" onClick={handleComplete} disabled={loading}>
-        {loading
-          ? (locale === "fr" ? "Enregistrement…" : "Saving…")
-          : (locale === "fr" ? "Oui, complété" : "Yes, completed")}
+        {loading ? t("saving") : t("shift_yes_completed")}
       </Button>
       <Button size="sm" variant="ghost" onClick={() => setConfirming(false)} disabled={loading}>
-        {locale === "fr" ? "Non" : "No"}
+        {t("no")}
       </Button>
     </div>
   );

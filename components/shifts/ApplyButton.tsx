@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { CheckCircle, LogIn } from "lucide-react";
@@ -24,6 +25,7 @@ export function ApplyButton({
   isFilled,
 }: ApplyButtonProps) {
   const router = useRouter();
+  const t = useTranslations("ui");
   const [applied, setApplied] = useState(alreadyApplied);
   const [loading, setLoading] = useState(false);
 
@@ -31,31 +33,29 @@ export function ApplyButton({
     return (
       <Button disabled variant="secondary">
         <CheckCircle className="h-4 w-4 mr-1.5" />
-        Remplacement comblé
+        {t("shift_filled")}
       </Button>
     );
   }
 
-  // Not logged in → redirect to login with callback
   if (!userRole) {
     return (
       <Button asChild>
         <Link href={`/${locale}/auth/login?callbackUrl=/${locale}/shifts/${shiftId}`}>
           <LogIn className="h-4 w-4 mr-1.5" />
-          Postuler
+          {t("apply")}
         </Link>
       </Button>
     );
   }
 
-  // Salons and admins don't apply
   if (userRole !== "GROOMER") return null;
 
   if (applied) {
     return (
       <Button disabled variant="outline" className="border-primary text-primary">
         <CheckCircle className="h-4 w-4 mr-1.5" />
-        Candidature envoyée
+        {t("application_sent_label")}
       </Button>
     );
   }
@@ -66,17 +66,17 @@ export function ApplyButton({
       const res = await fetch(`/api/shifts/${shiftId}/apply`, { method: "POST" });
 
       if (res.status === 409) {
-        toast.info("Vous avez déjà postulé pour ce remplacement.");
+        toast.info(t("application_already_applied"));
         setApplied(true);
         return;
       }
       if (!res.ok) {
-        toast.error("Une erreur est survenue. Veuillez réessayer.");
+        toast.error(t("error_generic"));
         return;
       }
 
       setApplied(true);
-      toast.success("Candidature envoyée avec succès !");
+      toast.success(t("application_sent"));
       router.refresh();
     } finally {
       setLoading(false);
@@ -85,7 +85,7 @@ export function ApplyButton({
 
   return (
     <Button onClick={handleApply} disabled={loading}>
-      {loading ? "Envoi…" : "Postuler"}
+      {loading ? t("sending") : t("apply")}
     </Button>
   );
 }

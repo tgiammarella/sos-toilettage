@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +30,7 @@ export function SuggestedGroomers({
   locale: string;
 }) {
   const lang = getLang(locale);
+  const t = useTranslations("ui");
   const [groomers, setGroomers] = useState<SuggestedGroomer[]>([]);
   const [loading, setLoading] = useState(true);
   const [inviting, setInviting] = useState<Record<string, boolean>>({});
@@ -59,13 +61,9 @@ export function SuggestedGroomers({
       });
       if (res.ok) {
         setInvitedIds((prev) => new Set([...prev, groomerId]));
-        toast.success(
-          lang === "fr" ? "Invitation envoyée !" : "Invitation sent!",
-        );
+        toast.success(t("invitation_sent"));
       } else {
-        toast.error(
-          lang === "fr" ? "Erreur lors de l'envoi." : "Error sending invite.",
-        );
+        toast.error(t("error_sending_invite"));
       }
     } finally {
       setInviting((prev) => ({ ...prev, [groomerId]: false }));
@@ -79,12 +77,10 @@ export function SuggestedGroomers({
       <div className="flex items-center gap-2 mb-3">
         <Sparkles className="h-4 w-4 text-accent shrink-0" />
         <h2 className="text-lg font-semibold">
-          {lang === "fr" ? "Toiletteurs suggérés" : "Suggested Groomers"}
+          {t("suggested_groomers")}
         </h2>
         <span className="text-xs text-muted-foreground hidden sm:inline">
-          {lang === "fr"
-            ? "— basé sur la ville et les spécialisations"
-            : "— based on location and specializations"}
+          {t("suggested_groomers_hint")}
         </span>
       </div>
 
@@ -122,11 +118,11 @@ export function SuggestedGroomers({
                           className="text-xs flex items-center gap-0.5 border-success-border text-success-foreground bg-success"
                         >
                           <Zap className="h-3 w-3" />
-                          {lang === "fr" ? "Disponible" : "Available"}
+                          {t("available")}
                         </Badge>
                       )}
                       <Badge variant="outline" className="text-xs">
-                        {lang === "fr" ? "Profil" : "Profile"}{" "}
+                        {t("profile")}{" "}
                         {g.profileScore}%
                       </Badge>
                       {g.reliabilityScore > 0 && (
@@ -158,12 +154,12 @@ export function SuggestedGroomers({
                     {isInvited ? (
                       <>
                         <CheckCircle className="h-3.5 w-3.5 mr-1.5" />
-                        {lang === "fr" ? "Invité" : "Invited"}
+                        {t("invited")}
                       </>
                     ) : (
                       <>
                         <UserPlus className="h-3.5 w-3.5 mr-1.5" />
-                        {lang === "fr" ? "Inviter" : "Invite"}
+                        {t("invite")}
                       </>
                     )}
                   </Button>

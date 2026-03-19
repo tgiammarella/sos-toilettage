@@ -15,6 +15,8 @@ export function GroomerSidebar({ locale, groomerName }: GroomerSidebarProps) {
   const pathname = usePathname();
   const t = useTranslations("dashboard.groomer");
 
+  const tNav = useTranslations("nav");
+
   const base = `/${locale}/dashboard/groomer`;
 
   const items = [
@@ -26,9 +28,9 @@ export function GroomerSidebar({ locale, groomerName }: GroomerSidebarProps) {
   ];
 
   const discoverItems = [
-    { href: `/${locale}/shifts`,   icon: Scissors,  label: "Remplacements" },
-    { href: `/${locale}/jobs`,     icon: Briefcase, label: "Offres d'emploi" },
-    { href: `/${locale}/schools`,  icon: BookOpen,  label: "Formations" },
+    { href: `/${locale}/shifts`,   icon: Scissors,  label: tNav("shifts") },
+    { href: `/${locale}/jobs`,     icon: Briefcase, label: tNav("jobs") },
+    { href: `/${locale}/schools`,  icon: BookOpen,  label: tNav("schools") },
   ];
 
   return (
@@ -66,7 +68,7 @@ export function GroomerSidebar({ locale, groomerName }: GroomerSidebarProps) {
 
       <div className="px-4 pt-3">
         <p className="px-3 text-[11px] font-medium uppercase tracking-wider text-sidebar-foreground/50 mb-1">
-          Découvrir
+          {tNav("discover")}
         </p>
         {discoverItems.map(({ href, icon: Icon, label }) => {
           const active = pathname.startsWith(href);

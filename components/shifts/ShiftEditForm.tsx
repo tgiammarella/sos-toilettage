@@ -5,6 +5,7 @@ import { useForm, Controller, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -68,6 +69,7 @@ export function ShiftEditForm({
   creditsAvailable: number;
 }) {
   const router = useRouter();
+  const t = useTranslations("ui");
   const [submitting, setSubmitting] = useState(false);
 
   const parsedTags: string[] = (() => {
@@ -111,21 +113,21 @@ export function ShiftEditForm({
       });
 
       if (res.status === 402) {
-        toast.error("Crédits insuffisants pour activer le mode urgent.");
+        toast.error(t("error_insufficient_credits"));
         return;
       }
       if (res.status === 409) {
         const body = await res.json().catch(() => ({}));
-        toast.error((body as { message?: string }).message ?? "Ce remplacement ne peut plus être modifié.");
+        toast.error((body as { message?: string }).message ?? t("shift_cannot_modify"));
         return;
       }
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        toast.error((body as { message?: string }).message ?? "Une erreur est survenue.");
+        toast.error((body as { message?: string }).message ?? t("error_generic"));
         return;
       }
 
-      toast.success("Remplacement mis à jour !");
+      toast.success(t("shift_updated"));
       router.push(`/${locale}/dashboard/salon/shifts/${shift.id}`);
       router.refresh();
     } finally {
@@ -302,11 +304,11 @@ export function ShiftEditForm({
 
       {/* Notes */}
       <Card className="shadow-none">
-        <CardHeader className="pb-2 pt-4 px-4 text-sm font-semibold">Notes (optionnel)</CardHeader>
+        <CardHeader className="pb-2 pt-4 px-4 text-sm font-semibold">{t("notes_optional")}</CardHeader>
         <CardContent className="px-4 pb-4">
           <textarea
             className="w-full min-h-[80px] rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-y"
-            placeholder="Informations supplémentaires pour le toiletteur…"
+            placeholder={t("notes_placeholder")}
             {...form.register("notes")}
           />
         </CardContent>
@@ -318,11 +320,11 @@ export function ShiftEditForm({
           disabled={submitting || (willUpgradeUrgent && creditsAvailable < 1)}
           className="min-w-[180px]"
         >
-          {submitting ? "Enregistrement…" : "Enregistrer les modifications"}
+          {submitting ? t("saving") : t("save_changes")}
         </Button>
         {willUpgradeUrgent && creditsAvailable < 1 && (
           <p className="flex items-center gap-1 text-xs text-destructive">
-            <AlertCircle className="h-3.5 w-3.5" /> Crédits insuffisants pour le mode urgent
+            <AlertCircle className="h-3.5 w-3.5" /> {t("error_insufficient_credits")}
           </p>
         )}
       </div>

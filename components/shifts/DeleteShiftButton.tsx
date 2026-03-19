@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
@@ -14,6 +15,7 @@ export function DeleteShiftButton({
   locale: string;
 }) {
   const router = useRouter();
+  const t = useTranslations("ui");
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -25,19 +27,18 @@ export function DeleteShiftButton({
       if (res.status === 409) {
         const body = await res.json().catch(() => ({}));
         toast.error(
-          (body as { message?: string }).message ??
-            "Ce remplacement ne peut pas être supprimé."
+          (body as { message?: string }).message ?? t("shift_cannot_modify")
         );
         setConfirming(false);
         return;
       }
       if (!res.ok) {
-        toast.error("Une erreur est survenue.");
+        toast.error(t("error_generic"));
         setConfirming(false);
         return;
       }
 
-      toast.success("Remplacement annulé.");
+      toast.success(t("shift_cancelled"));
       router.push(`/${locale}/dashboard/salon/shifts`);
       router.refresh();
     } finally {
@@ -54,21 +55,21 @@ export function DeleteShiftButton({
         onClick={() => setConfirming(true)}
       >
         <Trash2 className="h-3.5 w-3.5 mr-1" />
-        Annuler le remplacement
+        {t("cancel_shift")}
       </Button>
     );
   }
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-destructive">Confirmer ?</span>
+      <span className="text-sm text-destructive">{t("confirm_q")}</span>
       <Button
         variant="destructive"
         size="sm"
         disabled={deleting}
         onClick={handleDelete}
       >
-        {deleting ? "Suppression…" : "Oui, annuler"}
+        {deleting ? t("deleting") : t("yes_cancel")}
       </Button>
       <Button
         variant="outline"
@@ -76,7 +77,7 @@ export function DeleteShiftButton({
         onClick={() => setConfirming(false)}
         disabled={deleting}
       >
-        Non
+        {t("no")}
       </Button>
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Loader2, Send, CheckCircle2 } from "lucide-react";
@@ -8,13 +9,12 @@ import { Loader2, Send, CheckCircle2 } from "lucide-react";
 export function QuickApplyButton({
   shiftId,
   alreadyApplied,
-  locale,
 }: {
   shiftId: string;
   alreadyApplied: boolean;
   locale: string;
 }) {
-  const lang = locale === "fr" ? "fr" : "en";
+  const t = useTranslations("ui");
   const [applied, setApplied] = useState(alreadyApplied);
   const [loading, setLoading] = useState(false);
 
@@ -27,9 +27,7 @@ export function QuickApplyButton({
 
       if (res.status === 201) {
         setApplied(true);
-        toast.success(
-          lang === "fr" ? "Candidature envoyée" : "Application sent",
-        );
+        toast.success(t("application_sent"));
         return;
       }
 
@@ -37,29 +35,18 @@ export function QuickApplyButton({
 
       if (data.error === "ALREADY_APPLIED") {
         setApplied(true);
-        toast.info(
-          lang === "fr" ? "Vous avez déjà postulé" : "Already applied",
-        );
+        toast.info(t("application_already_applied"));
         return;
       }
 
       if (res.status === 401) {
-        toast.error(
-          lang === "fr"
-            ? "Connectez-vous pour postuler"
-            : "Sign in to apply",
-        );
+        toast.error(t("sign_in_to_apply"));
         return;
       }
 
-      toast.error(
-        data.error ??
-          (lang === "fr" ? "Erreur, veuillez réessayer" : "Error, please retry"),
-      );
+      toast.error(data.error ?? t("error_retry"));
     } catch {
-      toast.error(
-        lang === "fr" ? "Erreur réseau" : "Network error",
-      );
+      toast.error(t("error_network"));
     } finally {
       setLoading(false);
     }
@@ -69,7 +56,7 @@ export function QuickApplyButton({
     return (
       <Button disabled variant="outline" size="sm" className="border-primary text-primary">
         <CheckCircle2 className="h-3.5 w-3.5 mr-1.5" />
-        {lang === "fr" ? "Postulé" : "Applied"}
+        {t("applied")}
       </Button>
     );
   }
@@ -81,7 +68,7 @@ export function QuickApplyButton({
       ) : (
         <Send className="h-3.5 w-3.5 mr-1.5" />
       )}
-      {lang === "fr" ? "Postuler en 1 clic" : "1-click apply"}
+      {t("quick_apply")}
     </Button>
   );
 }

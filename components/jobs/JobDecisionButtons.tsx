@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -27,6 +28,7 @@ export function JobDecisionButtons({
   groomerName,
 }: JobDecisionButtonsProps) {
   const router = useRouter();
+  const t = useTranslations("ui");
   const [open, setOpen] = useState(false);
   const [accepting, setAccepting] = useState(false);
   const [rejecting, setRejecting] = useState(false);
@@ -43,12 +45,12 @@ export function JobDecisionButtons({
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        toast.error((err as { error?: string }).error ?? "Une erreur est survenue.");
+        toast.error((err as { error?: string }).error ?? t("error_generic"));
         return;
       }
 
       setOpen(false);
-      toast.success("Candidature acceptée. Le poste est maintenant comblé.");
+      toast.success(t("application_accepted_filled"));
       router.refresh();
     } finally {
       setAccepting(false);
@@ -65,11 +67,11 @@ export function JobDecisionButtons({
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        toast.error((err as { error?: string }).error ?? "Une erreur est survenue.");
+        toast.error((err as { error?: string }).error ?? t("error_generic"));
         return;
       }
 
-      toast.success("Candidature refusée.");
+      toast.success(t("application_rejected"));
       router.refresh();
     } finally {
       setRejecting(false);
@@ -83,17 +85,14 @@ export function JobDecisionButtons({
         <DialogTrigger asChild>
           <Button size="sm" disabled={busy}>
             <UserCheck className="h-3.5 w-3.5 mr-1.5" />
-            Accepter
+            {t("accept")}
           </Button>
         </DialogTrigger>
         <DialogContent showCloseButton={false} className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>Confirmer l&apos;acceptation</DialogTitle>
+            <DialogTitle>{t("confirm_accept")}</DialogTitle>
             <DialogDescription>
-              Vous êtes sur le point d&apos;accepter{" "}
-              <strong className="text-foreground">{groomerName}</strong> pour ce poste.
-              Toutes les autres candidatures en attente seront automatiquement refusées
-              et le poste sera marqué comme comblé.
+              {t("confirm_accept_desc", { name: groomerName })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -102,11 +101,11 @@ export function JobDecisionButtons({
               onClick={() => setOpen(false)}
               disabled={accepting}
             >
-              Annuler
+              {t("cancel")}
             </Button>
             <Button onClick={handleAccept} disabled={accepting}>
               <UserCheck className="h-3.5 w-3.5 mr-1.5" />
-              {accepting ? "Acceptation…" : "Confirmer"}
+              {accepting ? t("accepting") : t("confirm")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -120,7 +119,7 @@ export function JobDecisionButtons({
         disabled={busy}
       >
         <UserX className="h-3.5 w-3.5 mr-1.5" />
-        {rejecting ? "Refus…" : "Refuser"}
+        {rejecting ? t("rejecting") : t("reject")}
       </Button>
     </div>
   );

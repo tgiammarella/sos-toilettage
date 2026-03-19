@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { UserCheck } from "lucide-react";
@@ -14,6 +15,7 @@ export function AcceptButton({
   groomerId: string;
 }) {
   const router = useRouter();
+  const t = useTranslations("ui");
   const [loading, setLoading] = useState(false);
 
   async function handleAccept() {
@@ -27,11 +29,11 @@ export function AcceptButton({
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        toast.error((err as { error?: string }).error ?? "Une erreur est survenue.");
+        toast.error((err as { error?: string }).error ?? t("error_generic"));
         return;
       }
 
-      toast.success("Candidature acceptée ! Le remplacement est maintenant comblé.");
+      toast.success(t("application_accepted"));
       router.refresh();
     } finally {
       setLoading(false);
@@ -41,7 +43,7 @@ export function AcceptButton({
   return (
     <Button size="sm" onClick={handleAccept} disabled={loading}>
       <UserCheck className="h-3.5 w-3.5 mr-1.5" />
-      {loading ? "Acceptation…" : "Accepter"}
+      {loading ? t("accepting") : t("accept")}
     </Button>
   );
 }

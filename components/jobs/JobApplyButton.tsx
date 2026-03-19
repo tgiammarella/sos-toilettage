@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
@@ -24,6 +25,7 @@ export function JobApplyButton({
   isFilled,
 }: JobApplyButtonProps) {
   const router = useRouter();
+  const t = useTranslations("ui");
   const [applied, setApplied] = useState(alreadyApplied);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -34,39 +36,36 @@ export function JobApplyButton({
     return (
       <Button disabled variant="secondary" className="w-full sm:w-auto">
         <CheckCircle className="h-4 w-4 mr-1.5" />
-        Poste comblé
+        {t("job_filled")}
       </Button>
     );
   }
 
-  // Not authenticated
   if (!userRole) {
     return (
       <Button asChild className="w-full sm:w-auto">
         <Link href={`/${locale}/auth/login?callbackUrl=/${locale}/jobs/${jobId}`}>
           <LogIn className="h-4 w-4 mr-1.5" />
-          Se connecter pour postuler
+          {t("login_to_apply")}
         </Link>
       </Button>
     );
   }
 
-  // Salon or admin — cannot apply
   if (userRole !== "GROOMER") {
     return (
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <Ban className="h-4 w-4 shrink-0" />
-        Seuls les toiletteurs peuvent postuler.
+        {t("groomers_only")}
       </div>
     );
   }
 
-  // Groomer — already applied
   if (applied) {
     return (
       <Button disabled variant="outline" className="w-full sm:w-auto border-primary text-primary">
         <CheckCircle className="h-4 w-4 mr-1.5" />
-        Candidature envoyée
+        {t("application_sent_label")}
       </Button>
     );
   }
@@ -85,34 +84,33 @@ export function JobApplyButton({
       });
 
       if (res.status === 401) {
-        toast.error("Votre session a expiré. Veuillez vous reconnecter.");
+        toast.error(t("error_session_expired"));
         return;
       }
       if (res.status === 409) {
-        toast.info("Vous avez déjà postulé à cette offre.");
+        toast.info(t("application_already_applied"));
         setApplied(true);
         setOpen(false);
         return;
       }
       if (!res.ok) {
-        toast.error("Une erreur est survenue. Veuillez réessayer.");
+        toast.error(t("error_generic"));
         return;
       }
 
       setApplied(true);
       setOpen(false);
-      toast.success("Candidature envoyée avec succès !");
+      toast.success(t("application_sent"));
       router.refresh();
     } finally {
       setLoading(false);
     }
   }
 
-  // Groomer — show button or inline form
   if (!open) {
     return (
       <Button onClick={() => setOpen(true)} className="w-full sm:w-auto">
-        Postuler
+        {t("apply")}
       </Button>
     );
   }
@@ -122,11 +120,11 @@ export function JobApplyButton({
       onSubmit={handleSubmit}
       className="rounded-xl border bg-card p-5 space-y-4 shadow-sm"
     >
-      <h3 className="font-semibold text-base">Votre candidature</h3>
+      <h3 className="font-semibold text-base">{t("your_application")}</h3>
 
       <div className="space-y-1.5">
         <Label htmlFor="apply-message">
-          Message <span className="text-muted-foreground font-normal">(optionnel, max 500 car.)</span>
+          {t("message_label")} <span className="text-muted-foreground font-normal">({t("message_optional")})</span>
         </Label>
         <textarea
           id="apply-message"
@@ -134,7 +132,7 @@ export function JobApplyButton({
           rows={4}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Présentez-vous brièvement et expliquez pourquoi vous êtes un bon candidat…"
+          placeholder={t("message_placeholder")}
           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-y"
         />
         <p className="text-xs text-muted-foreground text-right">{message.length}/500</p>
@@ -142,7 +140,7 @@ export function JobApplyButton({
 
       <div className="space-y-1.5">
         <Label htmlFor="apply-availability">
-          Disponibilités <span className="text-muted-foreground font-normal">(optionnel)</span>
+          {t("availability_label")} <span className="text-muted-foreground font-normal">({t("availability_optional")})</span>
         </Label>
         <input
           id="apply-availability"
@@ -150,14 +148,14 @@ export function JobApplyButton({
           maxLength={200}
           value={availabilityDates}
           onChange={(e) => setAvailabilityDates(e.target.value)}
-          placeholder="Ex: Disponible à partir du 15 mars, les fins de semaine"
+          placeholder={t("availability_placeholder")}
           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
       </div>
 
       <div className="space-y-1.5">
         <Label>
-          CV <span className="text-muted-foreground font-normal">(téléversement — bientôt disponible)</span>
+          {t("cv_label")} <span className="text-muted-foreground font-normal">({t("cv_coming_soon")})</span>
         </Label>
         <input
           type="file"
@@ -168,7 +166,7 @@ export function JobApplyButton({
 
       <div className="flex gap-3 pt-1">
         <Button type="submit" disabled={loading} className="flex-1 sm:flex-none">
-          {loading ? "Envoi…" : "Envoyer la candidature"}
+          {loading ? t("sending") : t("send_application")}
         </Button>
         <Button
           type="button"
@@ -176,7 +174,7 @@ export function JobApplyButton({
           onClick={() => setOpen(false)}
           disabled={loading}
         >
-          Annuler
+          {t("cancel")}
         </Button>
       </div>
     </form>
