@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
+import { PartnerBadge } from "@/components/ui/PartnerBadge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -209,16 +210,7 @@ export function PartnerProfile({
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
                   <h1 className="text-2xl font-bold text-[#1F2933]">{partner.name}</h1>
-                  {isSignature && (
-                    <Badge className="bg-[#E8D2AE] text-[#1F2933] border-[#CBBBA6]">
-                      {t("signature_badge")} ★
-                    </Badge>
-                  )}
-                  {partner.tier === "VEDETTE" && (
-                    <Badge className="bg-[#055864] text-white">
-                      {t("vedette_badge")}
-                    </Badge>
-                  )}
+                  <PartnerBadge tier={partner.tier} size="lg" />
                 </div>
                 <div className="flex items-center gap-3 mt-1 flex-wrap">
                   <Badge variant="outline" className="text-xs">

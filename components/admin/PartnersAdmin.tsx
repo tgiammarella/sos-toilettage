@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Plus, Pencil, Trash2, Star, ExternalLink, X, Upload, Loader2, ImageIcon, Search, CheckCircle, Clock, Users } from "lucide-react";
 import { useUploadThing } from "@/lib/uploadthing";
+import { PartnerBadge } from "@/components/ui/PartnerBadge";
 import Image from "next/image";
 
 type Partner = {
@@ -1049,11 +1050,14 @@ export function PartnersAdmin({ locale }: { locale: string }) {
                     </td>
                     {/* Tier */}
                     <td className="px-3 py-3 hidden sm:table-cell">
-                      {TIER_CONFIG[p.tier] && (
-                        <Badge className={`text-xs ${TIER_CONFIG[p.tier].className}`}>
-                          {TIER_CONFIG[p.tier].label[lang]}
-                        </Badge>
-                      )}
+                      <div className="flex items-center gap-1.5">
+                        {TIER_CONFIG[p.tier] && (
+                          <Badge className={`text-xs ${TIER_CONFIG[p.tier].className}`}>
+                            {TIER_CONFIG[p.tier].label[lang]}
+                          </Badge>
+                        )}
+                        <PartnerBadge tier={p.tier} size="sm" />
+                      </div>
                       {p.launchPricing && (
                         <span className="block text-[10px] text-emerald-600 mt-0.5">
                           {lang === "fr" ? "Fondateur" : "Founder"}

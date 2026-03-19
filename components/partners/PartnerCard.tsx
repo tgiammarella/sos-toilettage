@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin } from "lucide-react";
 
+import { PartnerBadge } from "@/components/ui/PartnerBadge";
+
 type PartnerCardProps = {
   partner: {
     id: string;
@@ -48,10 +50,16 @@ export function PartnerCard({ partner, locale }: PartnerCardProps) {
 
   return (
     <Card
-      className={`shadow-sm hover:shadow-md transition-shadow bg-white h-full flex flex-col ${
+      className={`shadow-sm hover:shadow-md transition-shadow bg-white h-full flex flex-col relative ${
         partner.tier === "SIGNATURE" ? "border-l-4 border-l-[#055864]" : ""
       }`}
     >
+      {/* Badge overlay */}
+      {(partner.tier === "VEDETTE" || partner.tier === "SIGNATURE") && (
+        <div className="absolute top-2 right-2 z-10">
+          <PartnerBadge tier={partner.tier} size="md" />
+        </div>
+      )}
       <CardContent className="p-5 flex flex-col h-full">
         {/* Logo + badges */}
         <div className="flex items-start justify-between mb-3">
@@ -80,18 +88,6 @@ export function PartnerCard({ partner, locale }: PartnerCardProps) {
                 </p>
               )}
             </div>
-          </div>
-          <div className="flex flex-col items-end gap-1">
-            {partner.tier === "SIGNATURE" && (
-              <Badge className="text-xs bg-[#E8D2AE] text-[#1F2933] border-[#CBBBA6]">
-                Signature ★
-              </Badge>
-            )}
-            {partner.tier === "VEDETTE" && (
-              <Badge className="text-xs bg-[#055864] text-white">
-                Vedette
-              </Badge>
-            )}
           </div>
         </div>
 
