@@ -20,13 +20,19 @@ export default async function AdminEditListingPage({
   const listing = await prisma.trainingListing.findUnique({ where: { id } });
   if (!listing) notFound();
 
+  // Navigate back to the right admin section
+  const backHref = listing.type === "SCHOOL" && !listing.isTrainer
+    ? `/${locale}/dashboard/admin/schools`
+    : `/${locale}/dashboard/admin/trainings`;
+
   return (
     <AdminShell locale={locale}>
       <div className="max-w-3xl mx-auto space-y-6">
         <div>
           <Button variant="ghost" size="sm" asChild className="mb-4 -ml-2">
-            <Link href={`/${locale}/dashboard/admin/directory`}>
-              <ArrowLeft className="h-4 w-4 mr-1" /> Retour
+            <Link href={backHref}>
+              <ArrowLeft className="h-4 w-4 mr-1" />
+              {locale === "fr" ? "Retour" : "Back"}
             </Link>
           </Button>
           <h1 className="text-2xl font-bold text-[#1F2933]">
@@ -47,6 +53,8 @@ export default async function AdminEditListingPage({
             phone: listing.phone ?? "",
             email: listing.email ?? "",
             tags: JSON.parse(listing.tags || "[]").join(", "),
+            tier: listing.tier,
+            isTrainer: listing.isTrainer,
             isFeatured: listing.isFeatured,
             isActive: listing.isActive,
           }}

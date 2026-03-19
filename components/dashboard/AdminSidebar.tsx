@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { Scissors, Shield, Activity, BookOpen, FileText, Star, Users, Coins, Handshake } from "lucide-react";
+import { Scissors, Shield, Activity, BookOpen, FileText, Star, Users, Coins, Handshake, GraduationCap } from "lucide-react";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 
 interface AdminSidebarProps {
@@ -21,6 +21,8 @@ export function AdminSidebar({ locale }: AdminSidebarProps) {
     { href: base,                    icon: Shield,   label: t("title"),     exact: true },
     { href: `${base}/ops`,           icon: Activity, label: t("ops") },
     { href: `${base}/directory`,     icon: BookOpen, label: t("directory") },
+    { href: `${base}/schools`,       icon: GraduationCap, label: lang === "fr" ? "Écoles" : "Schools" },
+    { href: `${base}/trainings`,     icon: BookOpen, label: lang === "fr" ? "Formations" : "Trainings" },
     { href: `${base}/posts`,         icon: FileText, label: t("posts") },
     { href: `${base}/reviews`,       icon: Star,     label: t("reviews") },
     { href: `${base}/users`,         icon: Users,    label: t("users") },

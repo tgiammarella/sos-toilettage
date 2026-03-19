@@ -14,6 +14,8 @@ const UpdateSchema = z.object({
   phone:       z.string().optional(),
   email:       z.string().email().optional().or(z.literal("")),
   tags:        z.array(z.string()).optional(),
+  tier:        z.enum(["GRATUIT", "PARTENAIRE", "ELITE", "FREE"]).optional(),
+  isTrainer:   z.boolean().optional(),
   isFeatured:  z.boolean().optional(),
   isActive:    z.boolean().optional(),
 });

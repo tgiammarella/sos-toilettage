@@ -505,8 +505,9 @@ model TrainingListing {
   phone       String?
   email       String?
   description String?
-  // SQLite: JSON string. Switch to String[] for PostgreSQL.
   tags        String       @default("[]")
+  tier        String       @default("GRATUIT") // GRATUIT | PARTENAIRE | ELITE | FREE
+  isTrainer   Boolean      @default(false)
   isFeatured  Boolean      @default(false)
   isActive    Boolean      @default(true)
   createdAt   DateTime     @default(now())

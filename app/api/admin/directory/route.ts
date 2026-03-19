@@ -14,6 +14,8 @@ const CreateSchema = z.object({
   phone:       z.string().optional(),
   email:       z.string().email().optional().or(z.literal("")),
   tags:        z.array(z.string()).default([]),
+  tier:        z.enum(["GRATUIT", "PARTENAIRE", "ELITE", "FREE"]).default("GRATUIT"),
+  isTrainer:   z.boolean().default(false),
   isFeatured:  z.boolean().default(false),
   isActive:    z.boolean().default(true),
 });

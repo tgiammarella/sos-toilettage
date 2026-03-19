@@ -29,6 +29,8 @@ interface ListingData {
   phone: string;
   email: string;
   tags: string;
+  tier: string;
+  isTrainer: boolean;
   isFeatured: boolean;
   isActive: boolean;
 }
@@ -36,9 +38,13 @@ interface ListingData {
 export function TrainingListingForm({
   locale,
   initial,
+  defaultType,
+  defaultIsTrainer,
 }: {
   locale: string;
   initial?: ListingData;
+  defaultType?: string;
+  defaultIsTrainer?: boolean;
 }) {
   const lang = locale === "fr" ? "fr" : "en";
   const router = useRouter();
@@ -46,7 +52,7 @@ export function TrainingListingForm({
 
   const [form, setForm] = useState<ListingData>({
     name: initial?.name ?? "",
-    type: initial?.type ?? "SCHOOL",
+    type: initial?.type ?? defaultType ?? "SCHOOL",
     city: initial?.city ?? "",
     province: initial?.province ?? "",
     description: initial?.description ?? "",
@@ -55,6 +61,8 @@ export function TrainingListingForm({
     phone: initial?.phone ?? "",
     email: initial?.email ?? "",
     tags: initial?.tags ?? "",
+    tier: initial?.tier ?? (defaultIsTrainer ? "FREE" : "GRATUIT"),
+    isTrainer: initial?.isTrainer ?? defaultIsTrainer ?? false,
     isFeatured: initial?.isFeatured ?? false,
     isActive: initial?.isActive ?? true,
   });
@@ -90,6 +98,8 @@ export function TrainingListingForm({
         phone: form.phone || undefined,
         email: form.email || "",
         tags,
+        tier: form.tier,
+        isTrainer: form.isTrainer,
         isFeatured: form.isFeatured,
         isActive: form.isActive,
       };
@@ -224,9 +234,51 @@ export function TrainingListingForm({
 
       <Card className="shadow-none">
         <CardHeader className="pb-2 pt-4 px-4 text-sm font-semibold">
-          {lang === "fr" ? "Options" : "Options"}
+          {lang === "fr" ? "Plan & options" : "Plan & options"}
         </CardHeader>
         <CardContent className="px-4 pb-4 space-y-4">
+          <div className="space-y-1.5">
+            <Label>{lang === "fr" ? "Forfait" : "Tier"}</Label>
+            {form.isTrainer ? (
+              <p className="text-sm text-muted-foreground">
+                {lang === "fr"
+                  ? "Les formateurs indépendants sont toujours gratuits"
+                  : "Independent trainers are always free"}
+              </p>
+            ) : (
+              <Select value={form.tier} onValueChange={(v) => set("tier", v)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="GRATUIT">
+                    {lang === "fr" ? "Gratuit — Nom + lien" : "Free — Name + link"}
+                  </SelectItem>
+                  <SelectItem value="PARTENAIRE">
+                    {lang === "fr" ? "Partenaire — 49$/mois" : "Partner — $49/month"}
+                  </SelectItem>
+                  <SelectItem value="ELITE">
+                    {lang === "fr" ? "Élite — 99$/mois" : "Elite — $99/month"}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          </div>
+          {!form.isTrainer && form.tier !== "GRATUIT" && (
+            <div className="rounded-md bg-[#F6EFE6] px-3 py-2 text-xs text-[#055864]">
+              {form.tier === "PARTENAIRE"
+                ? (lang === "fr"
+                  ? "Profil complet, jusqu'à 20 profils de diplômés, placement prioritaire. Annuel : 490$/an."
+                  : "Full profile, up to 20 graduate profiles, priority placement. Annual: $490/year.")
+                : (lang === "fr"
+                  ? "Tout Partenaire + diplômés illimités, suggestion auto aux salons, 1 mention infolettre/trimestre, 1 publication sociale/trimestre. Annuel : 990$/an."
+                  : "Everything in Partner + unlimited graduates, auto-suggested to salons, 1 newsletter mention/quarter, 1 social post/quarter. Annual: $990/year.")}
+            </div>
+          )}
+          <div className="flex items-center justify-between">
+            <Label>{lang === "fr" ? "Formateur indépendant" : "Independent trainer"}</Label>
+            <Switch checked={form.isTrainer} onCheckedChange={(v) => {
+              setForm((prev) => ({ ...prev, isTrainer: v, tier: v ? "FREE" : "GRATUIT" }));
+            }} />
+          </div>
           <div className="flex items-center justify-between">
             <Label>{lang === "fr" ? "Mise en avant" : "Featured"}</Label>
             <Switch checked={form.isFeatured} onCheckedChange={(v) => set("isFeatured", v)} />
