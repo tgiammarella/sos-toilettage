@@ -790,10 +790,36 @@ export function PartnersAdmin({ locale }: { locale: string }) {
               <div className="flex items-center gap-2">
                 <Switch
                   checked={form.launchPricing}
-                  onCheckedChange={(v) => setForm({ ...form, launchPricing: v })}
+                  onCheckedChange={(v) => {
+                    setForm({ ...form, launchPricing: v, lockedMonthlyRate: v ? 0 : null });
+                  }}
                 />
                 <Label className="text-sm">{lang === "fr" ? "Tarif fondateur" : "Launch pricing"}</Label>
               </div>
+              {form.launchPricing && (form.tier === "VEDETTE" || form.tier === "SIGNATURE") && (
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs whitespace-nowrap">{lang === "fr" ? "Tarif verrouillé" : "Locked rate"}</Label>
+                  <div className="flex items-center gap-1">
+                    <Input
+                      type="number"
+                      min={0}
+                      value={form.lockedMonthlyRate !== null ? (form.lockedMonthlyRate / 100).toFixed(2) : ""}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setForm({ ...form, lockedMonthlyRate: val ? Math.round(parseFloat(val) * 100) : 0 });
+                      }}
+                      className="w-20 text-xs"
+                      placeholder="0.00"
+                    />
+                    <span className="text-xs text-[#4a6260]">$/mo</span>
+                  </div>
+                  {form.lockedMonthlyRate === 0 && (
+                    <Badge className="text-[10px] bg-emerald-50 text-emerald-700 border-emerald-200">
+                      {lang === "fr" ? "100% gratuit" : "100% free"}
+                    </Badge>
+                  )}
+                </div>
+              )}
               <div className="flex items-center gap-2">
                 <Switch
                   checked={form.isApproved}

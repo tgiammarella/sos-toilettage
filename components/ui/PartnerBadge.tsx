@@ -3,11 +3,11 @@ import Image from "next/image";
 type Tier = "DECOUVERTE" | "VEDETTE" | "SIGNATURE";
 type BadgeSize = "sm" | "md" | "lg";
 
-/** Heights in px — width computed from 3:2 aspect ratio */
-const HEIGHT_PX: Record<BadgeSize, number> = {
-  sm: 32,
-  md: 54,
-  lg: 80,
+/** Size in px (badges are roughly square) */
+const SIZE_PX: Record<BadgeSize, number> = {
+  sm: 36,
+  md: 64,
+  lg: 100,
 };
 
 const BADGE_CONFIG: Record<
@@ -38,15 +38,14 @@ export function PartnerBadge({
   if (tier === "DECOUVERTE" || !(tier in BADGE_CONFIG)) return null;
 
   const config = BADGE_CONFIG[tier as Exclude<Tier, "DECOUVERTE">];
-  const h = HEIGHT_PX[size];
-  const w = Math.round(h * 1.5); // 3:2 aspect ratio
+  const px = SIZE_PX[size];
 
   return (
     <Image
       src={config.src}
       alt={config.alt}
-      width={w}
-      height={h}
+      width={px}
+      height={px}
       className={`drop-shadow-md object-contain ${className}`}
     />
   );
