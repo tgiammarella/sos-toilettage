@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Pencil, Trash2, Star, ExternalLink, X, Upload, Loader2, ImageIcon } from "lucide-react";
+import { Plus, Pencil, Trash2, Star, ExternalLink, X, Upload, Loader2, ImageIcon, Search, CheckCircle, Clock, Users } from "lucide-react";
 import { useUploadThing } from "@/lib/uploadthing";
 import Image from "next/image";
 
@@ -101,6 +101,11 @@ export function PartnersAdmin({ locale }: { locale: string }) {
   const [form, setForm] = useState<Omit<Partner, "id">>(EMPTY);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterTier, setFilterTier] = useState<string | null>(null);
+  const [filterCategory, setFilterCategory] = useState<string | null>(null);
+  const [filterApproval, setFilterApproval] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
 
   const { startUpload } = useUploadThing("partnerLogo", {
@@ -212,17 +217,6 @@ export function PartnersAdmin({ locale }: { locale: string }) {
     }
   }
 
-  async function handleDelete(id: string) {
-    if (!confirm(lang === "fr" ? "Supprimer ce partenaire ?" : "Delete this partner?")) return;
-    const res = await fetch(`/api/admin/partners/${id}`, { method: "DELETE" });
-    if (res.ok) {
-      toast.success(lang === "fr" ? "Partenaire supprimé" : "Partner deleted");
-      fetchPartners();
-    } else {
-      toast.error(t("error_generic"));
-    }
-  }
-
   async function toggleFeatured(p: Partner) {
     await fetch(`/api/admin/partners/${p.id}`, {
       method: "PATCH",
@@ -232,14 +226,39 @@ export function PartnersAdmin({ locale }: { locale: string }) {
     fetchPartners();
   }
 
-  async function toggleActive(p: Partner) {
-    await fetch(`/api/admin/partners/${p.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isActive: !p.isActive }),
-    });
-    fetchPartners();
-  }
+  // Stats
+  const stats = useMemo(() => {
+    const total = partners.length;
+    const pending = partners.filter(p => !p.isApproved).length;
+    const byTier = {
+      DECOUVERTE: partners.filter(p => p.tier === "DECOUVERTE").length,
+      VEDETTE: partners.filter(p => p.tier === "VEDETTE").length,
+      SIGNATURE: partners.filter(p => p.tier === "SIGNATURE").length,
+    };
+    const active = partners.filter(p => p.isActive).length;
+    return { total, pending, byTier, active };
+  }, [partners]);
+
+  // Filtered list
+  const filteredPartners = useMemo(() => {
+    let result = partners;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        p.taglineFr.toLowerCase().includes(q) ||
+        p.taglineEn.toLowerCase().includes(q) ||
+        p.city.toLowerCase().includes(q)
+      );
+    }
+    if (filterTier) result = result.filter(p => p.tier === filterTier);
+    if (filterCategory) result = result.filter(p => p.category === filterCategory);
+    if (filterApproval === "approved") result = result.filter(p => p.isApproved);
+    if (filterApproval === "pending") result = result.filter(p => !p.isApproved);
+    return result;
+  }, [partners, searchQuery, filterTier, filterCategory, filterApproval]);
+
+  const hasActiveFilters = !!(searchQuery || filterTier || filterCategory || filterApproval);
 
   const showForm = creating || editing;
 
@@ -610,78 +629,381 @@ export function PartnersAdmin({ locale }: { locale: string }) {
         </Card>
       )}
 
-      {/* List */}
+      {/* Stats bar */}
+      {!loading && partners.length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <Card className="shadow-none">
+            <CardContent className="py-3 px-4 flex items-center gap-3">
+              <div className="h-9 w-9 rounded-lg bg-[#055864]/10 flex items-center justify-center">
+                <Users className="h-4 w-4 text-[#055864]" />
+              </div>
+              <div>
+                <p className="text-lg font-bold text-[#1F2933]">{stats.total}</p>
+                <p className="text-[10px] text-[#4a6260] uppercase tracking-wide">
+                  {lang === "fr" ? "Total" : "Total"}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="shadow-none">
+            <CardContent className="py-3 px-4 flex items-center gap-3">
+              <div className="h-9 w-9 rounded-lg bg-amber-100 flex items-center justify-center">
+                <Clock className="h-4 w-4 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-lg font-bold text-[#1F2933]">{stats.pending}</p>
+                <p className="text-[10px] text-[#4a6260] uppercase tracking-wide">
+                  {lang === "fr" ? "En attente" : "Pending"}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="shadow-none">
+            <CardContent className="py-3 px-4 flex items-center gap-3">
+              <div className="h-9 w-9 rounded-lg bg-emerald-100 flex items-center justify-center">
+                <CheckCircle className="h-4 w-4 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-lg font-bold text-[#1F2933]">{stats.active}</p>
+                <p className="text-[10px] text-[#4a6260] uppercase tracking-wide">
+                  {lang === "fr" ? "Actifs" : "Active"}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="shadow-none">
+            <CardContent className="py-3 px-4">
+              <div className="flex gap-3 text-xs">
+                {(["DECOUVERTE", "VEDETTE", "SIGNATURE"] as const).map(tier => (
+                  <div key={tier} className="flex items-center gap-1.5">
+                    <span className={`inline-block h-2 w-2 rounded-full ${
+                      tier === "DECOUVERTE" ? "bg-gray-400" : tier === "VEDETTE" ? "bg-blue-500" : "bg-purple-500"
+                    }`} />
+                    <span className="text-[#4a6260]">{stats.byTier[tier]}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] text-[#4a6260] uppercase tracking-wide mt-1">
+                {lang === "fr" ? "Par forfait" : "By tier"}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Pending approval banner */}
+      {!loading && stats.pending > 0 && !showForm && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4 text-amber-600" />
+            <p className="text-sm text-amber-800">
+              {lang === "fr"
+                ? `${stats.pending} partenaire${stats.pending > 1 ? "s" : ""} en attente d'approbation`
+                : `${stats.pending} partner${stats.pending > 1 ? "s" : ""} pending approval`}
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-amber-300 text-amber-700 hover:bg-amber-100"
+            onClick={() => {
+              setFilterApproval("pending");
+              setFilterTier(null);
+              setFilterCategory(null);
+              setSearchQuery("");
+            }}
+          >
+            {lang === "fr" ? "Voir" : "View"}
+          </Button>
+        </div>
+      )}
+
+      {/* Filters */}
+      {!loading && partners.length > 0 && !showForm && (
+        <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+          <div className="relative flex-1 min-w-0 w-full sm:w-auto">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#4a6260]" />
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={lang === "fr" ? "Rechercher…" : "Search…"}
+              className="pl-9"
+            />
+          </div>
+          <div className="flex gap-1.5 flex-wrap">
+            <select
+              value={filterTier ?? ""}
+              onChange={(e) => setFilterTier(e.target.value || null)}
+              className="rounded-md border border-input bg-background px-2.5 py-1.5 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            >
+              <option value="">{lang === "fr" ? "Tous forfaits" : "All tiers"}</option>
+              {(["DECOUVERTE", "VEDETTE", "SIGNATURE"] as const).map(tier => (
+                <option key={tier} value={tier}>{TIER_CONFIG[tier].label[lang]}</option>
+              ))}
+            </select>
+            <select
+              value={filterCategory ?? ""}
+              onChange={(e) => setFilterCategory(e.target.value || null)}
+              className="rounded-md border border-input bg-background px-2.5 py-1.5 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            >
+              <option value="">{lang === "fr" ? "Toutes catégories" : "All categories"}</option>
+              {Object.entries(CATEGORY_LABELS).map(([v, lbl]) => (
+                <option key={v} value={v}>{lbl[lang]}</option>
+              ))}
+            </select>
+            <select
+              value={filterApproval ?? ""}
+              onChange={(e) => setFilterApproval(e.target.value || null)}
+              className="rounded-md border border-input bg-background px-2.5 py-1.5 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            >
+              <option value="">{lang === "fr" ? "Tous statuts" : "All statuses"}</option>
+              <option value="approved">{lang === "fr" ? "Approuvés" : "Approved"}</option>
+              <option value="pending">{lang === "fr" ? "En attente" : "Pending"}</option>
+            </select>
+            {hasActiveFilters && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs text-[#4a6260]"
+                onClick={() => {
+                  setSearchQuery("");
+                  setFilterTier(null);
+                  setFilterCategory(null);
+                  setFilterApproval(null);
+                }}
+              >
+                <X className="h-3 w-3 mr-1" />
+                {lang === "fr" ? "Réinitialiser" : "Clear"}
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Table */}
       {loading ? (
         <p className="text-sm text-[#4a6260]">{lang === "fr" ? "Chargement…" : "Loading…"}</p>
       ) : partners.length === 0 ? (
         <p className="text-sm text-[#4a6260]">
           {lang === "fr" ? "Aucun partenaire. Cliquez sur « Ajouter » pour commencer." : "No partners yet. Click \"Add\" to get started."}
         </p>
+      ) : filteredPartners.length === 0 ? (
+        <p className="text-sm text-[#4a6260] py-8 text-center">
+          {lang === "fr" ? "Aucun résultat pour ces filtres." : "No results for these filters."}
+        </p>
       ) : (
-        <div className="space-y-3">
-          {partners.map((p) => (
-            <Card key={p.id} className={`shadow-none ${!p.isActive ? "opacity-50" : ""}`}>
-              <CardContent className="py-4 px-5">
-                <div className="flex items-center gap-4">
-                  {p.logoUrl && (
-                    <div className="h-10 w-16 rounded border border-[#CBBBA6] bg-white flex items-center justify-center overflow-hidden shrink-0">
-                      <Image src={p.logoUrl} alt={p.name} width={60} height={36} className="max-h-[32px] w-auto object-contain" />
-                    </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-semibold text-sm text-[#1F2933]">{p.name}</h3>
+        <div className="rounded-lg border border-[#CBBBA6] overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-[#F6EFE6] border-b border-[#CBBBA6]">
+                  <th className="text-left px-4 py-2.5 font-medium text-[#1F2933] text-xs">{lang === "fr" ? "Partenaire" : "Partner"}</th>
+                  <th className="text-left px-3 py-2.5 font-medium text-[#1F2933] text-xs hidden sm:table-cell">{lang === "fr" ? "Forfait" : "Tier"}</th>
+                  <th className="text-left px-3 py-2.5 font-medium text-[#1F2933] text-xs hidden md:table-cell">{lang === "fr" ? "Catégorie" : "Category"}</th>
+                  <th className="text-left px-3 py-2.5 font-medium text-[#1F2933] text-xs hidden lg:table-cell">{lang === "fr" ? "Ville" : "City"}</th>
+                  <th className="text-center px-3 py-2.5 font-medium text-[#1F2933] text-xs hidden md:table-cell">{lang === "fr" ? "Statut" : "Status"}</th>
+                  <th className="text-right px-4 py-2.5 font-medium text-[#1F2933] text-xs">{lang === "fr" ? "Actions" : "Actions"}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#CBBBA6]/50">
+                {filteredPartners.map((p) => (
+                  <tr
+                    key={p.id}
+                    className={`hover:bg-[#F6EFE6]/50 transition-colors ${!p.isActive ? "opacity-50" : ""}`}
+                  >
+                    {/* Partner name + logo */}
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        {p.logoUrl ? (
+                          <div className="h-8 w-8 rounded border border-[#CBBBA6] bg-white flex items-center justify-center overflow-hidden shrink-0">
+                            <Image src={p.logoUrl} alt={p.name} width={28} height={28} className="max-h-[24px] w-auto object-contain" />
+                          </div>
+                        ) : (
+                          <div className="h-8 w-8 rounded bg-[#055864] flex items-center justify-center text-white text-xs font-bold shrink-0">
+                            {p.name.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <p className="font-medium text-[#1F2933] text-sm truncate">{p.name}</p>
+                            {p.featured && <Star className="h-3 w-3 fill-amber-400 text-amber-400 shrink-0" />}
+                          </div>
+                          <p className="text-xs text-[#4a6260] truncate max-w-[200px]">
+                            {lang === "fr" ? p.taglineFr : p.taglineEn}
+                          </p>
+                          {/* Mobile-only badges */}
+                          <div className="flex gap-1 mt-1 sm:hidden">
+                            {TIER_CONFIG[p.tier] && (
+                              <Badge className={`text-[10px] px-1.5 py-0 ${TIER_CONFIG[p.tier].className}`}>
+                                {TIER_CONFIG[p.tier].label[lang]}
+                              </Badge>
+                            )}
+                            {!p.isApproved && (
+                              <Badge className="text-[10px] px-1.5 py-0 bg-amber-100 text-amber-700">
+                                <Clock className="h-2.5 w-2.5 mr-0.5" />
+                                {lang === "fr" ? "En attente" : "Pending"}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    {/* Tier */}
+                    <td className="px-3 py-3 hidden sm:table-cell">
                       {TIER_CONFIG[p.tier] && (
                         <Badge className={`text-xs ${TIER_CONFIG[p.tier].className}`}>
                           {TIER_CONFIG[p.tier].label[lang]}
                         </Badge>
                       )}
+                      {p.launchPricing && (
+                        <span className="block text-[10px] text-emerald-600 mt-0.5">
+                          {lang === "fr" ? "Fondateur" : "Founder"}
+                        </span>
+                      )}
+                    </td>
+                    {/* Category */}
+                    <td className="px-3 py-3 hidden md:table-cell">
                       <Badge variant="outline" className="text-xs">
                         {CATEGORY_LABELS[p.category]?.[lang] ?? p.category}
                       </Badge>
-                      {p.featured && (
-                        <Badge className="text-xs bg-amber-100 text-amber-800 border-amber-200">
-                          <Star className="h-3 w-3 mr-0.5 fill-amber-500" />
-                          {lang === "fr" ? "Vedette" : "Featured"}
-                        </Badge>
-                      )}
-                      {!p.isActive && (
-                        <Badge variant="secondary" className="text-xs">
-                          {lang === "fr" ? "Inactif" : "Inactive"}
-                        </Badge>
-                      )}
-                      {p.promoCode && (
-                        <Badge variant="secondary" className="text-xs bg-[#F6EFE6] text-[#055864]">
-                          {p.promoCode}
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-xs text-[#4a6260] mt-0.5 truncate">
-                      {lang === "fr" ? p.taglineFr : p.taglineEn}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    {p.website && (
-                      <a href={p.website} target="_blank" rel="noopener noreferrer">
-                        <Button variant="ghost" size="sm">
-                          <ExternalLink className="h-3.5 w-3.5" />
+                    </td>
+                    {/* City */}
+                    <td className="px-3 py-3 hidden lg:table-cell">
+                      <span className="text-xs text-[#4a6260]">{p.city || "—"}</span>
+                    </td>
+                    {/* Status */}
+                    <td className="px-3 py-3 text-center hidden md:table-cell">
+                      <div className="flex flex-col items-center gap-1">
+                        {p.isApproved ? (
+                          <Badge className="text-[10px] bg-emerald-50 text-emerald-700 border-emerald-200">
+                            <CheckCircle className="h-2.5 w-2.5 mr-0.5" />
+                            {lang === "fr" ? "Approuvé" : "Approved"}
+                          </Badge>
+                        ) : (
+                          <Badge className="text-[10px] bg-amber-50 text-amber-700 border-amber-200">
+                            <Clock className="h-2.5 w-2.5 mr-0.5" />
+                            {lang === "fr" ? "En attente" : "Pending"}
+                          </Badge>
+                        )}
+                        {!p.isActive && (
+                          <Badge variant="secondary" className="text-[10px]">
+                            {lang === "fr" ? "Inactif" : "Inactive"}
+                          </Badge>
+                        )}
+                        {p.promoCode && (
+                          <span className="text-[10px] text-[#055864] font-mono">{p.promoCode}</span>
+                        )}
+                      </div>
+                    </td>
+                    {/* Actions */}
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-0.5">
+                        {p.website && (
+                          <a href={p.website} target="_blank" rel="noopener noreferrer">
+                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                              <ExternalLink className="h-3.5 w-3.5" />
+                            </Button>
+                          </a>
+                        )}
+                        {!p.isApproved && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 w-7 p-0 text-emerald-600 hover:text-emerald-700"
+                            onClick={async () => {
+                              await fetch(`/api/admin/partners/${p.id}`, {
+                                method: "PATCH",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ isApproved: true }),
+                              });
+                              toast.success(lang === "fr" ? "Partenaire approuvé" : "Partner approved");
+                              fetchPartners();
+                            }}
+                            title={lang === "fr" ? "Approuver" : "Approve"}
+                          >
+                            <CheckCircle className="h-3.5 w-3.5" />
+                          </Button>
+                        )}
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => toggleFeatured(p)}>
+                          <Star className={`h-3.5 w-3.5 ${p.featured ? "fill-amber-500 text-amber-500" : ""}`} />
                         </Button>
-                      </a>
-                    )}
-                    <Button variant="ghost" size="sm" onClick={() => toggleFeatured(p)}>
-                      <Star className={`h-3.5 w-3.5 ${p.featured ? "fill-amber-500 text-amber-500" : ""}`} />
-                    </Button>
-                    <Button variant="ghost" size="sm" onClick={() => openEdit(p)}>
-                      <Pencil className="h-3.5 w-3.5" />
-                    </Button>
-                    <Button variant="ghost" size="sm" onClick={() => handleDelete(p.id)} className="text-destructive hover:text-destructive">
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => openEdit(p)}>
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 w-7 p-0 text-destructive hover:text-destructive"
+                          onClick={() => setDeleteConfirm(p.id)}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {/* Results count */}
+          <div className="bg-[#F6EFE6]/50 px-4 py-2 border-t border-[#CBBBA6]/50">
+            <p className="text-xs text-[#4a6260]">
+              {hasActiveFilters
+                ? (lang === "fr"
+                    ? `${filteredPartners.length} résultat${filteredPartners.length > 1 ? "s" : ""} sur ${partners.length}`
+                    : `${filteredPartners.length} of ${partners.length} result${filteredPartners.length > 1 ? "s" : ""}`)
+                : (lang === "fr"
+                    ? `${partners.length} partenaire${partners.length > 1 ? "s" : ""}`
+                    : `${partners.length} partner${partners.length > 1 ? "s" : ""}`)}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Delete confirmation dialog */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setDeleteConfirm(null)}>
+          <Card className="max-w-sm w-full shadow-lg" onClick={(e) => e.stopPropagation()}>
+            <CardContent className="p-6 space-y-4">
+              <div className="flex items-start gap-3">
+                <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                  <Trash2 className="h-5 w-5 text-red-600" />
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+                <div>
+                  <h3 className="font-semibold text-[#1F2933] text-sm">
+                    {lang === "fr" ? "Supprimer ce partenaire ?" : "Delete this partner?"}
+                  </h3>
+                  <p className="text-xs text-[#4a6260] mt-1">
+                    {lang === "fr"
+                      ? "Le partenaire sera désactivé (suppression douce). Il pourra être restauré si nécessaire pour des litiges de facturation."
+                      : "The partner will be deactivated (soft delete). It can be restored if needed for billing disputes."}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2 justify-end">
+                <Button variant="ghost" size="sm" onClick={() => setDeleteConfirm(null)}>
+                  {lang === "fr" ? "Annuler" : "Cancel"}
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={async () => {
+                    const id = deleteConfirm;
+                    setDeleteConfirm(null);
+                    const res = await fetch(`/api/admin/partners/${id}`, { method: "DELETE" });
+                    if (res.ok) {
+                      toast.success(lang === "fr" ? "Partenaire supprimé" : "Partner deleted");
+                      fetchPartners();
+                    } else {
+                      toast.error(t("error_generic"));
+                    }
+                  }}
+                >
+                  {lang === "fr" ? "Supprimer" : "Delete"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>
