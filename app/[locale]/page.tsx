@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Scissors, Briefcase, GraduationCap, CheckCircle } from "lucide-react";
 import { GroomerStatsSection } from "@/components/marketing/GroomerStatsSection";
-import { partners } from "@/lib/partners";
+import { getFeaturedPartners } from "@/lib/partners";
 import Image from "next/image";
 
 export default async function HomePage({
@@ -28,6 +28,7 @@ export default async function HomePage({
   const t = await getTranslations("home");
   const tNav = await getTranslations("nav");
   const tPartners = await getTranslations("partners");
+  const featuredPartners = await getFeaturedPartners();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -169,23 +170,23 @@ export default async function HomePage({
         </section>
 
         {/* ── Partners Strip ── */}
-        {partners.filter((p) => p.featured).length > 0 && (
+        {featuredPartners.length > 0 && (
           <section className="py-10 bg-[#F6EFE6]">
             <div className="container mx-auto px-4 text-center">
               <p className="text-sm text-[#4a6260] mb-6">{tPartners("trusted_strip")}</p>
               <div className="flex items-center justify-center gap-8 flex-wrap mb-6">
-                {partners
-                  .filter((p) => p.featured)
-                  .map((p) => (
+                {featuredPartners.map((p) => (
+                  p.logoUrl && (
                     <Image
                       key={p.id}
-                      src={p.logo}
+                      src={p.logoUrl}
                       alt={p.name}
                       width={120}
                       height={40}
                       className="max-w-[120px] max-h-[40px] object-contain grayscale hover:grayscale-0 transition-all"
                     />
-                  ))}
+                  )
+                ))}
               </div>
               <Link
                 href={`/${locale}/partenaires`}

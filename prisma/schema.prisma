@@ -512,3 +512,22 @@ model TrainingListing {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 }
+
+// ─── Partners ─────────────────────────────────────────────────────────────────
+
+model Partner {
+  id             String   @id @default(cuid())
+  name           String
+  taglineFr      String   @default("")
+  taglineEn      String   @default("")
+  website        String   @default("")
+  logoUrl        String?
+  category       String   @default("brand") // brand | school | tech | industry
+  featured       Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  promoCode      String?
+  promoDescFr    String?
+  promoDescEn    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}

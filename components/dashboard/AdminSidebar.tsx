@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { Scissors, Shield, Activity, BookOpen, FileText, Star, Users, Coins } from "lucide-react";
+import { Scissors, Shield, Activity, BookOpen, FileText, Star, Users, Coins, Handshake } from "lucide-react";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 
 interface AdminSidebarProps {
@@ -13,6 +13,7 @@ interface AdminSidebarProps {
 export function AdminSidebar({ locale }: AdminSidebarProps) {
   const pathname = usePathname();
   const t = useTranslations("dashboard.admin");
+  const lang = locale === "en" ? "en" : "fr";
 
   const base = `/${locale}/dashboard/admin`;
 
@@ -24,6 +25,7 @@ export function AdminSidebar({ locale }: AdminSidebarProps) {
     { href: `${base}/reviews`,       icon: Star,     label: t("reviews") },
     { href: `${base}/users`,         icon: Users,    label: t("users") },
     { href: `${base}/credits`,       icon: Coins,    label: t("credits") },
+    { href: `${base}/partners`,      icon: Handshake, label: lang === "fr" ? "Partenaires" : "Partners" },
   ];
 
   return (

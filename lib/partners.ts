@@ -1,28 +1,29 @@
+import { prisma } from "@/lib/prisma";
+
 export type Partner = {
   id: string;
   name: string;
   taglineFr: string;
   taglineEn: string;
   website: string;
-  logo: string;
-  category: "brand" | "school" | "tech" | "industry";
+  logoUrl: string | null;
+  category: string;
   featured: boolean;
-  promoCodes?: {
-    code: string;
-    descriptionFr: string;
-    descriptionEn: string;
-  }[];
+  promoCode: string | null;
+  promoDescFr: string | null;
+  promoDescEn: string | null;
 };
 
-export const partners: Partner[] = [
-  {
-    id: "partenaire-exemple",
-    name: "Partenaire Exemple",
-    taglineFr: "Votre partenaire en toilettage professionnel",
-    taglineEn: "Your professional grooming partner",
-    website: "https://exemple.com",
-    logo: "/partners/placeholder.svg",
-    category: "brand",
-    featured: true,
-  },
-];
+export async function getPartners(): Promise<Partner[]> {
+  return prisma.partner.findMany({
+    where: { isActive: true },
+    orderBy: [{ featured: "desc" }, { name: "asc" }],
+  });
+}
+
+export async function getFeaturedPartners(): Promise<Partner[]> {
+  return prisma.partner.findMany({
+    where: { isActive: true, featured: true },
+    orderBy: { name: "asc" },
+  });
+}
