@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Pencil, Trash2, Star, ExternalLink, X } from "lucide-react";
+import { Plus, Pencil, Trash2, Star, ExternalLink, X, Upload, Loader2, ImageIcon } from "lucide-react";
+import { useUploadThing } from "@/lib/uploadthing";
+import Image from "next/image";
 
 type Partner = {
   id: string;
@@ -56,6 +58,31 @@ export function PartnersAdmin({ locale }: { locale: string }) {
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState<Omit<Partner, "id">>(EMPTY);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const logoInputRef = useRef<HTMLInputElement>(null);
+
+  const { startUpload } = useUploadThing("partnerLogo", {
+    onClientUploadComplete: (res) => {
+      if (res?.[0]) {
+        setForm((prev) => ({ ...prev, logoUrl: res[0].ufsUrl }));
+        toast.success(lang === "fr" ? "Logo téléversé" : "Logo uploaded");
+      }
+      setUploading(false);
+    },
+    onUploadError: (err) => {
+      toast.error(err.message || (lang === "fr" ? "Échec du téléversement" : "Upload failed"));
+      setUploading(false);
+    },
+  });
+
+  function handleLogoFile(file: File) {
+    if (!file.type.startsWith("image/") || file.size > 4 * 1024 * 1024) {
+      toast.error(lang === "fr" ? "Image uniquement, max 4 Mo" : "Image only, max 4 MB");
+      return;
+    }
+    setUploading(true);
+    startUpload([file]);
+  }
 
   async function fetchPartners() {
     const res = await fetch("/api/admin/partners");
@@ -214,12 +241,66 @@ export function PartnersAdmin({ locale }: { locale: string }) {
                   onChange={(e) => setForm({ ...form, taglineEn: e.target.value })}
                 />
               </div>
-              <div className="space-y-1.5">
-                <Label>{lang === "fr" ? "URL du logo" : "Logo URL"}</Label>
-                <Input
-                  value={form.logoUrl ?? ""}
-                  onChange={(e) => setForm({ ...form, logoUrl: e.target.value || null })}
-                  placeholder="/partners/logo.png"
+              <div className="space-y-1.5 sm:col-span-2">
+                <Label>{lang === "fr" ? "Logo" : "Logo"}</Label>
+                <div className="flex items-center gap-4">
+                  {form.logoUrl ? (
+                    <div className="relative h-16 w-28 rounded border border-[#CBBBA6] bg-white flex items-center justify-center overflow-hidden">
+                      <Image
+                        src={form.logoUrl}
+                        alt="Logo"
+                        width={112}
+                        height={64}
+                        className="max-h-[56px] w-auto object-contain"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setForm({ ...form, logoUrl: null })}
+                        className="absolute top-0.5 right-0.5 rounded-full bg-white/80 p-0.5 hover:bg-white"
+                      >
+                        <X className="h-3 w-3 text-[#1F2933]" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => !uploading && logoInputRef.current?.click()}
+                      className="h-16 w-28 rounded border-2 border-dashed border-[#CBBBA6] flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-[#055864] hover:bg-[#055864]/5 transition-colors"
+                    >
+                      {uploading ? (
+                        <Loader2 className="h-5 w-5 text-[#055864] animate-spin" />
+                      ) : (
+                        <>
+                          <ImageIcon className="h-5 w-5 text-[#4a6260]" />
+                          <span className="text-[10px] text-[#4a6260]">
+                            {lang === "fr" ? "Téléverser" : "Upload"}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  )}
+                  {form.logoUrl && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={uploading}
+                      onClick={() => logoInputRef.current?.click()}
+                    >
+                      {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5 mr-1" />}
+                      {lang === "fr" ? "Changer" : "Change"}
+                    </Button>
+                  )}
+                </div>
+                <input
+                  ref={logoInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleLogoFile(file);
+                    e.target.value = "";
+                  }}
                 />
               </div>
               <div className="space-y-1.5">
@@ -275,7 +356,7 @@ export function PartnersAdmin({ locale }: { locale: string }) {
             </div>
 
             <div className="flex gap-3 pt-2">
-              <Button onClick={handleSave} disabled={saving || !form.name}>
+              <Button onClick={handleSave} disabled={saving || uploading || !form.name}>
                 {saving ? t("saving") : t("save")}
               </Button>
               <Button variant="ghost" onClick={closeForm}>
@@ -299,6 +380,11 @@ export function PartnersAdmin({ locale }: { locale: string }) {
             <Card key={p.id} className={`shadow-none ${!p.isActive ? "opacity-50" : ""}`}>
               <CardContent className="py-4 px-5">
                 <div className="flex items-center gap-4">
+                  {p.logoUrl && (
+                    <div className="h-10 w-16 rounded border border-[#CBBBA6] bg-white flex items-center justify-center overflow-hidden shrink-0">
+                      <Image src={p.logoUrl} alt={p.name} width={60} height={36} className="max-h-[32px] w-auto object-contain" />
+                    </div>
+                  )}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-semibold text-sm text-[#1F2933]">{p.name}</h3>
