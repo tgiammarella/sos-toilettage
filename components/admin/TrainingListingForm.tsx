@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Loader2, Trash2 } from "lucide-react";
+import { Loader2, Trash2, Upload, ImageIcon, X } from "lucide-react";
+import { useUploadThing } from "@/lib/uploadthing";
+import Image from "next/image";
 
 interface ListingData {
   id?: string;
@@ -68,6 +70,31 @@ export function TrainingListingForm({
   });
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const logoInputRef = useRef<HTMLInputElement>(null);
+
+  const { startUpload } = useUploadThing("partnerLogo", {
+    onClientUploadComplete: (res) => {
+      if (res?.[0]) {
+        setForm((prev) => ({ ...prev, logoUrl: res[0].ufsUrl }));
+        toast.success(lang === "fr" ? "Logo téléversé" : "Logo uploaded");
+      }
+      setUploading(false);
+    },
+    onUploadError: (err) => {
+      toast.error(err.message || (lang === "fr" ? "Échec du téléversement" : "Upload failed"));
+      setUploading(false);
+    },
+  });
+
+  function handleLogoFile(file: File) {
+    if (!file.type.startsWith("image/") || file.size > 4 * 1024 * 1024) {
+      toast.error(lang === "fr" ? "Image uniquement, max 4 Mo" : "Image only, max 4 MB");
+      return;
+    }
+    setUploading(true);
+    startUpload([file]);
+  }
 
   function set(field: keyof ListingData, value: string | boolean) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -121,12 +148,16 @@ export function TrainingListingForm({
         return;
       }
 
+      const backPath = form.type === "SCHOOL" && !form.isTrainer
+        ? `/${locale}/dashboard/admin/schools`
+        : `/${locale}/dashboard/admin/trainings`;
+
       toast.success(
         isEdit
           ? (lang === "fr" ? "Entrée modifiée" : "Listing updated")
           : (lang === "fr" ? "Entrée créée" : "Listing created"),
       );
-      router.push(`/${locale}/dashboard/admin/directory`);
+      router.push(backPath);
       router.refresh();
     } finally {
       setSaving(false);
@@ -143,7 +174,10 @@ export function TrainingListingForm({
         return;
       }
       toast.success(lang === "fr" ? "Entrée supprimée" : "Listing deleted");
-      router.push(`/${locale}/dashboard/admin/directory`);
+      const backPath = form.type === "SCHOOL" && !form.isTrainer
+        ? `/${locale}/dashboard/admin/schools`
+        : `/${locale}/dashboard/admin/trainings`;
+      router.push(backPath);
       router.refresh();
     } finally {
       setDeleting(false);
@@ -191,9 +225,67 @@ export function TrainingListingForm({
             <Label>{lang === "fr" ? "Site web" : "Website"}</Label>
             <Input value={form.websiteUrl} onChange={(e) => set("websiteUrl", e.target.value)} placeholder="https://…" />
           </div>
-          <div className="space-y-1.5">
-            <Label>{lang === "fr" ? "URL du logo" : "Logo URL"}</Label>
-            <Input value={form.logoUrl} onChange={(e) => set("logoUrl", e.target.value)} placeholder="https://…" />
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label>{lang === "fr" ? "Logo" : "Logo"}</Label>
+            <div className="flex items-center gap-4">
+              {form.logoUrl ? (
+                <div className="relative h-16 w-28 rounded border border-[#CBBBA6] bg-white flex items-center justify-center overflow-hidden">
+                  <Image
+                    src={form.logoUrl}
+                    alt="Logo"
+                    width={112}
+                    height={64}
+                    className="max-h-[56px] w-auto object-contain"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setForm((prev) => ({ ...prev, logoUrl: "" }))}
+                    className="absolute top-0.5 right-0.5 rounded-full bg-white/80 p-0.5 hover:bg-white"
+                  >
+                    <X className="h-3 w-3 text-[#1F2933]" />
+                  </button>
+                </div>
+              ) : (
+                <div
+                  onClick={() => !uploading && logoInputRef.current?.click()}
+                  className="h-16 w-28 rounded border-2 border-dashed border-[#CBBBA6] flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-[#055864] hover:bg-[#055864]/5 transition-colors"
+                >
+                  {uploading ? (
+                    <Loader2 className="h-5 w-5 text-[#055864] animate-spin" />
+                  ) : (
+                    <>
+                      <ImageIcon className="h-5 w-5 text-[#4a6260]" />
+                      <span className="text-[10px] text-[#4a6260]">
+                        {lang === "fr" ? "Téléverser" : "Upload"}
+                      </span>
+                    </>
+                  )}
+                </div>
+              )}
+              {form.logoUrl && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={uploading}
+                  onClick={() => logoInputRef.current?.click()}
+                >
+                  {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5 mr-1" />}
+                  {lang === "fr" ? "Changer" : "Change"}
+                </Button>
+              )}
+            </div>
+            <input
+              ref={logoInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleLogoFile(file);
+                e.target.value = "";
+              }}
+            />
           </div>
           <div className="space-y-1.5">
             <Label>{lang === "fr" ? "Téléphone" : "Phone"}</Label>
@@ -237,48 +329,62 @@ export function TrainingListingForm({
           {lang === "fr" ? "Plan & options" : "Plan & options"}
         </CardHeader>
         <CardContent className="px-4 pb-4 space-y-4">
-          <div className="space-y-1.5">
-            <Label>{lang === "fr" ? "Forfait" : "Tier"}</Label>
-            {form.isTrainer ? (
-              <p className="text-sm text-muted-foreground">
-                {lang === "fr"
-                  ? "Les formateurs indépendants sont toujours gratuits"
-                  : "Independent trainers are always free"}
-              </p>
-            ) : (
-              <Select value={form.tier} onValueChange={(v) => set("tier", v)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="GRATUIT">
-                    {lang === "fr" ? "Gratuit — Nom + lien" : "Free — Name + link"}
-                  </SelectItem>
-                  <SelectItem value="PARTENAIRE">
-                    {lang === "fr" ? "Partenaire — 49$/mois" : "Partner — $49/month"}
-                  </SelectItem>
-                  <SelectItem value="ELITE">
-                    {lang === "fr" ? "Élite — 99$/mois" : "Elite — $99/month"}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            )}
-          </div>
-          {!form.isTrainer && form.tier !== "GRATUIT" && (
-            <div className="rounded-md bg-[#F6EFE6] px-3 py-2 text-xs text-[#055864]">
-              {form.tier === "PARTENAIRE"
-                ? (lang === "fr"
-                  ? "Profil complet, jusqu'à 20 profils de diplômés, placement prioritaire. Annuel : 490$/an."
-                  : "Full profile, up to 20 graduate profiles, priority placement. Annual: $490/year.")
-                : (lang === "fr"
-                  ? "Tout Partenaire + diplômés illimités, suggestion auto aux salons, 1 mention infolettre/trimestre, 1 publication sociale/trimestre. Annuel : 990$/an."
-                  : "Everything in Partner + unlimited graduates, auto-suggested to salons, 1 newsletter mention/quarter, 1 social post/quarter. Annual: $990/year.")}
+          {form.type === "SCHOOL" && !form.isTrainer ? (
+            /* School tier picker */
+            <>
+              <div className="space-y-1.5">
+                <Label>{lang === "fr" ? "Forfait" : "Tier"}</Label>
+                <Select value={form.tier} onValueChange={(v) => set("tier", v)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="GRATUIT">
+                      {lang === "fr" ? "Gratuit — Nom + lien" : "Free — Name + link"}
+                    </SelectItem>
+                    <SelectItem value="PARTENAIRE">
+                      {lang === "fr" ? "Partenaire — 49$/mois" : "Partner — $49/month"}
+                    </SelectItem>
+                    <SelectItem value="ELITE">
+                      {lang === "fr" ? "Élite — 99$/mois" : "Elite — $99/month"}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {form.tier !== "GRATUIT" && (
+                <div className="rounded-md bg-[#F6EFE6] px-3 py-2 text-xs text-[#055864]">
+                  {form.tier === "PARTENAIRE"
+                    ? (lang === "fr"
+                      ? "Profil complet, jusqu'à 20 profils de diplômés, placement prioritaire. Annuel : 490$/an."
+                      : "Full profile, up to 20 graduate profiles, priority placement. Annual: $490/year.")
+                    : (lang === "fr"
+                      ? "Tout Partenaire + diplômés illimités, suggestion auto aux salons, 1 mention infolettre/trimestre, 1 publication sociale/trimestre. Annuel : 990$/an."
+                      : "Everything in Partner + unlimited graduates, auto-suggested to salons, 1 newsletter mention/quarter, 1 social post/quarter. Annual: $990/year.")}
+                </div>
+              )}
+            </>
+          ) : (
+            /* Trainings / independent trainers — free with future commission */
+            <div className="space-y-1.5">
+              <Label>{lang === "fr" ? "Tarification" : "Pricing"}</Label>
+              <div className="rounded-md bg-[#F6EFE6] px-3 py-2.5 text-sm text-[#055864]">
+                <p className="font-medium">
+                  {lang === "fr" ? "Gratuit" : "Free"}
+                </p>
+                <p className="text-xs mt-1 text-[#4a6260]">
+                  {lang === "fr"
+                    ? "Gratuit le premier mois. Par la suite, commission de 10% sur le prix total des formations vendues via la plateforme."
+                    : "Free for the first month. After that, 10% commission on total course price sold through the platform."}
+                </p>
+              </div>
             </div>
           )}
-          <div className="flex items-center justify-between">
-            <Label>{lang === "fr" ? "Formateur indépendant" : "Independent trainer"}</Label>
-            <Switch checked={form.isTrainer} onCheckedChange={(v) => {
-              setForm((prev) => ({ ...prev, isTrainer: v, tier: v ? "FREE" : "GRATUIT" }));
-            }} />
-          </div>
+          {form.type === "SCHOOL" && (
+            <div className="flex items-center justify-between">
+              <Label>{lang === "fr" ? "Formateur indépendant" : "Independent trainer"}</Label>
+              <Switch checked={form.isTrainer} onCheckedChange={(v) => {
+                setForm((prev) => ({ ...prev, isTrainer: v, tier: v ? "FREE" : "GRATUIT" }));
+              }} />
+            </div>
+          )}
           <div className="flex items-center justify-between">
             <Label>{lang === "fr" ? "Mise en avant" : "Featured"}</Label>
             <Switch checked={form.isFeatured} onCheckedChange={(v) => set("isFeatured", v)} />
@@ -291,7 +397,7 @@ export function TrainingListingForm({
       </Card>
 
       <div className="flex items-center gap-3 pt-2">
-        <Button type="submit" disabled={saving} className="min-w-[160px]">
+        <Button type="submit" disabled={saving || uploading} className="min-w-[160px]">
           {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
           {isEdit
             ? (lang === "fr" ? "Enregistrer" : "Save")
