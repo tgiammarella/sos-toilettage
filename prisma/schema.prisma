@@ -517,18 +517,23 @@ model TrainingListing {
 // ─── Partners ─────────────────────────────────────────────────────────────────
 
 model Partner {
-  id             String   @id @default(cuid())
-  name           String
-  taglineFr      String   @default("")
-  taglineEn      String   @default("")
-  website        String   @default("")
-  logoUrl        String?
-  category       String   @default("brand") // brand | school | tech | industry
-  featured       Boolean  @default(false)
-  isActive       Boolean  @default(true)
-  promoCode      String?
-  promoDescFr    String?
-  promoDescEn    String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id                    String   @id @default(cuid())
+  name                  String
+  taglineFr             String   @default("")
+  taglineEn             String   @default("")
+  website               String   @default("")
+  logoUrl               String?
+  category              String   @default("brand") // brand | school | tech | industry
+  tier                  String   @default("DECOUVERTE") // DECOUVERTE | VEDETTE | SIGNATURE
+  launchPricing         Boolean  @default(false)
+  lockedMonthlyRate     Int?     // cents — pinned at signup for grandfathered partners
+  memberDiscountPercent Int?     // 10-15 required for DECOUVERTE
+  featured              Boolean  @default(false)
+  isActive              Boolean  @default(true)
+  isApproved            Boolean  @default(false)
+  promoCode             String?
+  promoDescFr           String?
+  promoDescEn           String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }

@@ -21,8 +21,13 @@ type Partner = {
   website: string;
   logoUrl: string | null;
   category: string;
+  tier: string;
+  launchPricing: boolean;
+  lockedMonthlyRate: number | null;
+  memberDiscountPercent: number | null;
   featured: boolean;
   isActive: boolean;
+  isApproved: boolean;
   promoCode: string | null;
   promoDescFr: string | null;
   promoDescEn: string | null;
@@ -35,8 +40,13 @@ const EMPTY: Omit<Partner, "id"> = {
   website: "",
   logoUrl: null,
   category: "brand",
+  tier: "DECOUVERTE",
+  launchPricing: false,
+  lockedMonthlyRate: null,
+  memberDiscountPercent: null,
   featured: false,
   isActive: true,
+  isApproved: false,
   promoCode: null,
   promoDescFr: null,
   promoDescEn: null,
@@ -47,6 +57,12 @@ const CATEGORY_LABELS: Record<string, { fr: string; en: string }> = {
   school: { fr: "École", en: "School" },
   tech: { fr: "Technologie", en: "Tech" },
   industry: { fr: "Industrie", en: "Industry" },
+};
+
+const TIER_CONFIG: Record<string, { label: Record<string, string>; className: string; price: string }> = {
+  DECOUVERTE: { label: { fr: "Découverte", en: "Discovery" }, className: "bg-gray-100 text-gray-700", price: "Gratuit / Free" },
+  VEDETTE:    { label: { fr: "Vedette",    en: "Spotlight" }, className: "bg-blue-50 text-blue-700",   price: "29$/mo" },
+  SIGNATURE:  { label: { fr: "Signature",  en: "Signature" }, className: "bg-purple-50 text-purple-700", price: "59$/mo" },
 };
 
 export function PartnersAdmin({ locale }: { locale: string }) {
@@ -112,8 +128,13 @@ export function PartnersAdmin({ locale }: { locale: string }) {
       website: p.website,
       logoUrl: p.logoUrl,
       category: p.category,
+      tier: p.tier,
+      launchPricing: p.launchPricing,
+      lockedMonthlyRate: p.lockedMonthlyRate,
+      memberDiscountPercent: p.memberDiscountPercent,
       featured: p.featured,
       isActive: p.isActive,
+      isApproved: p.isApproved,
       promoCode: p.promoCode,
       promoDescFr: p.promoDescFr,
       promoDescEn: p.promoDescEn,
@@ -338,13 +359,88 @@ export function PartnersAdmin({ locale }: { locale: string }) {
               </div>
             </div>
 
-            <div className="flex items-center gap-6">
+            {/* Tier picker */}
+            <div className="space-y-3 rounded-lg border border-[#CBBBA6] p-4">
+              <Label className="text-sm font-semibold">{lang === "fr" ? "Forfait" : "Tier"}</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {(["DECOUVERTE", "VEDETTE", "SIGNATURE"] as const).map((tierKey) => {
+                  const cfg = TIER_CONFIG[tierKey];
+                  const selected = form.tier === tierKey;
+                  return (
+                    <button
+                      key={tierKey}
+                      type="button"
+                      onClick={() => setForm({ ...form, tier: tierKey })}
+                      className={`rounded-lg border-2 p-3 text-left transition-colors ${
+                        selected
+                          ? "border-[#055864] bg-[#055864]/5"
+                          : "border-[#CBBBA6] hover:border-[#055864]/50"
+                      }`}
+                    >
+                      <p className="font-medium text-sm text-[#1F2933]">{cfg.label[lang]}</p>
+                      <p className="text-xs text-[#4a6260] mt-0.5">{cfg.price}</p>
+                    </button>
+                  );
+                })}
+              </div>
+              {form.tier === "DECOUVERTE" && (
+                <div className="rounded-md bg-[#F6EFE6] px-3 py-2 text-xs text-[#055864]">
+                  {lang === "fr"
+                    ? "Listé dans le répertoire. Doit offrir un rabais membre de 10–15% (obligatoire)."
+                    : "Listed in directory. Must offer a 10–15% member discount (required)."}
+                </div>
+              )}
+              {form.tier === "VEDETTE" && (
+                <div className="rounded-md bg-[#F6EFE6] px-3 py-2 text-xs text-[#055864]">
+                  {lang === "fr"
+                    ? "Profil complet + photos, placement prioritaire, mentions infolettre. Aucun rabais requis."
+                    : "Full profile + photos, priority placement, newsletter mentions. No discount required."}
+                </div>
+              )}
+              {form.tier === "SIGNATURE" && (
+                <div className="rounded-md bg-[#F6EFE6] px-3 py-2 text-xs text-[#055864]">
+                  {lang === "fr"
+                    ? "Tout Vedette + placement top de catégorie + accès prioritaire inventaire pub. Places limitées."
+                    : "Everything in Spotlight + top-of-category placement + priority ad inventory access. Limited spots."}
+                </div>
+              )}
+              {form.tier === "DECOUVERTE" && (
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{lang === "fr" ? "Rabais membre (%)" : "Member discount (%)"} *</Label>
+                  <Input
+                    type="number"
+                    min={10}
+                    max={15}
+                    value={form.memberDiscountPercent ?? ""}
+                    onChange={(e) => setForm({ ...form, memberDiscountPercent: e.target.value ? parseInt(e.target.value) : null })}
+                    placeholder="10-15"
+                    className="w-24"
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center gap-6 flex-wrap">
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={form.launchPricing}
+                  onCheckedChange={(v) => setForm({ ...form, launchPricing: v })}
+                />
+                <Label className="text-sm">{lang === "fr" ? "Tarif fondateur" : "Launch pricing"}</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={form.isApproved}
+                  onCheckedChange={(v) => setForm({ ...form, isApproved: v })}
+                />
+                <Label className="text-sm">{lang === "fr" ? "Approuvé" : "Approved"}</Label>
+              </div>
               <div className="flex items-center gap-2">
                 <Switch
                   checked={form.featured}
                   onCheckedChange={(v) => setForm({ ...form, featured: v })}
                 />
-                <Label className="text-sm">{lang === "fr" ? "Vedette" : "Featured"}</Label>
+                <Label className="text-sm">{lang === "fr" ? "Mise en avant" : "Featured"}</Label>
               </div>
               <div className="flex items-center gap-2">
                 <Switch
@@ -388,6 +484,11 @@ export function PartnersAdmin({ locale }: { locale: string }) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-semibold text-sm text-[#1F2933]">{p.name}</h3>
+                      {TIER_CONFIG[p.tier] && (
+                        <Badge className={`text-xs ${TIER_CONFIG[p.tier].className}`}>
+                          {TIER_CONFIG[p.tier].label[lang]}
+                        </Badge>
+                      )}
                       <Badge variant="outline" className="text-xs">
                         {CATEGORY_LABELS[p.category]?.[lang] ?? p.category}
                       </Badge>
