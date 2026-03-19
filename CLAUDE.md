@@ -1,14 +1,17 @@
 # Project: Tout Toilettage Marketplace
 
-## Core Stack (Stable Assumptions)
+## Core Stack
 
-- Next.js 14 (App Router)
+- Next.js 16 (App Router)
 - TypeScript (strict mode)
-- Prisma v6
-- SQLite (dev only)
+- Prisma v6 + PostgreSQL (Neon)
 - NextAuth with role-based sessions
 - next-intl (FR default, EN secondary)
 - Tailwind + shadcn/ui
+- Resend (emails from info@touttoilettage.com)
+- UploadThing (file uploads)
+- Upstash Redis (rate limiting)
+- Deployed on Vercel
 
 Do not re-evaluate stack decisions unless explicitly asked.
 
@@ -41,6 +44,7 @@ Never rely on client-only checks.
 SalonProfile fields:
 - creditsAvailable Int @default(0)
 - creditsMonthlyAllowance Int @default(0)
+- planKey String @default("NONE") — maps to ESSENTIEL | SALON | RESEAU | CHAINE
 
 Never bypass ledger tracking.
 
@@ -53,14 +57,15 @@ Never bypass ledger tracking.
 - Duration: 30 days visibility
 - Flow: DRAFT → payment → PUBLISHED (expiresAt = now + 30 days)
 - Expired jobs (expiresAt < now) become EXPIRED and hidden from public listings
-- Stripe not wired yet — V1 simulates payment
+- Publish route gated to ADMIN-only until Stripe is wired (returns 402 for non-admin)
+- Cron endpoint at `/api/cron/expire-jobs` handles auto-expiry
 
 ---
 
 ## Shift Rules
 
 - FILLED shifts must mask salon identity publicly
-- Groomers cannot apply twice
+- Groomers cannot apply twice (enforced via `@@unique([shiftPostId, groomerId])`)
 - Apply button must:
   - Redirect to login if anonymous
   - Hide for SALON/ADMIN
@@ -97,6 +102,10 @@ Do not violate this.
 - No duplicated credit logic in routes
 - Prefer server components where possible
 - Only use client components when interactivity requires it
+- Brand constants centralized in `lib/brand.ts`
+- Email sender centralized: `lib/brand.ts` → `lib/resend.ts` → `lib/notifications.ts`
+- Rate limiting via Upstash Redis (`lib/rate-limit.ts`), falls back to no-op when env vars missing
+- Env validation at startup (`lib/env.ts`) — fails fast on missing required vars
 
 ---
 
@@ -121,7 +130,7 @@ System must support:
 Stripe webhooks will call:
 POST /api/credits/add
 
-Do not implement Stripe until explicitly instructed.
+Stripe env vars present but not yet wired. Do not implement Stripe until explicitly instructed.
 
 ---
 
@@ -138,101 +147,80 @@ Keep responses concise and implementation-focused.
 
 ---
 
-## Audit Report — 2026-03-16
+## Audit Status — 2026-03-19
 
-Build status: PASS (zero TypeScript errors, all 76 routes compile)
+Build status: PASS (zero TypeScript errors, 98 routes compiled)
+Database: PostgreSQL (Neon) — migrated from SQLite, clean reset
+Deployment: Vercel — live
+Email: Verified domain (info@touttoilettage.com via Resend)
 
-### Bugs Found
+### Fixed (from original audit)
 
-#### Critical
+1. ~~Job rejection email sends wrong data~~ — `notifyJobApplicationRejected()` created with correct fields
+2. ~~Job publish route has no payment enforcement~~ — Admin-only gate with 402 until Stripe
+3. ~~Coupon apply TOCTOU race condition~~ — All validation inside `$transaction`
+4. ~~Application model missing unique constraints~~ — `@@unique([shiftPostId, groomerId])` and `@@unique([jobPostId, groomerId])` added
+5. ~~Missing onDelete rules~~ — Explicit `onDelete: Cascade` or `SetNull` on all relations
+6. ~~Job expiry runs on page load only~~ — Cron endpoint at `/api/cron/expire-jobs`
+7. ~~Resend sender using onboarding@resend.dev~~ — Updated to verified domain
+8. ~~No env variable validation~~ — `lib/env.ts` fails fast on missing required vars
+9. ~~No contact page~~ — Built at `/[locale]/contact` with API route
+10. ~~SQLite in production~~ — Migrated to PostgreSQL (Neon)
 
-1. **Job rejection email sends wrong data**
-   `app/api/jobs/[id]/applications/[applicationId]/accept/route.ts:140` and `reject/route.ts:72`
-   `notifyApplicationRejected()` is called with `shiftDate: job.title` — sends the job title where the email template expects a date.
-   Fix: Create `notifyJobApplicationRejected()` with correct fields (jobTitle instead of shiftDate).
-
-2. **Job publish route has no payment enforcement**
-   `app/api/jobs/[id]/publish/route.ts` simulates payment success but has no guard preventing unlimited free publishing. Any salon can publish unlimited jobs by calling the endpoint directly.
-   Fix: Add admin-only gate or credit-based check until Stripe is live.
+### Remaining Issues
 
 #### Medium
 
-3. **Coupon apply has TOCTOU race condition**
-   `app/api/billing/apply-coupon/route.ts` — maxUses checked outside the transaction, usedCount incremented inside. Two concurrent requests could both pass.
-
-4. **Job expiry logic runs on page load only**
-   Expired jobs are auto-marked EXPIRED only when the salon visits their dashboard. Public /jobs page filters correctly but DB status stays PUBLISHED.
-
-5. **Suggestions endpoint fetches ALL groomers**
-   `app/api/shifts/[id]/suggestions/route.ts:52` — no WHERE clause, fetches every groomer. Will degrade at scale.
+1. **Suggestions endpoint fetches ALL groomers**
+   `app/api/shifts/[id]/suggestions/route.ts` — no WHERE clause, fetches every groomer. Will degrade at scale.
 
 #### Low
 
-6. Unused `CardHeaderSimple` function in groomer dashboard (dead code with void suppression).
-7. Hardcoded French strings in JobDecisionButtons, ShiftForm errors, groomer dashboard discover section — affects EN users.
-8. Missing rate limits on shifts POST, reviews POST, jobs publish.
-9. Annual pricing comment misleading (monthly × 10 = 17% discount is correct but field naming is confusing).
+2. **Dead code** — `CardHeaderSimple` in `app/[locale]/dashboard/groomer/page.tsx` (unused, suppressed with void)
+3. **Hardcoded French strings** — Some strings in JobDecisionButtons, ShiftForm errors, groomer dashboard not going through next-intl
+4. **Missing rate limits** — shifts POST, reviews POST, jobs publish not rate-limited
+5. **Pagination** — shifts/jobs public listings load all results
 
 ### What's Working
 
 - Credit system: atomic transactions, ledger tracking, 402 on insufficient
 - Auth guards: all routes enforce correct roles
 - Shift flow: DRAFT → PUBLISHED → FILLED → COMPLETED with proper state checks
-- Review system: gated behind COMPLETED status, one review per engagement
+- Review system: gated behind COMPLETED status, one per engagement
 - Reliability score: formula handles edge cases
 - Quick apply: duplicate prevention client-side and server-side (409)
 - Notifications: 12+ email functions, fire-and-forget with error logging
 - Password reset: rate-limited, single-use tokens, no email enumeration
 - Training directory: admin CRUD, public display with featured section
-- Job posting: two-step creation (draft → publish), expiry filtering
+- Job posting: two-step creation (draft → publish), admin-gated publish, cron expiry
+- Coupon system: TOCTOU-safe, single-use per salon enforcement
+- Legal pages: privacy policy (Law 25), terms of service, cookie policy — all bilingual
+- Partners page: static config, homepage strip, dedicated page
+- Contact form: client-side form → API route → Resend email
 
 ---
 
-## Launch Task List (Recommended Order)
+## Remaining Launch Tasks
 
-### Phase 1 — Bug Fixes (Do First)
-
-| # | Task | Severity | Effort |
-|---|------|----------|--------|
-| 1 | Fix job rejection email — create `notifyJobApplicationRejected` with correct fields | Critical | Small |
-| 2 | Add payment guard to job publish — admin-only gate or credit deduction until Stripe | Critical | Small |
-| 3 | Move coupon maxUses check inside transaction | Medium | Small |
-
-### Phase 2 — Data Integrity
+### Pre-Launch (Do Next)
 
 | # | Task | Effort |
 |---|------|--------|
-| 4 | Add `@@unique([shiftPostId, groomerId])` and `@@unique([jobPostId, groomerId])` to Application model | Small |
-| 5 | Add explicit `onDelete` rules to Application, Engagement, CreditLedger relations | Small |
-| 6 | Add scheduled job or middleware to auto-expire jobs (not just on salon dashboard visit) | Medium |
+| 1 | Wire Stripe for job posting payments ($49) and subscription plans | Large |
+| 2 | Wire Stripe webhooks for credit pack purchases and monthly renewal | Large |
+| 3 | Internationalize remaining hardcoded French strings | Medium |
+| 4 | Add pagination to shifts/jobs public listings | Medium |
+| 5 | Add WHERE clause to suggestions endpoint | Small |
+| 6 | Add rate limits to shifts POST, reviews POST, jobs publish | Small |
+| 7 | Remove dead code (CardHeaderSimple) | Small |
 
-### Phase 3 — Production Readiness
-
-| # | Task | Effort |
-|---|------|--------|
-| 7 | Wire Stripe for job posting payments ($49) and subscription plans | Large |
-| 8 | Wire Stripe webhooks for credit pack purchases and monthly renewal | Large |
-| 9 | Switch from SQLite to PostgreSQL — update datasource, test migrations, verify case-insensitive queries | Medium |
-| 10 | Switch Resend sender from `onboarding@resend.dev` to verified custom domain | Small |
-| 11 | Set up Upstash Redis for production rate limiting (replace in-memory) | Medium |
-| 12 | Add environment variable validation on startup | Small |
-
-### Phase 4 — UX Polish
+### Post-Launch
 
 | # | Task | Effort |
 |---|------|--------|
-| 13 | Internationalize remaining hardcoded French strings (JobDecisionButtons, ShiftForm, groomer dashboard) | Medium |
-| 14 | Add pagination to shifts/jobs public listings and groomer suggestions endpoint | Medium |
-| 15 | Add email verification flow for new accounts | Medium |
-| 16 | Add `/contact` page (referenced by schools CTA but doesn't exist) | Small |
-| 17 | Remove dead code (CardHeaderSimple, unused imports) | Small |
-
-### Phase 5 — Growth Features (Post-Launch)
-
-| # | Task | Effort |
-|---|------|--------|
-| 18 | Featured job listings (isFeatured in schema, needs UI + pricing) | Medium |
-| 19 | Groomer availability calendar (beyond availableToday boolean) | Large |
-| 20 | Notification preferences (opt-out of urgent alerts, email frequency) | Medium |
-| 21 | Analytics dashboard for admins (user growth, shift fill rates, revenue) | Large |
-| 22 | Mobile-responsive sidebar (currently hidden md:flex) | Medium |
+| 8 | Email verification flow for new accounts | Medium |
+| 9 | Featured job listings (isFeatured in schema, needs UI + pricing) | Medium |
+| 10 | Groomer availability calendar | Large |
+| 11 | Notification preferences | Medium |
+| 12 | Analytics dashboard for admins | Large |
+| 13 | Mobile-responsive sidebar | Medium |
