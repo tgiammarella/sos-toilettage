@@ -11,7 +11,7 @@ export type Partner = {
   logoUrl: string | null;
   phone: string | null;
   city: string;
-  region: string;
+  province: string;
   category: string;
   tier: string;
   featured: boolean;
@@ -41,7 +41,7 @@ const PUBLIC_SELECT = {
   logoUrl: true,
   phone: true,
   city: true,
-  region: true,
+  province: true,
   category: true,
   tier: true,
   featured: true,

@@ -48,7 +48,7 @@ export default async function PartnerProfilePage({
       ? {
           "@type": "PostalAddress",
           addressLocality: partner.city,
-          addressRegion: partner.region || "Québec",
+          addressRegion: partner.province || "QC",
           addressCountry: "CA",
         }
       : undefined,

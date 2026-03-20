@@ -25,7 +25,7 @@ type Partner = {
   logoUrl: string | null;
   phone: string | null;
   city: string;
-  region: string;
+  province: string;
   category: string;
   tier: string;
   launchPricing: boolean;
@@ -57,7 +57,7 @@ const EMPTY: Omit<Partner, "id"> = {
   logoUrl: null,
   phone: null,
   city: "",
-  region: "",
+  province: "QC",
   category: "brand",
   tier: "DECOUVERTE",
   launchPricing: false,
@@ -201,7 +201,7 @@ export function PartnersAdmin({ locale }: { locale: string }) {
       logoUrl: p.logoUrl,
       phone: p.phone,
       city: p.city,
-      region: p.region,
+      province: p.province,
       category: p.category,
       tier: p.tier,
       launchPricing: p.launchPricing,
@@ -369,11 +369,30 @@ export function PartnersAdmin({ locale }: { locale: string }) {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>{lang === "fr" ? "Région" : "Region"}</Label>
-                <Input
-                  value={form.region}
-                  onChange={(e) => setForm({ ...form, region: e.target.value })}
-                />
+                <Label>Province</Label>
+                <select
+                  value={form.province}
+                  onChange={(e) => setForm({ ...form, province: e.target.value })}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                >
+                  {[
+                    { value: "QC", label: "Québec" },
+                    { value: "ON", label: "Ontario" },
+                    { value: "BC", label: "Colombie-Britannique" },
+                    { value: "AB", label: "Alberta" },
+                    { value: "MB", label: "Manitoba" },
+                    { value: "SK", label: "Saskatchewan" },
+                    { value: "NS", label: "Nouvelle-Écosse" },
+                    { value: "NB", label: "Nouveau-Brunswick" },
+                    { value: "PE", label: "Île-du-Prince-Édouard" },
+                    { value: "NL", label: "Terre-Neuve-et-Labrador" },
+                    { value: "YT", label: "Yukon" },
+                    { value: "NT", label: "Territoires du Nord-Ouest" },
+                    { value: "NU", label: "Nunavut" },
+                  ].map((p) => (
+                    <option key={p.value} value={p.value}>{p.label}</option>
+                  ))}
+                </select>
               </div>
               <div className="space-y-1.5">
                 <Label>{lang === "fr" ? "Téléphone" : "Phone"}</Label>

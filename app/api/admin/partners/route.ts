@@ -13,7 +13,7 @@ const PartnerSchema = z.object({
   logoUrl: z.string().max(500).nullable().optional(),
   phone: z.string().max(50).nullable().optional(),
   city: z.string().max(200).default(""),
-  region: z.string().max(200).default(""),
+  province: z.string().min(2).max(2).default("QC"),
   category: z.enum(["brand", "school", "tech", "industry"]).default("brand"),
   tier: z.enum(["DECOUVERTE", "VEDETTE", "SIGNATURE"]).default("DECOUVERTE"),
   launchPricing: z.boolean().default(false),

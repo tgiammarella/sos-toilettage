@@ -13,7 +13,7 @@ const UpdateSchema = z.object({
   logoUrl: z.string().max(500).nullable().optional(),
   phone: z.string().max(50).nullable().optional(),
   city: z.string().max(200).optional(),
-  region: z.string().max(200).optional(),
+  province: z.string().min(2).max(2).optional(),
   category: z.enum(["brand", "school", "tech", "industry"]).optional(),
   tier: z.enum(["DECOUVERTE", "VEDETTE", "SIGNATURE"]).optional(),
   launchPricing: z.boolean().optional(),

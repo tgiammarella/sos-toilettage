@@ -219,7 +219,7 @@ export function PartnerProfile({
                   {partner.city && (
                     <span className="text-sm text-[#4a6260] flex items-center gap-1">
                       <MapPin className="h-3.5 w-3.5" />
-                      {partner.city}{partner.region ? `, ${partner.region}` : ""}
+                      {partner.city}{partner.province ? `, ${partner.province}` : ""}
                     </span>
                   )}
                 </div>

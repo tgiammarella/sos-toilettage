@@ -527,7 +527,7 @@ model Partner {
   logoUrl               String?
   phone                 String?
   city                  String    @default("")
-  region                String    @default("")
+  province              String    @default("QC")
   category              String    @default("brand") // brand | school | tech | industry
   tier                  String    @default("DECOUVERTE") // DECOUVERTE | VEDETTE | SIGNATURE
   launchPricing         Boolean   @default(false)
