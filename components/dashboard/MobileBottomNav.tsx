@@ -52,12 +52,12 @@ export function MobileBottomNav({
               <Link
                 key={href}
                 href={href}
-                className={`flex flex-col items-center gap-0.5 px-2 py-1 min-w-0 ${
+                className={`relative flex flex-col items-center gap-0.5 px-2 py-1 min-w-0 ${
                   active ? "text-[#055864]" : "text-[#4A5568]"
                 }`}
               >
                 {active && (
-                  <span className="absolute top-0 w-8 h-0.5 bg-[#055864] rounded-b" />
+                  <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-[#055864] rounded-b" />
                 )}
                 <Icon className="h-5 w-5 shrink-0" />
                 <span className="text-[10px] font-medium truncate max-w-[64px]">{label}</span>
@@ -87,9 +87,13 @@ export function MobileBottomNav({
 
           {/* Drawer panel — slides up from bottom */}
           <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[80vh] overflow-y-auto pb-[env(safe-area-inset-bottom)] animate-in slide-in-from-bottom duration-200">
-            {/* Handle + close */}
-            <div className="flex items-center justify-between p-4 border-b border-border/60">
-              <div className="w-10 h-1 rounded-full bg-border mx-auto absolute left-1/2 -translate-x-1/2 top-2" />
+            {/* Handle bar */}
+            <div className="flex justify-center pt-2 pb-0">
+              <div className="w-10 h-1 rounded-full bg-border" />
+            </div>
+
+            {/* Header + close */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border/60">
               <span className="text-sm font-semibold text-[#1F2933]">{menuLabel}</span>
               <button
                 onClick={() => setDrawerOpen(false)}
@@ -115,7 +119,7 @@ export function MobileBottomNav({
                         : "text-[#4A5568] hover:bg-muted"
                     }`}
                   >
-                    <Icon className="h-4.5 w-4.5 shrink-0" />
+                    <Icon className="h-[18px] w-[18px] shrink-0" />
                     {label}
                   </Link>
                 );
@@ -143,7 +147,7 @@ export function MobileBottomNav({
                           : "text-[#4A5568] hover:bg-muted"
                       }`}
                     >
-                      <Icon className="h-4.5 w-4.5 shrink-0" />
+                      <Icon className="h-[18px] w-[18px] shrink-0" />
                       {label}
                     </Link>
                   );
