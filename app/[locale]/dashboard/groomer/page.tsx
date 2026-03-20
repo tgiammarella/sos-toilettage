@@ -132,18 +132,18 @@ export default async function GroomerDashboardPage({
                   <p className="font-semibold text-lg">{groomer.fullName}</p>
                   {!profileComplete && (
                     <Badge variant="outline" className="text-xs border-warning-border text-warning-foreground">
-                      Profil incomplet
+                      {t("profile_incomplete")}
                     </Badge>
                   )}
                 </div>
                 <p className="text-sm text-muted-foreground mt-0.5">
-                  {groomer.city} · {groomer.yearsExperience} {locale === "fr" ? "an(s) d'expérience" : "year(s) experience"}
+                  {groomer.city} · {groomer.yearsExperience} {t("years_experience")}
                 </p>
                 {specs.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-2">
                     {specs.map((s) => (
                       <span key={s} className="inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-medium bg-[#F6EFE6] text-[#055864]">
-                        {SPEC_LABELS[s]?.[locale === "fr" ? "fr" : "en"] ?? s}
+                        {SPEC_LABELS[s]?.[lang] ?? s}
                       </span>
                     ))}
                   </div>
@@ -158,12 +158,12 @@ export default async function GroomerDashboardPage({
                       className="inline-flex items-center gap-1.5 text-xs text-success-foreground hover:underline"
                     >
                       <CheckCircle2 className="h-3.5 w-3.5" />
-                      {locale === "fr" ? "CV téléversé — Ouvrir" : "CV uploaded — Open"}
+                      {t("cv_uploaded")}
                     </a>
                   ) : (
                     <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                       <FileText className="h-3.5 w-3.5" />
-                      {locale === "fr" ? "Aucun CV téléversé" : "No CV uploaded"}
+                      {t("no_cv")}
                     </span>
                   )}
                 </div>
@@ -196,15 +196,13 @@ export default async function GroomerDashboardPage({
                   <div className="rounded-lg bg-primary/10 p-2">
                     <Target className="h-4 w-4 text-primary" />
                   </div>
-                  <p className="font-semibold text-sm">
-                    {lang === "fr" ? "Opportunités pour vous" : "Opportunities for you"}
-                  </p>
+                  <p className="font-semibold text-sm">{t("opportunities")}</p>
                 </div>
                 <div className="space-y-1.5 text-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground flex items-center gap-1.5">
                       <Scissors className="h-3.5 w-3.5" />
-                      {lang === "fr" ? "Remplacements" : "Shifts"}
+                      {t("shifts_available")}
                     </span>
                     <span className="font-semibold">{availableShiftsCount}</span>
                   </div>
@@ -212,7 +210,7 @@ export default async function GroomerDashboardPage({
                     <div className="flex items-center justify-between">
                       <span className="text-destructive flex items-center gap-1.5">
                         <Zap className="h-3.5 w-3.5" />
-                        {lang === "fr" ? "Urgents" : "Urgent"}
+                        {t("urgent")}
                       </span>
                       <Badge variant="destructive" className="text-xs">{urgentShiftsCount}</Badge>
                     </div>
@@ -220,14 +218,14 @@ export default async function GroomerDashboardPage({
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground flex items-center gap-1.5">
                       <Briefcase className="h-3.5 w-3.5" />
-                      {lang === "fr" ? "Offres d'emploi" : "Job offers"}
+                      {t("job_offers")}
                     </span>
                     <span className="font-semibold">{availableJobsCount}</span>
                   </div>
                 </div>
                 <Button size="sm" variant="outline" className="w-full mt-1" asChild>
                   <Link href={`/${locale}/shifts`}>
-                    {lang === "fr" ? "Voir les opportunités" : "Browse opportunities"}
+                    {t("browse_opportunities")}
                     <ArrowRight className="h-3.5 w-3.5 ml-1" />
                   </Link>
                 </Button>
@@ -241,35 +239,29 @@ export default async function GroomerDashboardPage({
                   <div className="rounded-lg bg-primary/10 p-2">
                     <ClipboardList className="h-4 w-4 text-primary" />
                   </div>
-                  <p className="font-semibold text-sm">
-                    {lang === "fr" ? "Mes candidatures" : "My applications"}
-                  </p>
+                  <p className="font-semibold text-sm">{t("my_applications_widget")}</p>
                 </div>
                 <div className="space-y-1.5 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">
-                      {lang === "fr" ? "Total" : "Total"}
-                    </span>
+                    <span className="text-muted-foreground">{t("total")}</span>
                     <span className="font-semibold">{totalApps}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground flex items-center gap-1.5">
                       <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
-                      {lang === "fr" ? "Acceptées" : "Accepted"}
+                      {t("accepted")}
                     </span>
                     <span className="font-semibold text-emerald-600">{acceptedApps}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground flex items-center gap-1.5">
                       <Clock className="h-3.5 w-3.5 text-amber-500" />
-                      {lang === "fr" ? "En attente" : "Pending"}
+                      {t("pending")}
                     </span>
                     <span className="font-semibold text-amber-600">{pendingApps}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">
-                      {lang === "fr" ? "Non retenues" : "Rejected"}
-                    </span>
+                    <span className="text-muted-foreground">{t("rejected")}</span>
                     <span className="font-semibold text-muted-foreground">{rejectedApps}</span>
                   </div>
                 </div>
@@ -283,43 +275,37 @@ export default async function GroomerDashboardPage({
                   <div className="rounded-lg bg-primary/10 p-2">
                     <ShieldCheck className="h-4 w-4 text-primary" />
                   </div>
-                  <p className="font-semibold text-sm">
-                    {lang === "fr" ? "Ma fiabilité" : "My reliability"}
-                  </p>
+                  <p className="font-semibold text-sm">{t("my_reliability")}</p>
                 </div>
                 <div className="space-y-1.5 text-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground flex items-center gap-1.5">
                       <Star className="h-3.5 w-3.5 text-amber-400" />
-                      {lang === "fr" ? "Score" : "Score"}
+                      {t("score")}
                     </span>
                     <span className="font-semibold">
                       {groomer.reliabilityScore > 0
                         ? `${groomer.reliabilityScore.toFixed(1)} / 5`
-                        : (lang === "fr" ? "—" : "—")}
+                        : "—"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground flex items-center gap-1.5">
                       <TrendingUp className="h-3.5 w-3.5" />
-                      {lang === "fr" ? "Remplacements complétés" : "Completed shifts"}
+                      {t("completed_shifts")}
                     </span>
                     <span className="font-semibold">{completedShifts}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground flex items-center gap-1.5">
                       <Star className="h-3.5 w-3.5" />
-                      {lang === "fr" ? "Avis reçus" : "Reviews received"}
+                      {t("reviews_received")}
                     </span>
                     <span className="font-semibold">{reviewCount}</span>
                   </div>
                 </div>
                 {groomer.reliabilityScore === 0 && (
-                  <p className="text-xs text-muted-foreground">
-                    {lang === "fr"
-                      ? "Complétez des remplacements pour bâtir votre score."
-                      : "Complete shifts to build your score."}
-                  </p>
+                  <p className="text-xs text-muted-foreground">{t("build_score_hint")}</p>
                 )}
               </CardContent>
             </Card>
@@ -327,7 +313,7 @@ export default async function GroomerDashboardPage({
 
           {/* Discover opportunities */}
           <section>
-            <h2 className="text-lg font-semibold mb-4">Découvrir des opportunités</h2>
+            <h2 className="text-lg font-semibold mb-4">{t("discover_opportunities")}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Link href={`/${locale}/shifts`} className="group block">
                 <Card className="border shadow-none h-full transition-colors group-hover:border-primary/40 group-hover:bg-primary/5">
@@ -336,13 +322,11 @@ export default async function GroomerDashboardPage({
                       <Scissors className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <p className="font-semibold">Remplacements</p>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Trouvez des remplacements disponibles près de chez vous.
-                      </p>
+                      <p className="font-semibold">{t("shifts_card_title")}</p>
+                      <p className="text-sm text-muted-foreground mt-1">{t("shifts_card_desc")}</p>
                     </div>
                     <span className="inline-flex items-center gap-1 text-sm font-medium text-primary mt-auto">
-                      Voir les remplacements
+                      {t("shifts_card_cta")}
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                     </span>
                   </CardContent>
@@ -356,13 +340,11 @@ export default async function GroomerDashboardPage({
                       <Briefcase className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <p className="font-semibold">Offres d&apos;emploi</p>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Consultez les postes permanents et temporaires dans les salons.
-                      </p>
+                      <p className="font-semibold">{t("jobs_card_title")}</p>
+                      <p className="text-sm text-muted-foreground mt-1">{t("jobs_card_desc")}</p>
                     </div>
                     <span className="inline-flex items-center gap-1 text-sm font-medium text-primary mt-auto">
-                      Voir les offres
+                      {t("jobs_card_cta")}
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                     </span>
                   </CardContent>
@@ -376,13 +358,11 @@ export default async function GroomerDashboardPage({
                       <BookOpen className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <p className="font-semibold">Formations</p>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Découvrez les écoles et formations en toilettage.
-                      </p>
+                      <p className="font-semibold">{t("training_card_title")}</p>
+                      <p className="text-sm text-muted-foreground mt-1">{t("training_card_desc")}</p>
                     </div>
                     <span className="inline-flex items-center gap-1 text-sm font-medium text-primary mt-auto">
-                      Voir les formations
+                      {t("training_card_cta")}
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                     </span>
                   </CardContent>
@@ -394,20 +374,18 @@ export default async function GroomerDashboardPage({
           {/* Nearby shifts */}
           <section>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">Remplacements disponibles</h2>
+              <h2 className="text-lg font-semibold">{t("available_shifts")}</h2>
               <Button size="sm" variant="outline" asChild>
-                <Link href={`/${locale}/shifts`}>Voir tout</Link>
+                <Link href={`/${locale}/shifts`}>{t("view_all")}</Link>
               </Button>
             </div>
 
             {nearbyShifts.length === 0 ? (
               <Card className="border-dashed shadow-none">
                 <CardContent className="py-10 text-center space-y-3">
-                  <p className="text-muted-foreground text-sm">
-                    Aucun remplacement disponible pour le moment.
-                  </p>
+                  <p className="text-muted-foreground text-sm">{t("no_shifts_available")}</p>
                   <Button size="sm" variant="outline" asChild>
-                    <Link href={`/${locale}/shifts`}>Voir tous les remplacements</Link>
+                    <Link href={`/${locale}/shifts`}>{t("view_all_shifts")}</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -421,7 +399,7 @@ export default async function GroomerDashboardPage({
                           {shift.isUrgent && (
                             <Badge variant="destructive" className="text-xs font-bold flex items-center gap-1">
                               <AlertTriangle className="h-3 w-3" />
-                              URGENT
+                              {t("urgent")}
                             </Badge>
                           )}
                           <p className="font-medium truncate">{shift.salon.name}</p>
@@ -433,11 +411,11 @@ export default async function GroomerDashboardPage({
                           </span>
                           <span className="inline-flex items-center gap-1">
                             <Clock className="h-3.5 w-3.5" />
-                            {new Date(shift.date).toLocaleDateString("fr-CA")} à {shift.startTime}
+                            {new Date(shift.date).toLocaleDateString(locale === "fr" ? "fr-CA" : "en-CA")} à {shift.startTime}
                           </span>
                           <span className="inline-flex items-center gap-1">
                             <DollarSign className="h-3.5 w-3.5" />
-                            {(shift.payRateCents / 100).toFixed(2)} $ / {shift.payType === "HOURLY" ? "h" : "forfait"}
+                            {(shift.payRateCents / 100).toFixed(2)} $ / {shift.payType === "HOURLY" ? "h" : t("forfait")}
                           </span>
                         </div>
                       </div>
@@ -449,7 +427,7 @@ export default async function GroomerDashboardPage({
                         />
                         <Button variant="ghost" size="sm" asChild>
                           <Link href={`/${locale}/shifts/${shift.id}`}>
-                            {lang === "fr" ? "Voir détails" : "View details"}
+                            {t("view_details")}
                           </Link>
                         </Button>
                       </div>
@@ -467,7 +445,7 @@ export default async function GroomerDashboardPage({
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">{t("my_applications")}</h2>
               <Button size="sm" variant="outline" asChild>
-                <Link href={`/${locale}/shifts`}>Voir les remplacements</Link>
+                <Link href={`/${locale}/shifts`}>{t("view_shifts")}</Link>
               </Button>
             </div>
 
@@ -476,7 +454,7 @@ export default async function GroomerDashboardPage({
                 <CardContent className="py-10 text-center space-y-3">
                   <p className="text-muted-foreground text-sm">{t("no_applications")}</p>
                   <Button size="sm" variant="outline" asChild>
-                    <Link href={`/${locale}/shifts`}>Voir les remplacements</Link>
+                    <Link href={`/${locale}/shifts`}>{t("view_shifts")}</Link>
                   </Button>
                 </CardContent>
               </Card>

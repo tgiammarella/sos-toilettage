@@ -7,31 +7,48 @@ import { Navbar } from "@/components/nav/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Clock, Wrench, AlertTriangle, CheckCircle } from "lucide-react";
+import { MapPin, Clock, Wrench, AlertTriangle, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { QuickApplyButton } from "@/components/shifts/QuickApplyButton";
 import { CRITERIA_LABEL, getLang, getLabel } from "@/lib/labels";
 
+const PAGE_SIZE = 20;
+
 export default async function ShiftsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { locale } = await params;
+  const { page: pageParam } = await searchParams;
   const session = await auth();
   const t = await getTranslations("shifts");
 
-  // Show PUBLISHED and FILLED (FILLED shows with hidden salon name)
-  const shifts = await prisma.shiftPost.findMany({
-    where: { status: { in: ["PUBLISHED", "FILLED"] } },
-    orderBy: [{ isUrgent: "desc" }, { date: "asc" }],
-    select: {
-      id: true, city: true, region: true, date: true, startTime: true,
-      isUrgent: true, status: true, payType: true, payRateCents: true,
-      numberOfAppointments: true, requiredExperienceYears: true,
-      criteriaTags: true, equipmentProvided: true, notes: true,
-    },
-  });
+  const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
+  const skip = (currentPage - 1) * PAGE_SIZE;
+
+  const where = { status: { in: ["PUBLISHED", "FILLED"] as ("PUBLISHED" | "FILLED")[] } };
+
+  const [totalCount, shifts] = await Promise.all([
+    prisma.shiftPost.count({ where }),
+    prisma.shiftPost.findMany({
+      where,
+      orderBy: [{ isUrgent: "desc" }, { date: "asc" }],
+      skip,
+      take: PAGE_SIZE,
+      select: {
+        id: true, city: true, region: true, date: true, startTime: true,
+        isUrgent: true, status: true, payType: true, payRateCents: true,
+        numberOfAppointments: true, requiredExperienceYears: true,
+        criteriaTags: true, equipmentProvided: true, notes: true,
+      },
+    }),
+  ]);
+
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+  const publishedCount = totalCount;
 
   // Collect shift IDs the logged-in groomer has already applied to
   const appliedShiftIds = new Set<string>();
@@ -49,8 +66,6 @@ export default async function ShiftsPage({
     }
   }
 
-  const publishedCount = shifts.filter((s) => s.status === "PUBLISHED").length;
-
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -58,13 +73,13 @@ export default async function ShiftsPage({
         <div className="container mx-auto px-4 py-10 max-w-5xl">
           <h1 className="text-3xl font-bold mb-2 text-[#1F2933]">{t("title")}</h1>
           <p className="text-[#4a6260] mb-8 text-sm">
-            {publishedCount} remplacement{publishedCount !== 1 ? "s" : ""} disponible{publishedCount !== 1 ? "s" : ""}
+            {publishedCount === 1 ? t("count", { count: publishedCount }) : t("count_plural", { count: publishedCount })}
           </p>
 
           {shifts.length === 0 ? (
             <Card className="border-dashed bg-card/80">
               <CardContent className="py-16 text-center text-muted-foreground">
-                Aucun remplacement disponible pour l&apos;instant.
+                {t("no_shifts")}
               </CardContent>
             </Card>
           ) : (
@@ -99,9 +114,7 @@ export default async function ShiftsPage({
                               </Badge>
                             )}
                             <span className="font-semibold text-base">
-                              {locale === "fr"
-                                ? `Salon de toilettage à ${shift.city}`
-                                : `Grooming salon in ${shift.city}`}
+                              {t("salon_in_city", { city: shift.city })}
                             </span>
                           </div>
 
@@ -163,7 +176,7 @@ export default async function ShiftsPage({
                           {!isFilled && (
                             <Button variant="ghost" size="sm" asChild>
                               <Link href={`/${locale}/shifts/${shift.id}`}>
-                                {locale === "fr" ? "Voir détails" : "View details"}
+                                {t("view_details")}
                               </Link>
                             </Button>
                           )}
@@ -173,6 +186,43 @@ export default async function ShiftsPage({
                   </Card>
                 );
               })}
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-4 pt-6">
+                  {currentPage > 1 ? (
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href={`/${locale}/shifts?page=${currentPage - 1}`}>
+                        <ChevronLeft className="h-4 w-4 mr-1" />
+                        {t("previous")}
+                      </Link>
+                    </Button>
+                  ) : (
+                    <Button variant="outline" size="sm" disabled>
+                      <ChevronLeft className="h-4 w-4 mr-1" />
+                      {t("previous")}
+                    </Button>
+                  )}
+
+                  <span className="text-sm text-muted-foreground">
+                    {t("page_of", { page: currentPage, total: totalPages })}
+                  </span>
+
+                  {currentPage < totalPages ? (
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href={`/${locale}/shifts?page=${currentPage + 1}`}>
+                        {t("next")}
+                        <ChevronRight className="h-4 w-4 ml-1" />
+                      </Link>
+                    </Button>
+                  ) : (
+                    <Button variant="outline" size="sm" disabled>
+                      {t("next")}
+                      <ChevronRight className="h-4 w-4 ml-1" />
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>

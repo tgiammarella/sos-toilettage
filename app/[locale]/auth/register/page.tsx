@@ -9,6 +9,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Scissors, Building2, User } from "lucide-react";
@@ -219,8 +220,7 @@ export default function RegisterPage() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <FieldRow label={t("password")}>
-                    <Input
-                      type="password"
+                    <PasswordInput
                       {...salonForm.register("password", {
                         required: tErr("required"),
                         minLength: { value: 8, message: tErr("password_min") },
@@ -229,8 +229,7 @@ export default function RegisterPage() {
                     <ErrMsg msg={salonForm.formState.errors.password?.message} />
                   </FieldRow>
                   <FieldRow label={t("confirm_password")}>
-                    <Input
-                      type="password"
+                    <PasswordInput
                       {...salonForm.register("confirmPassword", { required: tErr("required") })}
                     />
                     <ErrMsg msg={salonForm.formState.errors.confirmPassword?.message} />
@@ -308,8 +307,7 @@ export default function RegisterPage() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <FieldRow label={t("password")}>
-                    <Input
-                      type="password"
+                    <PasswordInput
                       {...groomerForm.register("password", {
                         required: tErr("required"),
                         minLength: { value: 8, message: tErr("password_min") },
@@ -318,8 +316,7 @@ export default function RegisterPage() {
                     <ErrMsg msg={groomerForm.formState.errors.password?.message} />
                   </FieldRow>
                   <FieldRow label={t("confirm_password")}>
-                    <Input
-                      type="password"
+                    <PasswordInput
                       {...groomerForm.register("confirmPassword", { required: tErr("required") })}
                     />
                     <ErrMsg msg={groomerForm.formState.errors.confirmPassword?.message} />

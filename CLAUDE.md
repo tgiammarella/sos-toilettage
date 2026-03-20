@@ -261,17 +261,15 @@ Email: Verified domain (info@touttoilettage.com via Resend)
 8. ~~No env variable validation~~ — `lib/env.ts` fails fast on missing required vars
 9. ~~No contact page~~ — Built at `/[locale]/contact` with API route
 10. ~~SQLite in production~~ — Migrated to PostgreSQL (Neon)
+11. ~~Suggestions endpoint fetches ALL groomers~~ — WHERE clause filters by shift region, with optional region/availableToday params
+12. ~~Dead code (CardHeaderSimple)~~ — Removed, no references remain
+13. ~~Missing rate limits on shifts POST, reviews POST, jobs publish~~ — All three call `checkRateLimit(req, "moderate")`
+14. ~~Hardcoded French strings~~ — ShiftForm, groomer dashboard, shifts listing, jobs listing all internationalized via next-intl (JobDecisionButtons was already i18n'd)
+15. ~~Pagination missing on shifts/jobs listings~~ — Server-side pagination with 20 items/page, prev/next nav, total count
 
 ### Remaining Issues
 
-#### Medium
-1. **Suggestions endpoint fetches ALL groomers** — `app/api/shifts/[id]/suggestions/route.ts` has no WHERE clause. Will degrade at scale.
-
-#### Low
-2. Dead code — `CardHeaderSimple` in groomer dashboard (unused, suppressed with void)
-3. Hardcoded French strings — JobDecisionButtons, ShiftForm errors, groomer dashboard not going through next-intl
-4. Missing rate limits — shifts POST, reviews POST, jobs publish not rate-limited
-5. Pagination — shifts/jobs public listings load all results
+No remaining issues from the original audit. All items resolved.
 
 ### What's Working
 
@@ -300,11 +298,6 @@ Email: Verified domain (info@touttoilettage.com via Resend)
 |---|------|--------|
 | 1 | Wire Stripe for job posting payments ($49) and subscription plans | Large |
 | 2 | Wire Stripe webhooks for credit pack purchases and monthly renewal | Large |
-| 3 | Internationalize remaining hardcoded French strings | Medium |
-| 4 | Add pagination to shifts/jobs public listings | Medium |
-| 5 | Add WHERE clause to suggestions endpoint | Small |
-| 6 | Add rate limits to shifts POST, reviews POST, jobs publish | Small |
-| 7 | Remove dead code (CardHeaderSimple) | Small |
 
 ### Post-Launch
 

@@ -8,6 +8,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Scissors, CheckCircle2 } from "lucide-react";
@@ -91,9 +92,8 @@ export default function ResetPasswordPage() {
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div className="space-y-1.5">
                   <Label htmlFor="password">{t("new_password")}</Label>
-                  <Input
+                  <PasswordInput
                     id="password"
-                    type="password"
                     autoComplete="new-password"
                     {...register("password", {
                       required: tErr("required"),
@@ -105,9 +105,8 @@ export default function ResetPasswordPage() {
 
                 <div className="space-y-1.5">
                   <Label htmlFor="confirmPassword">{t("confirm_password")}</Label>
-                  <Input
+                  <PasswordInput
                     id="confirmPassword"
-                    type="password"
                     autoComplete="new-password"
                     {...register("confirmPassword", {
                       required: tErr("required"),

@@ -5,35 +5,35 @@ import { useForm, Controller, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertCircle, AlertTriangle } from "lucide-react";
 import { CreditUsageHint } from "@/components/billing/CreditUsageHint";
 
-const CRITERIA_OPTIONS = [
-  { value: "BIG_DOGS",       label: "Grands chiens" },
-  { value: "SMALL_DOGS",     label: "Petits chiens" },
-  { value: "CATS",           label: "Chats" },
-  { value: "RABBITS",        label: "Lapins" },
-  { value: "AGGRESSIVE_DOGS", label: "Chiens difficiles" },
-  { value: "NORDIC_BREEDS",  label: "Races nordiques" },
-];
+const CRITERIA_KEYS = [
+  "BIG_DOGS",
+  "SMALL_DOGS",
+  "CATS",
+  "RABBITS",
+  "AGGRESSIVE_DOGS",
+  "NORDIC_BREEDS",
+] as const;
 
 const formSchema = z.object({
-  date:                    z.string().min(1, "Date requise"),
-  startTime:               z.string().regex(/^\d{2}:\d{2}$/, "Format HH:MM requis"),
-  address:                 z.string().min(1, "Adresse requise"),
-  city:                    z.string().min(1, "Ville requise"),
-  postalCode:              z.string().min(1, "Code postal requis"),
+  date:                    z.string().min(1),
+  startTime:               z.string().regex(/^\d{2}:\d{2}$/),
+  address:                 z.string().min(1),
+  city:                    z.string().min(1),
+  postalCode:              z.string().min(1),
   numberOfAppointments:    z.coerce.number().int().min(1).max(30),
   payType:                 z.enum(["HOURLY", "FLAT"]),
-  payRate:                 z.coerce.number().min(0.01, "Taux requis"),
+  payRate:                 z.coerce.number().min(0.01),
   requiredExperienceYears: z.coerce.number().int().min(0).max(30),
   criteriaTags:            z.array(z.string()).default([]),
   equipmentProvided:       z.boolean().default(false),
@@ -51,6 +51,7 @@ export function ShiftForm({
   creditsAvailable: number;
 }) {
   const router = useRouter();
+  const t = useTranslations("shifts.form");
   const [submitting, setSubmitting] = useState(false);
 
   const form = useForm<FormValues>({
@@ -84,17 +85,17 @@ export function ShiftForm({
       });
 
       if (res.status === 402) {
-        toast.error("Crédits insuffisants. Un remplacement urgent coûte 2 crédits.");
+        toast.error(t("error_insufficient_credits"));
         return;
       }
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        toast.error((err as { message?: string }).message ?? "Une erreur est survenue.");
+        toast.error((err as { message?: string }).message ?? t("error_generic"));
         return;
       }
 
       const json = await res.json();
-      toast.success("Remplacement publié !");
+      toast.success(t("success"));
       router.push(`/${locale}/dashboard/salon/shifts/${json.shift.id}`);
       router.refresh();
     } finally {
@@ -111,49 +112,49 @@ export function ShiftForm({
 
       {/* Date & time */}
       <Card className="shadow-none">
-        <CardHeader className="pb-2 pt-4 px-4 text-sm font-semibold">Date &amp; heure</CardHeader>
+        <CardHeader className="pb-2 pt-4 px-4 text-sm font-semibold">{t("section_date")}</CardHeader>
         <CardContent className="px-4 pb-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <Label htmlFor="date">Date du remplacement</Label>
+            <Label htmlFor="date">{t("date_label")}</Label>
             <Input id="date" type="date" {...form.register("date")} />
-            {err.date && <p className="text-xs text-destructive">{err.date.message}</p>}
+            {err.date && <p className="text-xs text-destructive">{t("validation_date")}</p>}
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="startTime">Heure de début</Label>
+            <Label htmlFor="startTime">{t("start_time_label")}</Label>
             <Input id="startTime" type="time" {...form.register("startTime")} />
-            {err.startTime && <p className="text-xs text-destructive">{err.startTime.message}</p>}
+            {err.startTime && <p className="text-xs text-destructive">{t("validation_time")}</p>}
           </div>
         </CardContent>
       </Card>
 
       {/* Location */}
       <Card className="shadow-none">
-        <CardHeader className="pb-2 pt-4 px-4 text-sm font-semibold">Lieu</CardHeader>
+        <CardHeader className="pb-2 pt-4 px-4 text-sm font-semibold">{t("section_location")}</CardHeader>
         <CardContent className="px-4 pb-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5 sm:col-span-2">
-            <Label htmlFor="address">Adresse</Label>
-            <Input id="address" placeholder="123 rue Principale" {...form.register("address")} />
-            {err.address && <p className="text-xs text-destructive">{err.address.message}</p>}
+            <Label htmlFor="address">{t("address_label")}</Label>
+            <Input id="address" placeholder={t("address_placeholder")} {...form.register("address")} />
+            {err.address && <p className="text-xs text-destructive">{t("validation_address")}</p>}
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="city">Ville</Label>
-            <Input id="city" placeholder="Montréal" {...form.register("city")} />
-            {err.city && <p className="text-xs text-destructive">{err.city.message}</p>}
+            <Label htmlFor="city">{t("city_label")}</Label>
+            <Input id="city" placeholder={t("city_placeholder")} {...form.register("city")} />
+            {err.city && <p className="text-xs text-destructive">{t("validation_city")}</p>}
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="postalCode">Code postal</Label>
-            <Input id="postalCode" placeholder="H3H 1P3" {...form.register("postalCode")} />
-            {err.postalCode && <p className="text-xs text-destructive">{err.postalCode.message}</p>}
+            <Label htmlFor="postalCode">{t("postal_code_label")}</Label>
+            <Input id="postalCode" placeholder={t("postal_code_placeholder")} {...form.register("postalCode")} />
+            {err.postalCode && <p className="text-xs text-destructive">{t("validation_postal")}</p>}
           </div>
         </CardContent>
       </Card>
 
       {/* Pay & workload */}
       <Card className="shadow-none">
-        <CardHeader className="pb-2 pt-4 px-4 text-sm font-semibold">Rémunération &amp; charge</CardHeader>
+        <CardHeader className="pb-2 pt-4 px-4 text-sm font-semibold">{t("section_pay")}</CardHeader>
         <CardContent className="px-4 pb-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-1.5">
-            <Label>Type de rémunération</Label>
+            <Label>{t("pay_type_label")}</Label>
             <Controller
               control={form.control}
               name="payType"
@@ -161,8 +162,8 @@ export function ShiftForm({
                 <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="HOURLY">À l&apos;heure</SelectItem>
-                    <SelectItem value="FLAT">Forfait</SelectItem>
+                    <SelectItem value="HOURLY">{t("pay_type_hourly")}</SelectItem>
+                    <SelectItem value="FLAT">{t("pay_type_flat")}</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -170,48 +171,48 @@ export function ShiftForm({
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="payRate">
-              {payType === "HOURLY" ? "Taux horaire ($)" : "Montant ($)"}
+              {payType === "HOURLY" ? t("pay_rate_hourly") : t("pay_rate_flat")}
             </Label>
             <Input id="payRate" type="number" step="0.5" min="0" placeholder="25.00" {...form.register("payRate")} />
-            {err.payRate && <p className="text-xs text-destructive">{err.payRate.message}</p>}
+            {err.payRate && <p className="text-xs text-destructive">{t("validation_pay_rate")}</p>}
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="numberOfAppointments">Rendez-vous</Label>
+            <Label htmlFor="numberOfAppointments">{t("appointments_label")}</Label>
             <Input id="numberOfAppointments" type="number" min="1" max="30" {...form.register("numberOfAppointments")} />
-            {err.numberOfAppointments && <p className="text-xs text-destructive">{err.numberOfAppointments.message}</p>}
+            {err.numberOfAppointments && <p className="text-xs text-destructive">{t("validation_date")}</p>}
           </div>
         </CardContent>
       </Card>
 
       {/* Requirements */}
       <Card className="shadow-none">
-        <CardHeader className="pb-2 pt-4 px-4 text-sm font-semibold">Exigences</CardHeader>
+        <CardHeader className="pb-2 pt-4 px-4 text-sm font-semibold">{t("section_requirements")}</CardHeader>
         <CardContent className="px-4 pb-4 space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="requiredExperienceYears">Expérience minimale (années)</Label>
+            <Label htmlFor="requiredExperienceYears">{t("min_experience_label")}</Label>
             <Input id="requiredExperienceYears" type="number" min="0" max="30" className="max-w-[120px]" {...form.register("requiredExperienceYears")} />
           </div>
           <div className="space-y-2">
-            <Label>Types d&apos;animaux / spécialisations</Label>
+            <Label>{t("specializations_label")}</Label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               <Controller
                 control={form.control}
                 name="criteriaTags"
                 render={({ field }) => (
                   <>
-                    {CRITERIA_OPTIONS.map((opt) => (
-                      <label key={opt.value} className="flex items-center gap-2 cursor-pointer text-sm select-none">
+                    {CRITERIA_KEYS.map((key) => (
+                      <label key={key} className="flex items-center gap-2 cursor-pointer text-sm select-none">
                         <Checkbox
-                          checked={field.value.includes(opt.value)}
+                          checked={field.value.includes(key)}
                           onCheckedChange={(checked) => {
                             field.onChange(
                               checked
-                                ? [...field.value, opt.value]
-                                : field.value.filter((v) => v !== opt.value)
+                                ? [...field.value, key]
+                                : field.value.filter((v) => v !== key)
                             );
                           }}
                         />
-                        {opt.label}
+                        {t(`criteria_${key.toLowerCase()}`)}
                       </label>
                     ))}
                   </>
@@ -227,7 +228,7 @@ export function ShiftForm({
                 <Checkbox id="equipmentProvided" checked={field.value} onCheckedChange={field.onChange} />
               )}
             />
-            <Label htmlFor="equipmentProvided" className="cursor-pointer">Équipement fourni par le salon</Label>
+            <Label htmlFor="equipmentProvided" className="cursor-pointer">{t("equipment_provided_label")}</Label>
           </div>
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
@@ -240,20 +241,18 @@ export function ShiftForm({
               />
               <Label htmlFor="isUrgent" className="cursor-pointer flex items-center gap-2">
                 <AlertCircle className="h-4 w-4 text-destructive" />
-                Remplacement urgent
+                {t("urgent_label")}
               </Label>
             </div>
             {!isUrgent && (
               <p className="text-xs text-muted-foreground ml-6">
-                Priorité élevée pour trouver un remplaçant plus rapidement. Activer le mode urgent coûte 1 crédit supplémentaire.
+                {t("urgent_hint")}
               </p>
             )}
             {isUrgent && (
               <div className="ml-6 flex items-start gap-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2">
                 <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
-                <p className="text-xs text-amber-800">
-                  Ce remplacement urgent utilisera <strong>2 crédits</strong> au total (1 publication + 1 priorité urgente).
-                </p>
+                <p className="text-xs text-amber-800" dangerouslySetInnerHTML={{ __html: t("urgent_warning") }} />
               </div>
             )}
           </div>
@@ -262,11 +261,11 @@ export function ShiftForm({
 
       {/* Notes */}
       <Card className="shadow-none">
-        <CardHeader className="pb-2 pt-4 px-4 text-sm font-semibold">Notes (optionnel)</CardHeader>
+        <CardHeader className="pb-2 pt-4 px-4 text-sm font-semibold">{t("section_notes")}</CardHeader>
         <CardContent className="px-4 pb-4">
           <textarea
             className="w-full min-h-[80px] rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-y"
-            placeholder="Informations supplémentaires pour le toiletteur…"
+            placeholder={t("notes_placeholder")}
             {...form.register("notes")}
           />
         </CardContent>
@@ -274,14 +273,14 @@ export function ShiftForm({
 
       <div className="flex items-center gap-3 pt-2">
         <Button type="submit" disabled={submitting || creditsAvailable < totalCost} className="min-w-[180px]">
-          {submitting ? "Publication…" : "Publier le remplacement"}
+          {submitting ? t("submitting") : t("submit")}
         </Button>
         {creditsAvailable < totalCost && (
           <p className="flex items-center gap-1 text-xs text-destructive">
             <AlertCircle className="h-3.5 w-3.5" />
             {creditsAvailable === 0
-              ? "Aucun crédit disponible"
-              : `Crédits insuffisants (${creditsAvailable} disponible, ${totalCost} requis)`}
+              ? t("no_credits")
+              : t("insufficient_credits", { available: creditsAvailable, required: totalCost })}
           </p>
         )}
       </div>

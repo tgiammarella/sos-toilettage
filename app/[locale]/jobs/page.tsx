@@ -6,16 +6,24 @@ import { Navbar } from "@/components/nav/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Briefcase } from "lucide-react";
+import { MapPin, Briefcase, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
+
+const PAGE_SIZE = 20;
 
 export default async function JobsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { locale } = await params;
+  const { page: pageParam } = await searchParams;
   const t = await getTranslations("jobs");
+
+  const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
+  const skip = (currentPage - 1) * PAGE_SIZE;
 
   // Auto-expire jobs where expiresAt has passed
   await prisma.jobPost.updateMany({
@@ -26,27 +34,30 @@ export default async function JobsPage({
     data: { status: 'EXPIRED' },
   });
 
-  const jobs = await prisma.jobPost.findMany({
-    where: {
-      status: "PUBLISHED",
-      OR: [
-        { expiresAt: null },
-        { expiresAt: { gte: new Date() } },
-      ],
-    },
-    orderBy: [{ isFeatured: "desc" }, { publishedAt: "desc" }],
-    select: {
-      id: true, title: true, city: true, region: true,
-      employmentType: true, payInfo: true, publishedAt: true, description: true,
-      isFeatured: true,
-    },
-  });
-
-  const employmentLabels: Record<string, Record<string, string>> = {
-    FULL_TIME: { fr: "Temps plein", en: "Full-time" },
-    PART_TIME: { fr: "Temps partiel", en: "Part-time" },
-    CONTRACT:  { fr: "Contrat", en: "Contract" },
+  const where = {
+    status: "PUBLISHED" as const,
+    OR: [
+      { expiresAt: null },
+      { expiresAt: { gte: new Date() } },
+    ],
   };
+
+  const [totalCount, jobs] = await Promise.all([
+    prisma.jobPost.count({ where }),
+    prisma.jobPost.findMany({
+      where,
+      orderBy: [{ isFeatured: "desc" }, { publishedAt: "desc" }],
+      skip,
+      take: PAGE_SIZE,
+      select: {
+        id: true, title: true, city: true, region: true,
+        employmentType: true, payInfo: true, publishedAt: true, description: true,
+        isFeatured: true,
+      },
+    }),
+  ]);
+
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -55,7 +66,7 @@ export default async function JobsPage({
         <div className="container mx-auto px-4 py-10 max-w-5xl">
           <h1 className="text-3xl font-bold mb-2 text-[#1F2933]">{t("title")}</h1>
           <p className="text-[#4a6260] mb-8 text-sm">
-            {jobs.length} offre{jobs.length !== 1 ? "s" : ""} disponible{jobs.length !== 1 ? "s" : ""}
+            {totalCount === 1 ? t("count", { count: totalCount }) : t("count_plural", { count: totalCount })}
           </p>
 
           {jobs.length === 0 ? (
@@ -80,9 +91,7 @@ export default async function JobsPage({
                           </div>
 
                           <p className="text-sm font-medium text-[#4a6260]">
-                            {locale === "fr"
-                              ? `Salon de toilettage à ${job.city}`
-                              : `Grooming salon in ${job.city}`}
+                            {t("salon_in_city", { city: job.city })}
                           </p>
 
                           <div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-1">
@@ -93,7 +102,7 @@ export default async function JobsPage({
                           <div className="flex flex-wrap gap-2 mt-3">
                             {(() => {
                               const empType = job.employmentType;
-                              const label = employmentLabels[empType]?.[locale] ?? empType;
+                              const label = t(empType === "FULL_TIME" ? "full_time" : empType === "PART_TIME" ? "part_time" : "contract");
                               const styles = empType === "FULL_TIME"
                                 ? "bg-[#d1ede6] text-[#055864]"
                                 : empType === "PART_TIME"
@@ -125,6 +134,43 @@ export default async function JobsPage({
                   </Card>
                 </Link>
               ))}
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-4 pt-6">
+                  {currentPage > 1 ? (
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href={`/${locale}/jobs?page=${currentPage - 1}`}>
+                        <ChevronLeft className="h-4 w-4 mr-1" />
+                        {t("previous")}
+                      </Link>
+                    </Button>
+                  ) : (
+                    <Button variant="outline" size="sm" disabled>
+                      <ChevronLeft className="h-4 w-4 mr-1" />
+                      {t("previous")}
+                    </Button>
+                  )}
+
+                  <span className="text-sm text-muted-foreground">
+                    {t("page_of", { page: currentPage, total: totalPages })}
+                  </span>
+
+                  {currentPage < totalPages ? (
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href={`/${locale}/jobs?page=${currentPage + 1}`}>
+                        {t("next")}
+                        <ChevronRight className="h-4 w-4 ml-1" />
+                      </Link>
+                    </Button>
+                  ) : (
+                    <Button variant="outline" size="sm" disabled>
+                      {t("next")}
+                      <ChevronRight className="h-4 w-4 ml-1" />
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
