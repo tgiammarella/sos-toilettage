@@ -59,7 +59,7 @@ export default async function EditShiftPage({
     <div className="flex min-h-screen bg-muted/30">
       <SalonSidebar locale={locale} salonName={salon.name} />
 
-      <main className="flex-1 p-6 md:p-8 overflow-auto">
+      <main className="flex-1 p-6 md:p-8 pb-24 md:pb-8 overflow-auto">
         <div className="max-w-3xl mx-auto">
           <Button variant="ghost" size="sm" asChild className="mb-4 -ml-2">
             <Link href={`/${locale}/dashboard/salon/shifts/${id}`}>

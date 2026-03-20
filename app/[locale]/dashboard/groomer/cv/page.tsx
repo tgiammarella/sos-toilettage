@@ -36,7 +36,7 @@ export default async function GroomerCvPage({
     <div className="flex min-h-screen bg-muted/40">
       <GroomerSidebar locale={locale} groomerName={groomer.fullName} />
 
-      <main className="flex-1 p-6 md:p-8 overflow-auto">
+      <main className="flex-1 p-6 md:p-8 pb-24 md:pb-8 overflow-auto">
         <div className="max-w-3xl mx-auto space-y-6">
           <div>
             <Button variant="ghost" size="sm" asChild className="mb-3 -ml-2">

@@ -12,8 +12,10 @@ import {
   CreditCard,
   Settings,
   Calendar,
+  Menu,
 } from "lucide-react";
 import { LogoutButton } from "@/components/auth/LogoutButton";
+import { MobileBottomNav, type MobileNavItem } from "./MobileBottomNav";
 
 interface SalonSidebarProps {
   locale: string;
@@ -37,41 +39,60 @@ export function SalonSidebar({ locale, salonName }: SalonSidebarProps) {
     { href: `${base}/settings`,   icon: Settings,    label: t("settings") },
   ];
 
-  return (
-    <aside className="hidden md:flex w-64 flex-col bg-sidebar border-r border-sidebar-border shrink-0">
-      <div className="p-6 border-b border-sidebar-border">
-        <Link
-          href={`/${locale}`}
-          className="flex items-center gap-2 text-sidebar-foreground font-bold text-lg"
-        >
-          <Scissors className="h-5 w-5" />
-          Tout Toilettage
-        </Link>
-        <p className="text-xs text-sidebar-foreground/60 mt-1 truncate">{salonName}</p>
-      </div>
-      <nav className="flex-1 p-4 space-y-1">
-        {items.map(({ href, icon: Icon, label, exact }) => {
-          const active = exact ? pathname === href : pathname.startsWith(href);
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                active
-                  ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium"
-                  : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
-              }`}
-            >
-              <Icon className="h-4 w-4 shrink-0" />
-              {label}
-            </Link>
-          );
-        })}
-      </nav>
+  // Mobile: 4 primary items for bottom bar
+  const primaryItems: MobileNavItem[] = [
+    { href: base, icon: Home, label: t("dashboard"), exact: true },
+    { href: `${base}/shifts`, icon: Scissors, label: t("my_shifts") },
+    { href: `${base}/jobs`, icon: Briefcase, label: t("my_jobs") },
+    { href: `${base}/applicants`, icon: Users, label: t("applicants") },
+  ];
 
-      <div className="p-4 border-t border-sidebar-border">
-        <LogoutButton />
-      </div>
-    </aside>
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex w-64 flex-col bg-sidebar border-r border-sidebar-border shrink-0">
+        <div className="p-6 border-b border-sidebar-border">
+          <Link
+            href={`/${locale}`}
+            className="flex items-center gap-2 text-sidebar-foreground font-bold text-lg"
+          >
+            <Scissors className="h-5 w-5" />
+            Tout Toilettage
+          </Link>
+          <p className="text-xs text-sidebar-foreground/60 mt-1 truncate">{salonName}</p>
+        </div>
+        <nav className="flex-1 p-4 space-y-1">
+          {items.map(({ href, icon: Icon, label, exact }) => {
+            const active = exact ? pathname === href : pathname.startsWith(href);
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                  active
+                    ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium"
+                    : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+                }`}
+              >
+                <Icon className="h-4 w-4 shrink-0" />
+                {label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="p-4 border-t border-sidebar-border">
+          <LogoutButton />
+        </div>
+      </aside>
+
+      {/* Mobile bottom nav */}
+      <MobileBottomNav
+        primaryItems={primaryItems}
+        allItems={items}
+        menuIcon={Menu}
+        menuLabel="Menu"
+      />
+    </>
   );
 }

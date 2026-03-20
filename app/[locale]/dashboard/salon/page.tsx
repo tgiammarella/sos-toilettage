@@ -76,7 +76,7 @@ export default async function SalonDashboardPage({
     <div className="flex min-h-screen bg-muted/40">
       <SalonSidebar locale={locale} salonName={salon.name} />
 
-      <main className="flex-1 p-6 md:p-8 overflow-auto">
+      <main className="flex-1 p-6 md:p-8 pb-24 md:pb-8 overflow-auto">
         <div className="max-w-5xl mx-auto space-y-8">
           <div className="flex items-center justify-between">
             <div>

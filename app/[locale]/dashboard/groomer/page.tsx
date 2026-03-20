@@ -108,7 +108,7 @@ export default async function GroomerDashboardPage({
       <GroomerSidebar locale={locale} groomerName={groomer.fullName} />
 
       {/* Main */}
-      <main className="flex-1 p-6 md:p-8 overflow-auto">
+      <main className="flex-1 p-6 md:p-8 pb-24 md:pb-8 overflow-auto">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Header */}
           <div className="flex items-center justify-between">
