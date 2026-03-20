@@ -21,7 +21,6 @@ export function AdminSidebar({ locale }: AdminSidebarProps) {
   const items = [
     { href: base,                    icon: Shield,   label: t("title"),     exact: true },
     { href: `${base}/ops`,           icon: Activity, label: t("ops") },
-    { href: `${base}/directory`,     icon: BookOpen, label: t("directory") },
     { href: `${base}/schools`,       icon: GraduationCap, label: lang === "fr" ? "Écoles" : "Schools" },
     { href: `${base}/trainings`,     icon: BookOpen, label: lang === "fr" ? "Formations" : "Trainings" },
     { href: `${base}/posts`,         icon: FileText, label: t("posts") },
