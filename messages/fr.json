@@ -11,7 +11,8 @@
     "dashboard": "Tableau de bord",
     "logout": "Déconnexion",
     "locale_toggle": "EN",
-    "discover": "Découvrir"
+    "discover": "Découvrir",
+    "partners": "Partenaires"
   },
   "home": {
     "hero_title": "La plateforme de remplacement pour toiletteurs au Québec",
@@ -408,7 +409,12 @@
     "cta_subtitle": "Rejoignez notre réseau et gagnez en visibilité auprès de la communauté des toiletteurs du Québec.",
     "cta_button": "Nous contacter",
     "trusted_strip": "Ils nous font confiance",
-    "see_all": "Voir tous nos partenaires"
+    "see_all": "Voir tous nos partenaires",
+    "featured_badge": "En vedette",
+    "filter_plan": "Forfait",
+    "filter_ville": "Ville",
+    "filter_reset": "Réinitialiser les filtres",
+    "become_partner": "Devenir partenaire"
   },
   "pricing": {
     "meta": {

@@ -311,4 +311,3 @@ No remaining issues from the original audit. All items resolved.
 | 13 | Groomer availability calendar | Large |
 | 14 | Notification preferences | Medium |
 | 15 | Analytics dashboard for admins | Large |
-| 16 | Mobile-responsive sidebar | Medium |

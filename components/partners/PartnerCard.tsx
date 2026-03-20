@@ -18,6 +18,7 @@ type PartnerCardProps = {
     taglineEn: string;
     logoUrl: string | null;
     city: string;
+    province: string;
     category: string;
     tier: string;
     featured: boolean;
@@ -60,6 +61,13 @@ export function PartnerCard({ partner, locale }: PartnerCardProps) {
           <PartnerBadge tier={partner.tier} size="md" />
         </div>
       )}
+      {partner.featured && (
+        <div className="absolute top-2 left-2 z-10">
+          <Badge className="text-[10px] bg-amber-100 text-amber-700 border-amber-200">
+            ★ {t("featured_badge")}
+          </Badge>
+        </div>
+      )}
       <CardContent className="p-5 flex flex-col h-full">
         {/* Logo + badges */}
         <div className="flex items-start justify-between mb-3">
@@ -84,7 +92,7 @@ export function PartnerCard({ partner, locale }: PartnerCardProps) {
               {partner.city && (
                 <p className="text-xs text-[#4a6260] flex items-center gap-1 mt-0.5">
                   <MapPin className="h-3 w-3" />
-                  {partner.city}
+                  {partner.city}{partner.province ? `, ${partner.province}` : ""}
                 </p>
               )}
             </div>

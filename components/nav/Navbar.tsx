@@ -32,6 +32,7 @@ export function Navbar() {
     { href: `/${locale}/shifts`, label: t("shifts") },
     { href: `/${locale}/jobs`, label: t("jobs") },
     { href: `/${locale}/schools`, label: t("schools") },
+    { href: `/${locale}/partenaires`, label: t("partners") },
     { href: `/${locale}/pricing`, label: t("pricing") },
   ];
 

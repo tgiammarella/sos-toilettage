@@ -11,7 +11,8 @@
     "dashboard": "Dashboard",
     "logout": "Logout",
     "locale_toggle": "FR",
-    "discover": "Discover"
+    "discover": "Discover",
+    "partners": "Partners"
   },
   "home": {
     "hero_title": "The grooming replacement platform in Quebec",
@@ -408,7 +409,12 @@
     "cta_subtitle": "Join our network and gain visibility with the grooming community in Quebec.",
     "cta_button": "Contact us",
     "trusted_strip": "They trust us",
-    "see_all": "See all our partners"
+    "see_all": "See all our partners",
+    "featured_badge": "Featured",
+    "filter_plan": "Plan",
+    "filter_ville": "City",
+    "filter_reset": "Reset filters",
+    "become_partner": "Become a partner"
   },
   "pricing": {
     "meta": {

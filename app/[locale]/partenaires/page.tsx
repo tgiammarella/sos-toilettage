@@ -26,9 +26,12 @@ export default async function PartenairesPage({
             <h1 className="text-3xl md:text-4xl font-bold text-[#1F2933] mb-4">
               {t("directory_title")}
             </h1>
-            <p className="text-lg text-[#4a6260] max-w-2xl mx-auto">
+            <p className="text-lg text-[#4a6260] max-w-2xl mx-auto mb-6">
               {t("directory_subtitle")}
             </p>
+            <Button variant="outline" asChild className="border-[1.5px] border-[#055864] text-[#055864] bg-transparent hover:bg-[#055864]/5">
+              <a href="mailto:info@touttoilettage.com">{t("become_partner")}</a>
+            </Button>
           </div>
         </section>
 
