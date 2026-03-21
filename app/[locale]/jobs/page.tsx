@@ -79,7 +79,12 @@ export default async function JobsPage({
             <div className="space-y-4">
               {jobs.map((job) => (
                 <Link key={job.id} href={`/${locale}/jobs/${job.id}`} className="block group">
-                  <Card className="border border-border/80 bg-white shadow-sm group-hover:shadow-md transition-shadow cursor-pointer">
+                  <Card className="relative border border-border/80 bg-white shadow-sm group-hover:shadow-md transition-shadow cursor-pointer">
+                    {job.isFeatured && (
+                      <span className="absolute top-3 right-3 inline-flex items-center rounded-full bg-[#055864] px-2.5 py-0.5 text-xs font-semibold text-white" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                        {t("featured_badge")}
+                      </span>
+                    )}
                     <CardContent className="py-5 px-6">
                       <div className="flex items-start justify-between gap-4 flex-wrap">
                         <div className="flex-1 min-w-0">

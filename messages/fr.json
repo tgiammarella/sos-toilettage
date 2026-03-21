@@ -265,7 +265,9 @@
       "credits_top_salons": "Top salons par usage",
       "moderation_title": "Modération",
       "moderation_empty": "Aucun signalement actif.",
-      "export_csv": "Exporter CSV"
+      "export_csv": "Exporter CSV",
+      "feature_job": "Mettre en vedette",
+      "unfeature_job": "Retirer de la vedette"
     }
   },
   "shifts": {
@@ -376,7 +378,8 @@
     "salon_in_city": "Salon de toilettage à {city}",
     "previous": "Précédent",
     "next": "Suivant",
-    "page_of": "Page {page} de {total}"
+    "page_of": "Page {page} de {total}",
+    "featured_badge": "En vedette"
   },
   "schools": {
     "title": "Écoles & formations en toilettage",
@@ -790,5 +793,20 @@
     "s3_body": "Nous n'utilisons aucun cookie publicitaire, analytique ou de traçage tiers. Conformément à la Loi 25 du Québec, aucun consentement supplémentaire n'est requis pour les cookies essentiels.",
     "s4_title": "Contact",
     "nav_label": "Cookies"
+  },
+  "graduates": {
+    "our_graduates": "Nos diplômés",
+    "back_to_directory": "Retour au répertoire",
+    "visit_website": "Visiter le site",
+    "contact": "Contacter",
+    "class_of": "Promotion",
+    "available": "Disponible",
+    "not_available": "Non disponible",
+    "login_cta": "Connectez-vous pour contacter nos diplômés",
+    "login_button": "Se connecter",
+    "region": "Région",
+    "specialties": "Spécialités",
+    "graduation_year": "Année de diplomation",
+    "no_graduates": "Aucun diplômé pour cette école."
   }
 }

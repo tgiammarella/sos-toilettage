@@ -4,6 +4,7 @@ import { requireRole } from "@/lib/auth-guards";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { AdminShell } from "@/components/admin/AdminShell";
+import { FeatureJobToggle } from "@/components/admin/FeatureJobToggle";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -26,7 +27,10 @@ export default async function AdminPostsPage({
     prisma.jobPost.findMany({
       orderBy: { createdAt: "desc" },
       take: 30,
-      include: { salon: { select: { name: true } } },
+      select: {
+        id: true, title: true, city: true, status: true,
+        isFeatured: true, salon: { select: { name: true } },
+      },
     }),
   ]);
 
@@ -92,9 +96,17 @@ export default async function AdminPostsPage({
                     <p className="text-sm font-medium truncate">{j.title}</p>
                     <p className="text-xs text-muted-foreground">{j.salon.name} — {j.city}</p>
                   </div>
-                  <Badge variant={j.status === "PUBLISHED" ? "default" : "outline"} className="text-xs shrink-0">
-                    {statusLabel(j.status)}
-                  </Badge>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <FeatureJobToggle
+                      jobId={j.id}
+                      initialFeatured={j.isFeatured}
+                      featureLabel={t("feature_job")}
+                      unfeatureLabel={t("unfeature_job")}
+                    />
+                    <Badge variant={j.status === "PUBLISHED" ? "default" : "outline"} className="text-xs">
+                      {statusLabel(j.status)}
+                    </Badge>
+                  </div>
                 </CardContent>
               </Card>
             ))}

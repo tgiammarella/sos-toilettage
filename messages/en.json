@@ -265,7 +265,9 @@
       "credits_top_salons": "Top salons by usage",
       "moderation_title": "Moderation",
       "moderation_empty": "No active reports.",
-      "export_csv": "Export CSV"
+      "export_csv": "Export CSV",
+      "feature_job": "Feature this job",
+      "unfeature_job": "Remove from featured"
     }
   },
   "shifts": {
@@ -376,7 +378,8 @@
     "salon_in_city": "Grooming salon in {city}",
     "previous": "Previous",
     "next": "Next",
-    "page_of": "Page {page} of {total}"
+    "page_of": "Page {page} of {total}",
+    "featured_badge": "Featured"
   },
   "schools": {
     "title": "Grooming Schools & Training",
@@ -790,5 +793,20 @@
     "s3_body": "We do not use any advertising, analytics, or third-party tracking cookies. In accordance with Quebec's Law 25, no additional consent is required for essential cookies.",
     "s4_title": "Contact",
     "nav_label": "Cookies"
+  },
+  "graduates": {
+    "our_graduates": "Our graduates",
+    "back_to_directory": "Back to directory",
+    "visit_website": "Visit website",
+    "contact": "Contact",
+    "class_of": "Class of",
+    "available": "Available",
+    "not_available": "Not available",
+    "login_cta": "Log in to contact our graduates",
+    "login_button": "Log in",
+    "region": "Region",
+    "specialties": "Specialties",
+    "graduation_year": "Graduation year",
+    "no_graduates": "No graduates for this school."
   }
 }
