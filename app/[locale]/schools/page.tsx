@@ -50,8 +50,8 @@ export default async function SchoolsPage({
                 </div>
                 <p className="text-[#4a6260] text-sm leading-relaxed max-w-lg">
                   {lang === "fr"
-                    ? "Vous offrez une formation en toilettage ? Tout Toilettage permet aux toiletteurs de découvrir des formations, certifications et perfectionnements dans l'industrie."
-                    : "Do you offer grooming training? Tout Toilettage lets groomers discover training programs, certifications and professional development in the industry."}
+                    ? "Vous offrez une formation en toilettage ? ToutToilettage permet aux toiletteurs de découvrir des formations, certifications et perfectionnements dans l'industrie."
+                    : "Do you offer grooming training? ToutToilettage lets groomers discover training programs, certifications and professional development in the industry."}
                 </p>
               </div>
               <Button asChild className="shrink-0">
@@ -140,54 +140,56 @@ function ListingCard({
   })();
 
   return (
-    <Card className={`border shadow-sm hover:shadow-md transition-shadow bg-white ${featured ? "border-amber-200" : ""}`}>
-      <CardContent className="py-5 px-6 h-full flex flex-col">
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <div className="flex items-center gap-3 min-w-0">
-            {listing.logoUrl && (
-              <Image
-                src={listing.logoUrl}
-                alt={listing.name}
-                width={40}
-                height={40}
-                className="rounded-md object-contain shrink-0"
-              />
-            )}
-            <h3 className="font-semibold text-base leading-snug truncate text-[#1F2933]">{listing.name}</h3>
+    <Link href={`/${locale}/schools/${listing.id}`} className="block">
+      <Card className={`border shadow-sm hover:shadow-md transition-shadow bg-white ${featured ? "border-amber-200" : ""}`}>
+        <CardContent className="py-5 px-6 h-full flex flex-col">
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <div className="flex items-center gap-3 min-w-0">
+              {listing.logoUrl && (
+                <Image
+                  src={listing.logoUrl}
+                  alt={listing.name}
+                  width={40}
+                  height={40}
+                  className="rounded-md object-contain shrink-0"
+                />
+              )}
+              <h3 className="font-semibold text-base leading-snug truncate text-[#1F2933]">{listing.name}</h3>
+            </div>
+            <span className="inline-flex items-center shrink-0 rounded-md px-2.5 py-0.5 text-xs font-medium bg-[#F6EFE6] text-[#055864]">
+              {TYPE_LABELS[listing.type]?.[lang] ?? listing.type}
+            </span>
           </div>
-          <span className="inline-flex items-center shrink-0 rounded-md px-2.5 py-0.5 text-xs font-medium bg-[#F6EFE6] text-[#055864]">
-            {TYPE_LABELS[listing.type]?.[lang] ?? listing.type}
-          </span>
-        </div>
 
-        <div className="flex items-center gap-1.5 text-sm text-[#4a6260] mb-2">
-          <MapPin className="h-3.5 w-3.5 shrink-0" />
-          {listing.city}{listing.province ? `, ${listing.province}` : ""}
-        </div>
-
-        {listing.description && (
-          <p className="text-sm text-[#4a6260] line-clamp-3 flex-1 mb-4">
-            {listing.description}
-          </p>
-        )}
-
-        {tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-4">
-            {tags.map((tag) => (
-              <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
-            ))}
+          <div className="flex items-center gap-1.5 text-sm text-[#4a6260] mb-2">
+            <MapPin className="h-3.5 w-3.5 shrink-0" />
+            {listing.city}{listing.province ? `, ${listing.province}` : ""}
           </div>
-        )}
 
-        {listing.websiteUrl && (
-          <Button variant="outline" size="sm" className="mt-auto w-full" asChild>
-            <a href={listing.websiteUrl} target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
-              {locale === "fr" ? "Visiter le site" : "Visit website"}
-            </a>
-          </Button>
-        )}
-      </CardContent>
-    </Card>
+          {listing.description && (
+            <p className="text-sm text-[#4a6260] line-clamp-3 flex-1 mb-4">
+              {listing.description}
+            </p>
+          )}
+
+          {tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-4">
+              {tags.map((tag) => (
+                <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+              ))}
+            </div>
+          )}
+
+          {listing.websiteUrl && (
+            <Button variant="outline" size="sm" className="mt-auto w-full relative z-10" asChild>
+              <a href={listing.websiteUrl} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
+                {locale === "fr" ? "Visiter le site" : "Visit website"}
+              </a>
+            </Button>
+          )}
+        </CardContent>
+      </Card>
+    </Link>
   );
 }

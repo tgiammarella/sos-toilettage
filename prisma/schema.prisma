@@ -512,6 +512,24 @@ model TrainingListing {
   isActive    Boolean      @default(true)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+
+  graduates   GraduateProfile[]
+}
+
+model GraduateProfile {
+  id             String          @id @default(cuid())
+  firstName      String
+  lastName       String
+  schoolId       String
+  school         TrainingListing @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  graduationYear Int
+  regionQc       String
+  specialties    String[]
+  bio            String?
+  isAvailable    Boolean         @default(true)
+  isVisible      Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 // ─── Partners ─────────────────────────────────────────────────────────────────
