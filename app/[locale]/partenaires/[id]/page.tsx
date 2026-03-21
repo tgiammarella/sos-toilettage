@@ -22,7 +22,7 @@ export async function generateMetadata({
   if (!partner) return {};
   const desc = locale === "en" ? partner.taglineEn : partner.taglineFr;
   return {
-    title: `${partner.name} — Tout Toilettage`,
+    title: `${partner.name} — ToutToilettage`,
     description: desc || partner.name,
   };
 }

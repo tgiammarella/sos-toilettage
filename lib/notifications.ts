@@ -20,11 +20,11 @@ function layout(body: string): string {
   return `
     <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:24px">
       <div style="border-bottom:2px solid #2563eb;padding-bottom:12px;margin-bottom:24px">
-        <strong style="font-size:18px;color:#2563eb">Tout Toilettage</strong>
+        <strong style="font-size:18px;color:#2563eb">ToutToilettage</strong>
       </div>
       ${body}
       <div style="margin-top:32px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:12px;color:#6b7280">
-        Cet email a été envoyé automatiquement par Tout Toilettage.
+        Cet email a été envoyé automatiquement par ToutToilettage.
       </div>
     </div>
   `;
@@ -249,10 +249,10 @@ export async function notifyEmailVerification(payload: EmailVerificationPayload)
   const link = `${APP_URL}/api/auth/verify-email?token=${payload.token}`;
   await send(
     payload.email,
-    "Vérifiez votre adresse courriel — Tout Toilettage",
+    "Vérifiez votre adresse courriel — ToutToilettage",
     layout(`
       <p>Bonjour ${payload.name},</p>
-      <p>Bienvenue sur Tout Toilettage ! Veuillez confirmer votre adresse courriel en cliquant sur le bouton ci-dessous.</p>
+      <p>Bienvenue sur ToutToilettage ! Veuillez confirmer votre adresse courriel en cliquant sur le bouton ci-dessous.</p>
       ${btn(link, "Vérifier mon courriel")}
       <p style="margin-top:24px;font-size:13px;color:#6b7280">Ce lien expire dans <strong>24 heures</strong>. Si vous n'avez pas créé de compte, ignorez cet email.</p>
     `),
@@ -273,7 +273,7 @@ export async function notifyPasswordReset(payload: PasswordResetPayload): Promis
     "Réinitialisation de votre mot de passe",
     layout(`
       <p>Bonjour,</p>
-      <p>Vous avez demandé la réinitialisation de votre mot de passe sur Tout Toilettage.</p>
+      <p>Vous avez demandé la réinitialisation de votre mot de passe sur ToutToilettage.</p>
       <p>Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe. Ce lien expire dans <strong>1 heure</strong>.</p>
       ${btn(link, "Réinitialiser mon mot de passe")}
       <p style="margin-top:24px;font-size:13px;color:#6b7280">Si vous n'avez pas fait cette demande, ignorez cet email. Votre mot de passe restera inchangé.</p>

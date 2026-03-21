@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import { useSession, signOut } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { LocaleToggle } from "./LocaleToggle";
-import { Menu, X, Scissors } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,10 +42,8 @@ export function Navbar() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <Link href={`/${locale}`} className="flex items-center gap-2 font-bold text-xl text-foreground">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-primary">
-            <Scissors className="h-4 w-4" />
-          </div>
-          <span className="tracking-tight">Tout Toilettage</span>
+          <Image src="/logo.png" alt="ToutToilettage" width={36} height={36} className="rounded-full" />
+          <span className="tracking-tight">ToutToilettage</span>
         </Link>
 
         {/* Desktop nav */}

@@ -1,5 +1,5 @@
 export const BRAND = {
-  name: "Tout Toilettage",
+  name: "ToutToilettage",
   shortName: "ToutToilettage",
   domain: "touttoilettage.com",
   emailFrom: "ToutToilettage <info@touttoilettage.com>",

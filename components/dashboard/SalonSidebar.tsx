@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Scissors,
   Home,
@@ -56,8 +57,8 @@ export function SalonSidebar({ locale, salonName }: SalonSidebarProps) {
             href={`/${locale}`}
             className="flex items-center gap-2 text-sidebar-foreground font-bold text-lg"
           >
-            <Scissors className="h-5 w-5" />
-            Tout Toilettage
+            <Image src="/logo.png" alt="ToutToilettage" width={28} height={28} className="rounded-full" />
+            ToutToilettage
           </Link>
           <p className="text-xs text-sidebar-foreground/60 mt-1 truncate">{salonName}</p>
         </div>

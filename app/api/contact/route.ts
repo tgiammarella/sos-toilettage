@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       replyTo: email,
       subject: `[Contact] ${subject || "Demande générale"} — ${name}`,
       html: `
-        <h2>Nouveau message via Tout Toilettage</h2>
+        <h2>Nouveau message via ToutToilettage</h2>
         <p><strong>Nom:</strong> ${escapeHtml(name)}</p>
         <p><strong>Courriel:</strong> ${escapeHtml(email)}</p>
         <p><strong>Sujet:</strong> ${escapeHtml(subject || "Demande générale")}</p>
