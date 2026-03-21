@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { Check, Gift } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck } from "lucide-react";
 import { PRICING_TIERS, type PricingTier } from "@/lib/pricing";
 
 export function PricingPlansSection({ locale }: { locale: string }) {
@@ -50,12 +49,6 @@ export function PricingPlansSection({ locale }: { locale: string }) {
           {PRICING_TIERS.map((tier) => (
             <TierCard key={tier.key} tier={tier} annual={annual} t={t} locale={locale} />
           ))}
-        </div>
-
-        {/* Risk reduction */}
-        <div className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground">
-          <ShieldCheck className="h-4 w-4 text-success-foreground shrink-0" />
-          <span>{t("riskReduction")}</span>
         </div>
       </div>
     </section>
