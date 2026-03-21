@@ -2,7 +2,8 @@ export const dynamic = "force-dynamic";
 
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { getPartnerById } from "@/lib/partners";
+import { auth } from "@/auth";
+import { getPartnerById, stripPromoFields } from "@/lib/partners";
 import { Navbar } from "@/components/nav/Navbar";
 import { PartnerProfile } from "@/components/partners/PartnerProfile";
 import type { Metadata } from "next";
@@ -32,8 +33,11 @@ export default async function PartnerProfilePage({
   params: Promise<{ locale: string; id: string }>;
 }) {
   const { locale, id } = await params;
-  const partner = await getPartnerById(id);
-  if (!partner) notFound();
+  const session = await auth();
+  const raw = await getPartnerById(id);
+  if (!raw) notFound();
+  const partner = session ? raw : stripPromoFields(raw);
+  const hasPromoCode = !!raw.promoCode; // track whether a code exists even if stripped
 
   const t = await getTranslations({ locale, namespace: "partners" });
 
@@ -63,7 +67,7 @@ export default async function PartnerProfilePage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <PartnerProfile partner={partner} locale={locale} />
+      <PartnerProfile partner={partner} locale={locale} showPromoCta={!session && hasPromoCode} />
     </div>
   );
 }

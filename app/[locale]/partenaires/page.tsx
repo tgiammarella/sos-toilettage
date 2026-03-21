@@ -1,8 +1,9 @@
 export const dynamic = "force-dynamic";
 
 import { getTranslations } from "next-intl/server";
+import { auth } from "@/auth";
 import { Navbar } from "@/components/nav/Navbar";
-import { getPartners } from "@/lib/partners";
+import { getPartners, stripPromoFieldsList } from "@/lib/partners";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PartnerDirectory } from "@/components/partners/PartnerDirectory";
@@ -14,7 +15,9 @@ export default async function PartenairesPage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "partners" });
-  const partners = await getPartners();
+  const session = await auth();
+  const raw = await getPartners();
+  const partners = session ? raw : stripPromoFieldsList(raw);
 
   return (
     <div className="flex flex-col min-h-screen">

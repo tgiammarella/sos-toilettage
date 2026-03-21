@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getPartnersPage } from "@/lib/partners";
+import { auth } from "@/auth";
+import { getPartnersPage, stripPromoFieldsList } from "@/lib/partners";
 
 export async function GET(req: NextRequest) {
+  const session = await auth();
   const url = new URL(req.url);
   const search = url.searchParams.get("search") ?? undefined;
   const category = url.searchParams.get("category") ?? undefined;
@@ -14,6 +16,10 @@ export async function GET(req: NextRequest) {
     cursor,
     limit: Math.min(limit, 48),
   });
+
+  if (!session) {
+    result.partners = stripPromoFieldsList(result.partners);
+  }
 
   return NextResponse.json(result);
 }

@@ -414,7 +414,8 @@
     "filter_plan": "Forfait",
     "filter_ville": "Ville",
     "filter_reset": "Réinitialiser les filtres",
-    "become_partner": "Devenir partenaire"
+    "become_partner": "Devenir partenaire",
+    "promo_login_cta": "Connectez-vous pour accéder au code promo exclusif →"
   },
   "pricing": {
     "meta": {

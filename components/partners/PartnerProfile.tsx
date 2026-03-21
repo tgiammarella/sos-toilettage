@@ -16,6 +16,7 @@ import {
   Phone,
   Copy,
   Check,
+  Lock,
   X,
 } from "lucide-react";
 import type { Partner } from "@/lib/partners";
@@ -54,9 +55,11 @@ function TiktokIcon({ className }: { className?: string }) {
 export function PartnerProfile({
   partner,
   locale,
+  showPromoCta = false,
 }: {
   partner: Partner;
   locale: string;
+  showPromoCta?: boolean;
 }) {
   const lang = locale === "en" ? "en" : "fr";
   const t = useTranslations("partners");
@@ -271,6 +274,22 @@ export function PartnerProfile({
                   {promoDesc && (
                     <p className="text-xs text-[#4a6260] mt-2">{promoDesc}</p>
                   )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Login CTA for promo code (anonymous users) */}
+            {showPromoCta && !partner.promoCode && (
+              <Card className="border-[#CBBBA6] bg-[#F6EFE6]">
+                <CardContent className="py-4 px-5">
+                  <p className="text-xs text-[#4a6260] mb-2">{t("promo_label")}</p>
+                  <Link
+                    href={`/${locale}/auth/login`}
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-[#055864] hover:underline underline-offset-4"
+                  >
+                    <Lock className="h-3.5 w-3.5" />
+                    {t("promo_login_cta")}
+                  </Link>
                 </CardContent>
               </Card>
             )}

@@ -414,7 +414,8 @@
     "filter_plan": "Plan",
     "filter_ville": "City",
     "filter_reset": "Reset filters",
-    "become_partner": "Become a partner"
+    "become_partner": "Become a partner",
+    "promo_login_cta": "Sign in to access the exclusive promo code →"
   },
   "pricing": {
     "meta": {

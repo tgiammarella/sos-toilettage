@@ -159,3 +159,19 @@ export async function getPartnersPage(opts: {
     nextCursor: hasMore ? results[results.length - 1].id : null,
   };
 }
+
+/**
+ * Strip promo code fields from partner data.
+ * Use for unauthenticated users — promo codes are member-only.
+ */
+export function stripPromoFields<T extends { promoCode?: string | null; promoDescFr?: string | null; promoDescEn?: string | null }>(
+  partner: T,
+): T {
+  return { ...partner, promoCode: null, promoDescFr: null, promoDescEn: null };
+}
+
+export function stripPromoFieldsList<T extends { promoCode?: string | null; promoDescFr?: string | null; promoDescEn?: string | null }>(
+  partners: T[],
+): T[] {
+  return partners.map(stripPromoFields);
+}
