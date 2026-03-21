@@ -6,7 +6,7 @@ import { Check, Gift } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck } from "lucide-react";
-import { PRICING_TIERS, type PricingTier } from "@/lib/pricing";
+import { PRICING_TIERS, JOB_POSTING, type PricingTier } from "@/lib/pricing";
 
 export function PricingPlansSection({ locale }: { locale: string }) {
   const t = useTranslations("pricing");
@@ -52,8 +52,16 @@ export function PricingPlansSection({ locale }: { locale: string }) {
           ))}
         </div>
 
+        {/* Standalone job posting note */}
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          {t("job_posting_standalone", {
+            price: JOB_POSTING.priceCAD,
+            days: JOB_POSTING.durationDays,
+          })}
+        </p>
+
         {/* Risk reduction */}
-        <div className="mt-8 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+        <div className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground">
           <ShieldCheck className="h-4 w-4 text-success-foreground shrink-0" />
           <span>{t("riskReduction")}</span>
         </div>

@@ -16,7 +16,7 @@
   },
   "home": {
     "hero_title": "Un toiletteur absent, c'est une journée de revenus perdue.",
-    "hero_subtitle": "Tout Toilettage connecte les salons du Québec aux toiletteurs disponibles — en quelques heures, pas en quelques jours.",
+    "hero_subtitle": "ToutToilettage connecte les salons du Québec aux toiletteurs disponibles — en quelques heures, pas en quelques jours.",
     "cta_salon": "Je suis un salon",
     "cta_groomer": "Je suis un toiletteur",
     "feature_shifts_title": "Remplacements",
@@ -460,13 +460,13 @@
   },
   "pricing": {
     "meta": {
-      "title": "Tarifs — Tout Toilettage",
+      "title": "Tarifs — ToutToilettage",
       "description": "Choisissez le plan adapté à votre salon. Un seul crédit pour publier un remplacement."
     },
     "hero": {
       "badge": "Tarification transparente",
       "title": "Un remplacement raté coûte une journée de revenus.",
-      "subtitle": "Tout Toilettage vous connecte aux bons toiletteurs, rapidement — sans frais de commission, sans contrat forcé.",
+      "subtitle": "ToutToilettage vous connecte aux bons toiletteurs, rapidement — sans frais de commission, sans contrat forcé.",
       "bullet1": "Candidats qualifiés",
       "bullet2": "Publication en 30 secondes",
       "bullet3": "Aucun frais de commission",
@@ -507,6 +507,7 @@
       "stackable": "Cumulable avec un plan si vous passez à l'abonnement"
     },
     "riskReduction": "Si vous ne recevez aucune candidature, votre crédit n'est pas utilisé.",
+    "job_posting_standalone": "Vous pouvez aussi publier une offre d'emploi sans abonnement — {price} $ / {days} jours.",
     "perPublication": "≈ {price} $ par publication",
     "tiers": {
       "ESSENTIEL": {
@@ -808,5 +809,14 @@
     "specialties": "Spécialités",
     "graduation_year": "Année de diplomation",
     "no_graduates": "Aucun diplômé pour cette école."
+  },
+  "groomerProfile": {
+    "locked_heading": "Accédez au profil complet",
+    "locked_body": "Obtenez les coordonnées de {firstName} et de tous les toiletteurs de la plateforme.",
+    "locked_bullet1": "✓ Pack Découverte — 3 crédits pour 29 $",
+    "locked_bullet2": "✓ Aucun abonnement requis",
+    "locked_bullet3": "✓ Crédit retourné si aucune candidature reçue",
+    "locked_cta": "Voir les plans →",
+    "locked_login_link": "Déjà abonné(e)? Connectez-vous"
   }
 }

@@ -460,7 +460,7 @@
   },
   "pricing": {
     "meta": {
-      "title": "Pricing — Tout Toilettage",
+      "title": "Pricing — ToutToilettage",
       "description": "Choose the right plan for your salon. One credit to publish a replacement shift."
     },
     "hero": {
@@ -507,6 +507,7 @@
       "stackable": "Credits carry over if you upgrade to a plan"
     },
     "riskReduction": "If you receive no applications, your credit is not used.",
+    "job_posting_standalone": "You can also post a job without a subscription — ${price} / {days} days.",
     "perPublication": "≈ ${price} per post",
     "tiers": {
       "ESSENTIEL": {
@@ -808,5 +809,14 @@
     "specialties": "Specialties",
     "graduation_year": "Graduation year",
     "no_graduates": "No graduates for this school."
+  },
+  "groomerProfile": {
+    "locked_heading": "Unlock full profile",
+    "locked_body": "Get {firstName}'s contact info and access every groomer on the platform.",
+    "locked_bullet1": "✓ Discovery Pack — 3 credits for $29",
+    "locked_bullet2": "✓ No subscription required",
+    "locked_bullet3": "✓ Credit returned if no applications received",
+    "locked_cta": "See plans →",
+    "locked_login_link": "Already subscribed? Sign in"
   }
 }
