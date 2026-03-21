@@ -226,8 +226,8 @@ export default async function PricingPage({
         <p className="text-primary-foreground/75 mb-8 max-w-lg mx-auto text-sm">
           {t("final_cta.subtitle")}
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <div className="flex flex-col items-center gap-1">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-start sm:items-end">
+          <div className="flex flex-col items-center gap-1 self-center sm:self-auto">
             <Button
               size="lg"
               className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold"
@@ -239,14 +239,16 @@ export default async function PricingPage({
             </Button>
             <p className="text-xs text-primary-foreground/50">{t("final_cta.primary_note")}</p>
           </div>
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10"
-            asChild
-          >
-            <a href="#decouverte">{t("final_cta.secondary")}</a>
-          </Button>
+          <div className="self-center sm:self-auto sm:mb-[22px]">
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10"
+              asChild
+            >
+              <a href="#decouverte">{t("final_cta.secondary")}</a>
+            </Button>
+          </div>
         </div>
       </section>
 
