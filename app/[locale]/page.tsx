@@ -6,7 +6,7 @@ import { Navbar } from "@/components/nav/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  Scissors, Briefcase, GraduationCap, CheckCircle, ArrowRight, ArrowDown,
+  Scissors, Briefcase, GraduationCap, CheckCircle, ArrowRight,
   Clock, Zap, Shield, Star, DollarSign, Smartphone, Award, ShoppingBag, CalendarDays, ShoppingCart,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -39,10 +39,10 @@ export default async function HomePage({
 
       <main className="flex-1">
         {/* ── Hero ── */}
-        <section className="relative overflow-hidden bg-[#055864] py-20 md:py-32">
+        <section className="relative overflow-hidden bg-[#055864] py-14 md:py-24">
           <div className="container mx-auto px-4 text-center max-w-3xl">
             {/* Wordmark logo — tagline is baked into the image */}
-            <div className="flex justify-center mb-10" style={{ background: "transparent" }}>
+            <div className="flex justify-center mb-6" style={{ background: "transparent" }}>
               <Image
                 src="/logo-wordmark-white.png"
                 alt="ToutToilettage — Le réseau du toilettage"
@@ -53,18 +53,18 @@ export default async function HomePage({
               />
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-6" style={{ fontFamily: "var(--font-cormorant), serif" }}>
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-4" style={{ fontFamily: "var(--font-cormorant), serif" }}>
               {t("hero_title")}
             </h1>
-            <p className="text-lg md:text-xl text-white/85 mb-4 max-w-2xl mx-auto" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>
+            <p className="text-lg md:text-xl text-white/85 mb-3 max-w-2xl mx-auto" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>
               {t("hero_subtitle")}
             </p>
-            <p className="text-base md:text-lg text-[#E8D2AE] italic font-light mb-8 max-w-xl mx-auto">
+            <p className="text-base md:text-lg text-[#E8D2AE] italic font-light mb-6 max-w-xl mx-auto">
               {t("hero_connector")}
             </p>
 
             {/* Trust badges */}
-            <div className="flex justify-center gap-6 mb-10 flex-wrap text-sm text-white/70">
+            <div className="flex justify-center gap-6 mb-8 flex-wrap text-sm text-white/70">
               <span className="flex items-center gap-1.5">
                 <CheckCircle className="h-4 w-4 text-[#E8D2AE]" /> {t("hero_trust1")}
               </span>
@@ -76,22 +76,23 @@ export default async function HomePage({
               </span>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-[#E8D2AE] text-[#055864] hover:bg-[#E8D2AE]/90 text-base px-8 font-semibold" asChild>
-                <Link href={`/${locale}/auth/register?role=SALON`}>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+              <Button size="lg" className="bg-[#E8D2AE] text-[#055864] hover:bg-[#E8D2AE]/90 text-base px-8 font-semibold rounded-lg border-0" asChild>
+                <Link href={`/${locale}/auth/register`}>
                   {t("cta_salon")} <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-white/50 text-white hover:bg-white/10 bg-transparent text-base px-8" asChild>
-                <Link href={`/${locale}/auth/register?role=GROOMER`}>
+              <Button size="lg" className="bg-transparent border border-white/50 text-white hover:bg-white/10 text-base px-8 font-semibold rounded-lg" asChild>
+                <Link href={`/${locale}/auth/register`}>
                   {t("cta_groomer")}
                 </Link>
               </Button>
-              <Button size="lg" variant="ghost" className="text-white/80 hover:text-white hover:bg-white/5 text-base" asChild>
-                <a href="#pillars">
-                  {t("hero_explore")} <ArrowDown className="h-4 w-4 ml-1" />
-                </a>
-              </Button>
+              <a
+                href="#pillars"
+                className="inline-flex items-center text-base text-white/70 hover:text-white font-normal transition-colors px-4 py-2"
+              >
+                {t("hero_explore")}
+              </a>
             </div>
           </div>
         </section>
