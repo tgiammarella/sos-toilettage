@@ -27,11 +27,11 @@ function formatReason(reason: string, locale: string): string {
 }
 
 const PLAN_LABELS: Record<string, { fr: string; en: string }> = {
-  ESSENTIEL: { fr: "Essentiel",     en: "Essential" },
-  SALON:     { fr: "Salon",         en: "Salon" },
-  RESEAU:    { fr: "Réseau",        en: "Network" },
-  CHAINE:    { fr: "Chaîne",        en: "Chain" },
-  NONE:      { fr: "Aucun forfait", en: "No plan" },
+  ESSENTIEL: { fr: "Essentiel",      en: "Essentiel" },
+  SALON:     { fr: "Professionnel",  en: "Professionnel" },
+  RESEAU:    { fr: "Réseau",         en: "Réseau" },
+  CHAINE:    { fr: "Entreprise",     en: "Entreprise" },
+  NONE:      { fr: "Aucun forfait",  en: "No plan" },
 };
 
 export default async function SalonBillingPage({

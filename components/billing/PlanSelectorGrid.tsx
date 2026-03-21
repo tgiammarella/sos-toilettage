@@ -42,10 +42,10 @@ export function PlanSelectorGrid({ currentPlanKey, locale }: PlanSelectorGridPro
   }
 
   const planNames: Record<string, { fr: string; en: string }> = {
-    ESSENTIEL: { fr: "Essentiel",  en: "Essential" },
-    SALON:     { fr: "Salon",      en: "Salon" },
-    RESEAU:    { fr: "Réseau",     en: "Network" },
-    CHAINE:    { fr: "Chaîne",     en: "Chain" },
+    ESSENTIEL: { fr: "Essentiel",      en: "Essentiel" },
+    SALON:     { fr: "Professionnel",  en: "Professionnel" },
+    RESEAU:    { fr: "Réseau",         en: "Réseau" },
+    CHAINE:    { fr: "Entreprise",     en: "Entreprise" },
   };
 
   return (

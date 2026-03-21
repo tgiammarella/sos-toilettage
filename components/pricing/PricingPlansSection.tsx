@@ -75,8 +75,8 @@ function TierCard({
 }) {
   const price = annual ? tier.annualMonthlyCAD : tier.monthlyPriceCAD;
   const billingLabel = annual ? t("billedAnnually") : t("billedMonthly");
-  const isChaine = tier.key === "CHAINE";
-  const hasTrial = tier.key === "ESSENTIEL" || tier.key === "SALON";
+  const isEntreprise = tier.key === "CHAINE";
+  const hasTrial = !isEntreprise;
 
   const features: string[] = [
     t("features.creditsPerMonth", { n: tier.creditsPerMonth }),
@@ -123,7 +123,7 @@ function TierCard({
       <div className="mb-2">
         <div className="flex items-end gap-1">
           <span className="text-3xl font-bold text-[#1F2933] tabular-nums">
-            {isChaine ? `${price} $+` : `${price} $`}
+            {isEntreprise ? `${price} $+` : `${price} $`}
           </span>
           <span className="mb-1 text-sm text-[#4a6260]">{t("perMonth")}</span>
         </div>
@@ -165,9 +165,9 @@ function TierCard({
           className={hasTrial
             ? "w-full bg-primary text-primary-foreground hover:bg-primary/90"
             : "w-full border-[1.5px] border-[#055864] text-[#055864] bg-transparent hover:bg-[#055864]/5"}
-          asChild={!isChaine}
+          asChild={!isEntreprise}
         >
-          {isChaine ? (
+          {isEntreprise ? (
             <span>{t(`tiers.${tier.key}.cta`)}</span>
           ) : (
             <a href={`/${locale}/auth/register`}>

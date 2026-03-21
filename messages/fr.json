@@ -500,7 +500,7 @@
       "cta_primary": "Publier un remplacement",
       "cta_secondary": "Voir les plans",
       "taxNote": "Tous les prix en CAD, avant taxes (TPS 5 % + TVQ 9,975 %)",
-      "trial_badge": "🎁 Essai gratuit de 14 jours sur les plans Starter et Salon — aucune carte de crédit requise"
+      "trial_badge": "🎁 Essai gratuit de 14 jours sur les plans Essentiel, Professionnel et Réseau — aucune carte de crédit requise"
     },
     "credits": {
       "title": "Comment fonctionnent les crédits",
@@ -548,12 +548,12 @@
     "perPublication": "≈ {price} $ par publication",
     "tiers": {
       "ESSENTIEL": {
-        "name": "Starter",
-        "target": "Salon solo · 1 emplacement",
+        "name": "Essentiel",
+        "target": "Solo · 1 emplacement",
         "cta": "Démarrer"
       },
       "SALON": {
-        "name": "Salon",
+        "name": "Professionnel",
         "target": "Salon établi · 1-2 emplacements",
         "cta": "Choisir ce plan",
         "badge": "Le plus populaire"
@@ -564,8 +564,8 @@
         "cta": "Nous contacter"
       },
       "CHAINE": {
-        "name": "Chaîne",
-        "target": "Grande chaîne · 8+ emplacements",
+        "name": "Entreprise",
+        "target": "Grande chaîne · multi-emplacements",
         "cta": "Nous contacter"
       }
     },
@@ -617,7 +617,7 @@
       "q4": "Combien de candidats vais-je recevoir?",
       "a4": "La plupart des remplacements reçoivent entre 3 et 10 candidatures en 24 heures, selon la région et le type de poste.",
       "q5": "Comment fonctionne l'essai de 14 jours?",
-      "a5": "Choisissez le plan Starter ou Salon et commencez immédiatement. Aucune carte de crédit requise pendant les 14 premiers jours. Si vous décidez de continuer, vous entrez vos informations de paiement à la fin de l'essai. Si vous annulez avant, vous ne payez rien.",
+      "a5": "Choisissez le plan Essentiel, Professionnel ou Réseau et commencez immédiatement. Aucune carte de crédit requise pendant les 14 premiers jours. Si vous décidez de continuer, vous entrez vos informations de paiement à la fin de l'essai. Si vous annulez avant, vous ne payez rien.",
       "q6": "Est-ce que les toiletteurs paient?",
       "a6": "Non. La plateforme est entièrement gratuite pour les toiletteurs qui postulent aux remplacements et aux offres d'emploi.",
       "q7": "C'est quoi la différence entre mensuel et annuel?",
@@ -630,9 +630,9 @@
     "trial_cta_note": "Aucune carte requise · Annulez n'importe quand",
     "final_cta": {
       "title": "Prête à ne plus jamais annuler une journée?",
-      "subtitle": "Commencez avec l'Offre Découverte — 29 $ une seule fois, sans engagement. Ou essayez un plan Starter ou Salon gratuitement pendant 14 jours.",
+      "subtitle": "Commencez avec l'Offre Découverte — 29 $ une seule fois, sans engagement. Ou essayez un plan Essentiel, Professionnel ou Réseau gratuitement pendant 14 jours.",
       "primary": "Essayer gratuitement 14 jours",
-      "primary_note": "Starter ou Salon — aucune carte requise",
+      "primary_note": "Essentiel, Professionnel ou Réseau — aucune carte requise",
       "secondary": "Voir l'Offre Découverte à 29 $"
     }
   },

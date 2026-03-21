@@ -500,7 +500,7 @@
       "cta_primary": "Post a replacement",
       "cta_secondary": "See plans",
       "taxNote": "All prices in CAD, before taxes (GST 5% + QST 9.975%)",
-      "trial_badge": "🎁 14-day free trial on Starter and Salon plans — no credit card required"
+      "trial_badge": "🎁 14-day free trial on Essentiel, Professionnel and Réseau plans — no credit card required"
     },
     "credits": {
       "title": "How credits work",
@@ -548,12 +548,12 @@
     "perPublication": "≈ ${price} per post",
     "tiers": {
       "ESSENTIEL": {
-        "name": "Starter",
-        "target": "Solo salon · 1 location",
+        "name": "Essentiel",
+        "target": "Solo · 1 location",
         "cta": "Get started"
       },
       "SALON": {
-        "name": "Salon",
+        "name": "Professionnel",
         "target": "Established salon · 1-2 locations",
         "cta": "Choose this plan",
         "badge": "Most popular"
@@ -564,8 +564,8 @@
         "cta": "Contact us"
       },
       "CHAINE": {
-        "name": "Chaîne",
-        "target": "Large chain · 8+ locations",
+        "name": "Entreprise",
+        "target": "Large chain · multi-location",
         "cta": "Contact us"
       }
     },
@@ -617,7 +617,7 @@
       "q4": "How many applications will I receive?",
       "a4": "Most replacements receive 3–10 applications within 24 hours, depending on your region and the type of position.",
       "q5": "How does the 14-day free trial work?",
-      "a5": "Choose the Starter or Salon plan and start immediately. No credit card required for the first 14 days. If you decide to continue, you enter your payment info at the end of the trial. Cancel before then and you pay nothing.",
+      "a5": "Choose the Essentiel, Professionnel or Réseau plan and start immediately. No credit card required for the first 14 days. If you decide to continue, you enter your payment info at the end of the trial. Cancel before then and you pay nothing.",
       "q6": "Do groomers pay?",
       "a6": "No. The platform is completely free for groomers applying to replacements and job postings.",
       "q7": "What's the difference between monthly and annual?",
@@ -630,9 +630,9 @@
     "trial_cta_note": "No card required · Cancel anytime",
     "final_cta": {
       "title": "Ready to stop canceling on your clients?",
-      "subtitle": "Start with the Discovery Pack — $29 one time, no commitment. Or try a Starter or Salon plan free for 14 days.",
+      "subtitle": "Start with the Discovery Pack — $29 one time, no commitment. Or try an Essentiel, Professionnel or Réseau plan free for 14 days.",
       "primary": "Try free for 14 days",
-      "primary_note": "Starter or Salon — no card required",
+      "primary_note": "Essentiel, Professionnel or Réseau — no card required",
       "secondary": "See the $29 Discovery Pack"
     }
   },
