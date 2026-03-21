@@ -76,22 +76,27 @@ export default async function HomePage({
               </span>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
                 href={`/${locale}/auth/register`}
-                className="inline-flex items-center justify-center py-3 px-6 bg-[#E8D2AE] text-[#055864] font-semibold rounded-lg hover:bg-[#E8D2AE]/90 transition-colors text-base"
+                className="inline-flex items-center justify-center rounded-md border-2 border-[#E8D2AE] bg-[#E8D2AE] text-[#055864] hover:bg-[#E8D2AE]/90 transition-colors w-full sm:w-auto"
+                style={{ fontFamily: "var(--font-dm-sans), sans-serif", fontWeight: 600, fontSize: "15px", padding: "14px 28px", borderRadius: "6px" }}
               >
                 {t("cta_salon")} <ArrowRight className="h-4 w-4 ml-2" />
               </Link>
               <Link
                 href={`/${locale}/auth/register`}
-                className="inline-flex items-center justify-center py-3 px-6 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition-colors text-base"
+                className="inline-flex items-center justify-center rounded-md border-2 border-[#E8D2AE] bg-transparent text-[#E8D2AE] hover:bg-white/10 transition-colors w-full sm:w-auto"
+                style={{ fontFamily: "var(--font-dm-sans), sans-serif", fontWeight: 600, fontSize: "15px", padding: "14px 28px", borderRadius: "6px" }}
               >
                 {t("cta_groomer")}
               </Link>
+            </div>
+            <div className="mt-6 text-center">
               <a
                 href="#pillars"
-                className="inline-flex items-center justify-center py-3 px-6 text-white/70 hover:text-white font-normal transition-colors text-base"
+                className="inline-flex items-center text-white/60 hover:text-white/80 transition-colors"
+                style={{ fontFamily: "var(--font-dm-sans), sans-serif", fontWeight: 400, fontSize: "13px" }}
               >
                 {t("hero_explore")}
               </a>

@@ -46,9 +46,9 @@ export function Navbar() {
           <Image
             src="/logo-wordmark.png"
             alt="ToutToilettage"
-            width={200}
-            height={52}
-            className="h-[52px] w-auto"
+            width={220}
+            height={58}
+            className="h-[58px] w-auto"
             priority
           />
         </Link>
