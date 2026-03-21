@@ -541,7 +541,9 @@
       "subtext": "{days}-day visibility · No subscription required · Publish when you're ready",
       "bullet1": "Visible to all registered groomers",
       "bullet2": "Automatically expires after {days} days",
-      "bullet3": "Renewable at any time"
+      "bullet3": "Renewable at any time",
+      "cta": "Post a job",
+      "cta_note": "You'll be directed to payment after creating your posting."
     },
     "perPublication": "≈ ${price} per post",
     "tiers": {

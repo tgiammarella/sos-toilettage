@@ -541,7 +541,9 @@
       "subtext": "Visibilité {days} jours · Aucun abonnement requis · Publiez quand vous êtes prêt",
       "bullet1": "Visible par tous les toiletteurs inscrits",
       "bullet2": "Expire automatiquement après {days} jours",
-      "bullet3": "Renouvelable à tout moment"
+      "bullet3": "Renouvelable à tout moment",
+      "cta": "Publier une offre d'emploi",
+      "cta_note": "Vous serez redirigé(e) au paiement après la création de votre offre."
     },
     "perPublication": "≈ {price} $ par publication",
     "tiers": {

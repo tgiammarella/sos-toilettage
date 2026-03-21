@@ -145,7 +145,7 @@ export default async function PricingPage({
 
       {/* ── Standalone job posting ─────────────────────── */}
       <section className="bg-background px-4 py-10">
-        <div className="max-w-4xl mx-auto rounded-2xl border-[1.5px] border-solid border-[#CBBBA6] bg-white p-6">
+        <div className="max-w-4xl mx-auto rounded-2xl border-2 border-solid border-[#055864] bg-white p-6 flex flex-col">
           <p style={{ color: "#3A7F87", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", fontWeight: 600 }} className="mb-2">
             {t("jobCard.label")}
           </p>
@@ -155,7 +155,7 @@ export default async function PricingPage({
           <p className="text-sm text-[#4a6260] mb-4">
             {t("jobCard.subtext", { days: JOB_POSTING.durationDays })}
           </p>
-          <ul className="space-y-1.5 text-sm text-[#1F2933]">
+          <ul className="space-y-1.5 text-sm text-[#1F2933] mb-6">
             <li className="flex items-center gap-2">
               <Check className="h-3.5 w-3.5 text-[#055864] shrink-0" />
               {t("jobCard.bullet1")}
@@ -169,6 +169,16 @@ export default async function PricingPage({
               {t("jobCard.bullet3")}
             </li>
           </ul>
+          <div className="mt-auto">
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
+              <a href={`/${locale}/auth/register`}>
+                {t("jobCard.cta")}
+              </a>
+            </Button>
+            <p className="text-[10px] text-[#4a6260] mt-1.5">
+              {t("jobCard.cta_note")}
+            </p>
+          </div>
         </div>
       </section>
 

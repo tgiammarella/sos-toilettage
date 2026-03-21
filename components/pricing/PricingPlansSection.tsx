@@ -46,7 +46,7 @@ export function PricingPlansSection({ locale }: { locale: string }) {
           </span>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4 items-start">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4 items-stretch">
           {PRICING_TIERS.map((tier) => (
             <TierCard key={tier.key} tier={tier} annual={annual} t={t} locale={locale} />
           ))}
@@ -101,7 +101,7 @@ function TierCard({
 
   return (
     <div
-      className={`relative flex flex-col rounded-2xl border p-6 bg-white transition-shadow ${
+      className={`relative flex flex-col h-full rounded-2xl border p-6 bg-white transition-shadow ${
         tier.recommended
           ? "border-accent shadow-xl ring-2 ring-accent scale-[1.02] z-10"
           : "border-border shadow-sm hover:shadow-md"
