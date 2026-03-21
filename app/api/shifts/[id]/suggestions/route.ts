@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { scoreGroomerForShift, calculateProfileScore } from "@/lib/groomer-scoring";
+import {
+  canViewFullGroomerProfile,
+  extractFirstName,
+  getSalonAccessProfile,
+} from "@/lib/groomer-access";
 
 const DEFAULT_LIMIT = 25;
 
@@ -25,9 +30,14 @@ export async function GET(
 
   const salon = await prisma.salonProfile.findUnique({
     where: { userId: session.user.id },
-    select: { id: true },
+    select: { id: true, creditsAvailable: true, subscriptionPlan: true },
   });
   if (!salon) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  const hasFullAccess = canViewFullGroomerProfile(
+    { creditsAvailable: salon.creditsAvailable, subscriptionPlan: salon.subscriptionPlan },
+    session.user.role,
+  );
 
   const shift = await prisma.shiftPost.findUnique({
     where: { id },
@@ -84,7 +94,7 @@ export async function GET(
   const scored = groomers
     .map((g) => ({
       id: g.id,
-      fullName: g.fullName,
+      fullName: hasFullAccess ? g.fullName : extractFirstName(g.fullName),
       city: g.city,
       specializations: g.specializations,
       availableToday: g.availableToday,

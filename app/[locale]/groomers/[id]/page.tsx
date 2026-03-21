@@ -1,11 +1,18 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, MapPin, Briefcase } from "lucide-react";
 import { getLang, SPEC_LABEL, getLabel } from "@/lib/labels";
 import { computeTrustBadges } from "@/lib/groomer-trust";
+import {
+  canViewFullGroomerProfile,
+  extractFirstName,
+  getSalonAccessProfile,
+} from "@/lib/groomer-access";
+import { LockedProfileCard } from "@/components/groomer/LockedProfileCard";
 
 export default async function PublicGroomerProfilePage({
   params,
@@ -15,6 +22,18 @@ export default async function PublicGroomerProfilePage({
   const { locale, id } = await params;
   const lang = getLang(locale);
 
+  // ── Auth + access check ──────────────────────────────────────────────────
+  const session = await auth();
+  const role = session?.user?.role;
+
+  let salonProfile: { creditsAvailable: number; subscriptionPlan: string | null } | null = null;
+  if (role === "SALON" && session?.user?.id) {
+    salonProfile = await getSalonAccessProfile(session.user.id);
+  }
+
+  const hasFullAccess = canViewFullGroomerProfile(salonProfile, role);
+
+  // ── Fetch groomer ────────────────────────────────────────────────────────
   const groomer = await prisma.groomerProfile.findUnique({
     where: { id },
     select: {
@@ -38,10 +57,25 @@ export default async function PublicGroomerProfilePage({
         orderBy: { createdAt: "desc" },
         take: 50,
       },
+      // Only needed when full access is granted — but select is static,
+      // so we always fetch and just don't expose if locked.
+      user: {
+        select: {
+          email: true,
+        },
+      },
     },
   });
 
   if (!groomer) notFound();
+
+  // ── Server-side gating: derive the display name ──────────────────────────
+  const firstName = extractFirstName(groomer.fullName);
+  const displayName = hasFullAccess ? groomer.fullName : firstName;
+
+  // Gate contact info: email, CV
+  const displayEmail = hasFullAccess ? groomer.user.email : null;
+  const displayCvUrl = hasFullAccess ? groomer.cvFileUrl : null;
 
   const specs: string[] = (() => {
     try { return JSON.parse(groomer.specializations || "[]"); } catch { return []; }
@@ -74,13 +108,13 @@ export default async function PublicGroomerProfilePage({
         {/* Header */}
         <div className="flex items-start gap-5">
           <Avatar className="h-16 w-16 shrink-0">
-            <AvatarImage src={groomer.photoUrl ?? ""} alt={groomer.fullName} />
+            <AvatarImage src={groomer.photoUrl ?? ""} alt={displayName} />
             <AvatarFallback className="text-lg font-bold bg-primary/10 text-primary">
-              {groomer.fullName.charAt(0).toUpperCase()}
+              {displayName.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl font-bold text-[#1F2933]">{groomer.fullName}</h1>
+            <h1 className="text-2xl font-bold text-[#1F2933]">{displayName}</h1>
             <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground flex-wrap">
               <span className="flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5" />
@@ -117,6 +151,37 @@ export default async function PublicGroomerProfilePage({
             )}
           </div>
         </div>
+
+        {/* Contact info — only for users with full access */}
+        {hasFullAccess && displayEmail && (
+          <Card className="border shadow-none">
+            <CardContent className="py-4 px-5 space-y-1">
+              <p className="text-sm">
+                <span className="font-medium">{lang === "fr" ? "Courriel" : "Email"}:</span>{" "}
+                <a href={`mailto:${displayEmail}`} className="text-primary hover:underline">
+                  {displayEmail}
+                </a>
+              </p>
+              {displayCvUrl && (
+                <p className="text-sm">
+                  <a
+                    href={displayCvUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    {lang === "fr" ? "Voir le CV" : "View CV"}
+                  </a>
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Locked card — when access is denied */}
+        {!hasFullAccess && (
+          <LockedProfileCard firstName={firstName} locale={locale} />
+        )}
 
         {/* Bio */}
         {groomer.bio && (

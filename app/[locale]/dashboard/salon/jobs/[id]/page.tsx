@@ -34,6 +34,11 @@ import {
   SPEC_LABEL,
   getLabel,
 } from "@/lib/labels";
+import {
+  canViewFullGroomerProfile,
+  extractFirstName,
+  getSalonAccessProfile,
+} from "@/lib/groomer-access";
 
 export default async function SalonJobDetailPage({
   params,
@@ -53,6 +58,10 @@ export default async function SalonJobDetailPage({
   });
 
   if (!salon) notFound();
+
+  // Check groomer profile access level
+  const salonAccess = await getSalonAccessProfile(session.user.id);
+  const hasFullAccess = canViewFullGroomerProfile(salonAccess, session.user.role);
 
   const job = await prisma.jobPost.findUnique({
     where: { id },
@@ -217,7 +226,7 @@ export default async function SalonJobDetailPage({
                   </p>
                   <p className="text-sm text-success-foreground/80">
                     {lang === "fr" ? "Confirmé avec" : "Confirmed with"}{" "}
-                    <strong>{job.engagement.groomer.fullName}</strong>
+                    <strong>{hasFullAccess ? job.engagement.groomer.fullName : extractFirstName(job.engagement.groomer.fullName)}</strong>
                   </p>
                 </div>
               </CardContent>
@@ -276,6 +285,9 @@ export default async function SalonJobDetailPage({
                     specs = Array.isArray(parsed) ? parsed : [];
                   } catch { specs = []; }
                   const isOpen = job.status === "PUBLISHED" && app.status === "APPLIED";
+                  const appDisplayName = hasFullAccess
+                    ? app.groomer.fullName
+                    : extractFirstName(app.groomer.fullName);
 
                   return (
                     <Card key={app.id} className={`border shadow-none ${app.status === "ACCEPTED" ? "border-success-border bg-success" : app.status === "REJECTED" ? "opacity-60" : ""}`}>
@@ -283,13 +295,13 @@ export default async function SalonJobDetailPage({
                         <div className="flex items-start gap-4">
                           <Avatar className="h-10 w-10 shrink-0">
                             <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
-                              {app.groomer.fullName.charAt(0).toUpperCase()}
+                              {appDisplayName.charAt(0).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
 
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <p className="font-medium">{app.groomer.fullName}</p>
+                              <p className="font-medium">{appDisplayName}</p>
                               <Badge variant={APP_STATUS_VARIANT[app.status] ?? "outline"} className="text-xs">
                                 {getLabel(APP_STATUS_LABEL, app.status, lang)}
                               </Badge>
@@ -321,7 +333,7 @@ export default async function SalonJobDetailPage({
                                 {lang === "fr" ? "Aucune bio fournie" : "No bio provided"}
                               </p>
                             )}
-                            {app.groomer.cvFileUrl && (
+                            {hasFullAccess && app.groomer.cvFileUrl && (
                               <a href={app.groomer.cvFileUrl} target="_blank" rel="noopener noreferrer"
                                 className="inline-flex items-center gap-1 text-xs text-primary underline mt-1">
                                 <FileText className="h-3.5 w-3.5" />
@@ -333,7 +345,7 @@ export default async function SalonJobDetailPage({
                           <div className="flex flex-col items-end gap-2 shrink-0">
                             <ShortlistButton applicationId={app.id} shortlisted={app.shortlisted} />
                             {isOpen && (
-                              <JobDecisionButtons jobId={job.id} applicationId={app.id} groomerName={app.groomer.fullName} />
+                              <JobDecisionButtons jobId={job.id} applicationId={app.id} groomerName={appDisplayName} />
                             )}
                           </div>
                         </div>

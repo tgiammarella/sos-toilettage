@@ -10,6 +10,11 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle } from "lucide-react";
 import { SalonSidebar } from "@/components/dashboard/SalonSidebar";
 import { ReviewForm } from "@/components/reviews/ReviewForm";
+import {
+  canViewFullGroomerProfile,
+  extractFirstName,
+  getSalonAccessProfile,
+} from "@/lib/groomer-access";
 
 export default async function SalonConfirmedPage({
   params,
@@ -39,6 +44,10 @@ export default async function SalonConfirmedPage({
   });
 
   if (!salon) notFound();
+
+  // Check groomer profile access level
+  const salonAccess = await getSalonAccessProfile(session.user.id);
+  const hasFullAccess = canViewFullGroomerProfile(salonAccess, session.user.role);
 
   const dateLocale = locale === "fr" ? "fr-CA" : "en-CA";
 
@@ -80,7 +89,7 @@ export default async function SalonConfirmedPage({
                     <CardContent className="py-4 px-5 space-y-3">
                       <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0">
-                          <p className="font-medium truncate">{eng.groomer.fullName}</p>
+                          <p className="font-medium truncate">{hasFullAccess ? eng.groomer.fullName : extractFirstName(eng.groomer.fullName)}</p>
                           <p className="text-xs text-muted-foreground mt-0.5">
                             {eng.groomer.city} · {postLabel}
                           </p>

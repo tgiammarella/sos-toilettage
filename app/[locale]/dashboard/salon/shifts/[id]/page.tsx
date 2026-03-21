@@ -27,6 +27,11 @@ import {
   CRITERIA_LABEL,
   getLabel,
 } from "@/lib/labels";
+import {
+  canViewFullGroomerProfile,
+  extractFirstName,
+  getSalonAccessProfile,
+} from "@/lib/groomer-access";
 
 export default async function SalonShiftDetailPage({
   params,
@@ -43,6 +48,10 @@ export default async function SalonShiftDetailPage({
   });
 
   if (!salon) notFound();
+
+  // Check groomer profile access level
+  const salonAccess = await getSalonAccessProfile(session.user.id);
+  const hasFullAccess = canViewFullGroomerProfile(salonAccess, session.user.role);
 
   const shift = await prisma.shiftPost.findUnique({
     where: { id },
@@ -187,7 +196,7 @@ export default async function SalonShiftDetailPage({
                       </p>
                       <p className="text-sm text-success-foreground/80">
                         {lang === "fr" ? "Confirmé avec" : "Confirmed with"}{" "}
-                        <strong>{shift.engagement.groomer.fullName}</strong>
+                        <strong>{hasFullAccess ? shift.engagement.groomer.fullName : extractFirstName(shift.engagement.groomer.fullName)}</strong>
                       </p>
                     </div>
                   </div>
@@ -241,6 +250,9 @@ export default async function SalonShiftDetailPage({
                   const isAccepted = app.status === "ACCEPTED";
                   const isRejected = app.status === "REJECTED";
                   const isOpen = shift.status === "PUBLISHED" && app.status === "APPLIED";
+                  const appDisplayName = hasFullAccess
+                    ? app.groomer.fullName
+                    : extractFirstName(app.groomer.fullName);
 
                   return (
                     <Card key={app.id} className={`border shadow-none ${isAccepted ? "border-success-border bg-success" : isRejected ? "opacity-60" : ""}`}>
@@ -248,13 +260,13 @@ export default async function SalonShiftDetailPage({
                         <div className="flex items-start gap-4">
                           <Avatar className="h-10 w-10 shrink-0">
                             <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
-                              {app.groomer.fullName.charAt(0).toUpperCase()}
+                              {appDisplayName.charAt(0).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
 
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <p className="font-medium">{app.groomer.fullName}</p>
+                              <p className="font-medium">{appDisplayName}</p>
                               <Badge
                                 variant={APP_STATUS_VARIANT[app.status] ?? "outline"}
                                 className="text-xs"
@@ -284,7 +296,7 @@ export default async function SalonShiftDetailPage({
                                 {lang === "fr" ? "Aucune bio fournie" : "No bio provided"}
                               </p>
                             )}
-                            {app.groomer.cvFileUrl && (
+                            {hasFullAccess && app.groomer.cvFileUrl && (
                               <a
                                 href={app.groomer.cvFileUrl}
                                 target="_blank"

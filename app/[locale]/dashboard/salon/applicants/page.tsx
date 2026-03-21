@@ -13,6 +13,11 @@ import { FileText, ChevronRight, Star } from "lucide-react";
 import { SalonSidebar } from "@/components/dashboard/SalonSidebar";
 import { getLang, SPEC_LABEL, getLabel } from "@/lib/labels";
 import { computeTrustBadges } from "@/lib/groomer-trust";
+import {
+  canViewFullGroomerProfile,
+  extractFirstName,
+  getSalonAccessProfile,
+} from "@/lib/groomer-access";
 
 // ─── Label maps ────────────────────────────────────────────────────────────────
 
@@ -54,6 +59,10 @@ export default async function SalonApplicantsPage({
     select: { id: true, name: true },
   });
   if (!salon) notFound();
+
+  // Check groomer profile access level
+  const salonAccess = await getSalonAccessProfile(session.user.id);
+  const hasFullAccess = canViewFullGroomerProfile(salonAccess, session.user.role);
 
   // Fetch both tabs' counts + active tab's full data in parallel
   const [shiftApps, jobApps] = await Promise.all([
@@ -201,6 +210,7 @@ export default async function SalonApplicantsPage({
                         detailHref={detailHref}
                         lang={lang}
                         locale={locale}
+                        hasFullAccess={hasFullAccess}
                       />
                     );
                   })
@@ -221,6 +231,7 @@ export default async function SalonApplicantsPage({
                         detailHref={detailHref}
                         lang={lang}
                         locale={locale}
+                        hasFullAccess={hasFullAccess}
                       />
                     );
                   })}
@@ -244,6 +255,7 @@ function ApplicantCard({
   detailHref,
   lang,
   locale,
+  hasFullAccess,
 }: {
   groomer: {
     id: string;
@@ -263,7 +275,11 @@ function ApplicantCard({
   detailHref?: string;
   lang: "fr" | "en";
   locale: string;
+  hasFullAccess: boolean;
 }) {
+  const displayName = hasFullAccess
+    ? groomer.fullName
+    : extractFirstName(groomer.fullName);
   const specs: string[] = (() => {
     try { return JSON.parse(groomer.specializations || "[]"); } catch { return []; }
   })();
@@ -294,9 +310,9 @@ function ApplicantCard({
         <div className="flex items-start gap-4">
           {/* Avatar */}
           <Avatar className="h-10 w-10 shrink-0">
-            <AvatarImage src={groomer.photoUrl ?? ""} alt={groomer.fullName} />
+            <AvatarImage src={groomer.photoUrl ?? ""} alt={displayName} />
             <AvatarFallback className="text-sm font-semibold bg-primary/10 text-primary">
-              {groomer.fullName.charAt(0).toUpperCase()}
+              {displayName.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
 
@@ -304,7 +320,7 @@ function ApplicantCard({
           <div className="flex-1 min-w-0 space-y-1">
             <div className="flex items-center flex-wrap gap-2">
               <Link href={profileHref} className="font-medium hover:underline">
-                {groomer.fullName}
+                {displayName}
               </Link>
               <Badge variant={STATUS_VARIANT[status] ?? "outline"} className="text-xs">
                 {STATUS_LABEL[status]?.[lang] ?? status}
@@ -365,7 +381,7 @@ function ApplicantCard({
 
           {/* Actions */}
           <div className="flex flex-col items-end gap-2 shrink-0">
-            {groomer.cvFileUrl && (
+            {hasFullAccess && groomer.cvFileUrl && (
               <a
                 href={groomer.cvFileUrl}
                 target="_blank"

@@ -8,6 +8,11 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SalonSidebar } from "@/components/dashboard/SalonSidebar";
 import { ShiftReviewForm } from "@/components/reviews/ShiftReviewForm";
+import {
+  canViewFullGroomerProfile,
+  extractFirstName,
+  getSalonAccessProfile,
+} from "@/lib/groomer-access";
 
 export default async function ShiftReviewPage({
   params,
@@ -62,6 +67,13 @@ export default async function ShiftReviewPage({
 
   const lang = locale === "fr" ? "fr" : "en";
 
+  // Check groomer profile access level
+  const salonAccess = await getSalonAccessProfile(session.user.id);
+  const hasFullAccess = canViewFullGroomerProfile(salonAccess, session.user.role);
+  const groomerDisplayName = hasFullAccess
+    ? shift.engagement.groomer.fullName
+    : extractFirstName(shift.engagement.groomer.fullName);
+
   return (
     <div className="flex min-h-screen bg-muted/30">
       <SalonSidebar locale={locale} salonName={salon.name} />
@@ -81,14 +93,14 @@ export default async function ShiftReviewPage({
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
               {lang === "fr"
-                ? `Évaluez ${shift.engagement.groomer.fullName} pour le remplacement du ${new Date(shift.date).toLocaleDateString("fr-CA", { day: "numeric", month: "long", year: "numeric" })} à ${shift.city}.`
-                : `Rate ${shift.engagement.groomer.fullName} for the shift on ${new Date(shift.date).toLocaleDateString("en-CA", { day: "numeric", month: "long", year: "numeric" })} in ${shift.city}.`}
+                ? `Évaluez ${groomerDisplayName} pour le remplacement du ${new Date(shift.date).toLocaleDateString("fr-CA", { day: "numeric", month: "long", year: "numeric" })} à ${shift.city}.`
+                : `Rate ${groomerDisplayName} for the shift on ${new Date(shift.date).toLocaleDateString("en-CA", { day: "numeric", month: "long", year: "numeric" })} in ${shift.city}.`}
             </p>
           </div>
 
           <ShiftReviewForm
             engagementId={shift.engagement.id}
-            groomerName={shift.engagement.groomer.fullName}
+            groomerName={groomerDisplayName}
             shiftId={id}
             locale={locale}
           />
