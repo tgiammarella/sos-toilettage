@@ -42,7 +42,7 @@ export default async function HomePage({
         <section className="relative overflow-hidden bg-[#055864] py-20 md:py-32">
           <div className="container mx-auto px-4 text-center max-w-3xl">
             {/* Wordmark logo — tagline is baked into the image */}
-            <div className="flex justify-center mb-10">
+            <div className="flex justify-center mb-10" style={{ background: "transparent" }}>
               <Image
                 src="/logo-wordmark-white.png"
                 alt="ToutToilettage — Le réseau du toilettage"
