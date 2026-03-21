@@ -6,8 +6,8 @@ import { Navbar } from "@/components/nav/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  Scissors, Briefcase, GraduationCap, CheckCircle, ArrowRight,
-  Clock, Zap, Shield, Star, DollarSign, Smartphone, Award,
+  Scissors, Briefcase, GraduationCap, CheckCircle, ArrowRight, ArrowDown,
+  Clock, Zap, Shield, Star, DollarSign, Smartphone, Award, ShoppingBag, CalendarDays,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getFeaturedPartners } from "@/lib/partners";
@@ -39,33 +39,47 @@ export default async function HomePage({
 
       <main className="flex-1">
         {/* ── Hero ── */}
-        <section className="relative overflow-hidden bg-primary py-20 md:py-32">
+        <section className="relative overflow-hidden bg-[#055864] py-20 md:py-32">
           <div className="container mx-auto px-4 text-center max-w-3xl">
-            <Badge className="bg-white/15 text-white hover:bg-white/20 text-xs font-medium mb-6">
-              {t("hero_badge")}
-            </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-6">
+            {/* Logo + tagline */}
+            <div className="flex flex-col items-center gap-3 mb-8">
+              <Image
+                src="/logo.png"
+                alt="ToutToilettage"
+                width={72}
+                height={72}
+                className="rounded-full border-2 border-white/20"
+              />
+              <p className="text-sm font-medium tracking-widest uppercase text-[#E8D2AE]">
+                {t("hero_tagline")}
+              </p>
+            </div>
+
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-6" style={{ fontFamily: "var(--font-cormorant), serif" }}>
               {t("hero_title")}
             </h1>
-            <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-white/85 mb-4 max-w-2xl mx-auto" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>
               {t("hero_subtitle")}
+            </p>
+            <p className="text-base md:text-lg text-[#E8D2AE] italic font-light mb-8 max-w-xl mx-auto">
+              {t("hero_connector")}
             </p>
 
             {/* Trust badges */}
             <div className="flex justify-center gap-6 mb-10 flex-wrap text-sm text-white/70">
               <span className="flex items-center gap-1.5">
-                <CheckCircle className="h-4 w-4 text-accent" /> {t("hero_trust1")}
+                <CheckCircle className="h-4 w-4 text-[#E8D2AE]" /> {t("hero_trust1")}
               </span>
               <span className="flex items-center gap-1.5">
-                <CheckCircle className="h-4 w-4 text-accent" /> {t("hero_trust2")}
+                <CheckCircle className="h-4 w-4 text-[#E8D2AE]" /> {t("hero_trust2")}
               </span>
               <span className="flex items-center gap-1.5">
-                <CheckCircle className="h-4 w-4 text-accent" /> {t("hero_trust3")}
+                <CheckCircle className="h-4 w-4 text-[#E8D2AE]" /> {t("hero_trust3")}
               </span>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 text-base px-8 font-semibold" asChild>
+              <Button size="lg" className="bg-[#E8D2AE] text-[#055864] hover:bg-[#E8D2AE]/90 text-base px-8 font-semibold" asChild>
                 <Link href={`/${locale}/auth/register?role=SALON`}>
                   {t("cta_salon")} <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
@@ -75,6 +89,108 @@ export default async function HomePage({
                   {t("cta_groomer")}
                 </Link>
               </Button>
+              <Button size="lg" variant="ghost" className="text-white/80 hover:text-white hover:bg-white/5 text-base" asChild>
+                <a href="#pillars">
+                  {t("hero_explore")} <ArrowDown className="h-4 w-4 ml-1" />
+                </a>
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Feature Pillars ── */}
+        <section id="pillars" className="py-16 md:py-24 bg-[#F6EFE6]">
+          <div className="container mx-auto px-4 max-w-5xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Pillar 1: Shifts */}
+              <Card className="border border-[#CBBBA6] bg-white shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="pt-7 pb-5 px-6 text-center">
+                  <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-[#055864]/10 mb-4">
+                    <Scissors className="h-7 w-7 text-[#055864]" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2 text-[#1F2933]" style={{ fontFamily: "var(--font-cormorant), serif" }}>
+                    🔁 {t("pillar_shifts_title")}
+                  </h3>
+                  <p className="text-[#4a6260] text-sm leading-relaxed mb-4" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>
+                    {t("pillar_shifts_desc")}
+                  </p>
+                  <Link href={`/${locale}/shifts`} className="inline-flex items-center text-sm font-medium text-[#055864] hover:underline underline-offset-4">
+                    {tNav("shifts")} →
+                  </Link>
+                </CardContent>
+              </Card>
+
+              {/* Pillar 2: Jobs */}
+              <Card className="border border-[#CBBBA6] bg-white shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="pt-7 pb-5 px-6 text-center">
+                  <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-[#055864]/10 mb-4">
+                    <Briefcase className="h-7 w-7 text-[#055864]" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2 text-[#1F2933]" style={{ fontFamily: "var(--font-cormorant), serif" }}>
+                    💼 {t("pillar_jobs_title")}
+                  </h3>
+                  <p className="text-[#4a6260] text-sm leading-relaxed mb-4" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>
+                    {t("pillar_jobs_desc")}
+                  </p>
+                  <Link href={`/${locale}/jobs`} className="inline-flex items-center text-sm font-medium text-[#055864] hover:underline underline-offset-4">
+                    {tNav("jobs")} →
+                  </Link>
+                </CardContent>
+              </Card>
+
+              {/* Pillar 3: Training */}
+              <Card className="border border-[#CBBBA6] bg-white shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="pt-7 pb-5 px-6 text-center">
+                  <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-[#055864]/10 mb-4">
+                    <GraduationCap className="h-7 w-7 text-[#055864]" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2 text-[#1F2933]" style={{ fontFamily: "var(--font-cormorant), serif" }}>
+                    🎓 {t("pillar_training_title")}
+                  </h3>
+                  <p className="text-[#4a6260] text-sm leading-relaxed mb-4" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>
+                    {t("pillar_training_desc")}
+                  </p>
+                  <Link href={`/${locale}/schools`} className="inline-flex items-center text-sm font-medium text-[#055864] hover:underline underline-offset-4">
+                    {tNav("schools")} →
+                  </Link>
+                </CardContent>
+              </Card>
+
+              {/* Pillar 4: La Vitrine */}
+              <Card className="border border-[#CBBBA6] bg-white shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="pt-7 pb-5 px-6 text-center">
+                  <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-[#055864]/10 mb-4">
+                    <ShoppingBag className="h-7 w-7 text-[#055864]" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2 text-[#1F2933]" style={{ fontFamily: "var(--font-cormorant), serif" }}>
+                    🏪 {t("pillar_vitrine_title")}
+                  </h3>
+                  <p className="text-[#4a6260] text-sm leading-relaxed mb-4" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>
+                    {t("pillar_vitrine_desc")}
+                  </p>
+                  <Link href={`/${locale}/partenaires`} className="inline-flex items-center text-sm font-medium text-[#055864] hover:underline underline-offset-4">
+                    {tNav("partners")} →
+                  </Link>
+                </CardContent>
+              </Card>
+
+              {/* Pillar 5: Open Slots — coming soon */}
+              <Card className="border border-[#CBBBA6] bg-white shadow-sm hover:shadow-md transition-shadow relative">
+                <CardContent className="pt-7 pb-5 px-6 text-center">
+                  <Badge className="absolute top-3 right-3 bg-[#3A7F87] text-white text-[10px]">
+                    {t("pillar_slots_badge")}
+                  </Badge>
+                  <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-[#055864]/10 mb-4">
+                    <CalendarDays className="h-7 w-7 text-[#055864]" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2 text-[#1F2933]" style={{ fontFamily: "var(--font-cormorant), serif" }}>
+                    📅 {t("pillar_slots_title")}
+                  </h3>
+                  <p className="text-[#4a6260] text-sm leading-relaxed mb-4" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>
+                    {t("pillar_slots_desc")}
+                  </p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
@@ -82,7 +198,7 @@ export default async function HomePage({
         {/* ── How it works ── */}
         <section className="py-16 md:py-20 bg-card">
           <div className="container mx-auto px-4 max-w-4xl">
-            <h2 className="text-3xl font-bold text-center mb-14 text-[#1F2933]">
+            <h2 className="text-3xl font-bold text-center mb-14 text-[#1F2933]" style={{ fontFamily: "var(--font-cormorant), serif" }}>
               {t("how_it_works")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10 relative">
@@ -92,14 +208,14 @@ export default async function HomePage({
                 { num: "3", icon: CheckCircle, title: t("step3_title"), desc: t("step3_desc") },
               ].map((step, i) => (
                 <div key={step.num} className="relative flex flex-col items-center text-center">
-                  <div className="h-14 w-14 rounded-2xl bg-primary flex items-center justify-center text-white font-bold text-xl mb-5">
+                  <div className="h-14 w-14 rounded-2xl bg-[#055864] flex items-center justify-center text-white font-bold text-xl mb-5">
                     {step.num}
                   </div>
-                  <step.icon className="h-6 w-6 text-accent mb-3" />
+                  <step.icon className="h-6 w-6 text-[#E8D2AE] mb-3" />
                   <h3 className="font-semibold text-lg mb-2 text-[#1F2933]">{step.title}</h3>
                   <p className="text-[#4a6260] text-sm">{step.desc}</p>
                   {i < 2 && (
-                    <div className="hidden md:block absolute top-7 -right-5 text-border">
+                    <div className="hidden md:block absolute top-7 -right-5 text-[#CBBBA6]">
                       <ArrowRight className="h-5 w-5" />
                     </div>
                   )}
@@ -113,11 +229,11 @@ export default async function HomePage({
         <section className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4 max-w-5xl">
             <div className="text-center mb-12">
-              <Badge className="bg-primary/10 text-primary hover:bg-primary/15 mb-4">
+              <Badge className="bg-[#055864]/10 text-[#055864] hover:bg-[#055864]/15 mb-4">
                 <Scissors className="h-3.5 w-3.5 mr-1" />
                 {locale === "fr" ? "Pour les salons" : "For salons"}
               </Badge>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#1F2933] mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#1F2933] mb-4" style={{ fontFamily: "var(--font-cormorant), serif" }}>
                 {t("salon_section_title")}
               </h2>
               <p className="text-lg text-[#4a6260] max-w-2xl mx-auto">
@@ -131,10 +247,10 @@ export default async function HomePage({
                 { icon: Star, title: t("salon_benefit2_title"), desc: t("salon_benefit2_desc") },
                 { icon: DollarSign, title: t("salon_benefit3_title"), desc: t("salon_benefit3_desc") },
               ].map(({ icon: Icon, title, desc }) => (
-                <Card key={title} className="border border-border/70 bg-white shadow-sm">
+                <Card key={title} className="border border-[#CBBBA6]/50 bg-white shadow-sm">
                   <CardContent className="pt-6 pb-5 px-6">
-                    <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-primary/10 mb-4">
-                      <Icon className="h-6 w-6 text-primary" />
+                    <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-[#055864]/10 mb-4">
+                      <Icon className="h-6 w-6 text-[#055864]" />
                     </div>
                     <h3 className="font-semibold text-base mb-2 text-[#1F2933]">{title}</h3>
                     <p className="text-[#4a6260] text-sm leading-relaxed">{desc}</p>
@@ -144,7 +260,7 @@ export default async function HomePage({
             </div>
 
             <div className="text-center">
-              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold px-8" asChild>
+              <Button size="lg" className="bg-[#055864] text-white hover:bg-[#055864]/90 font-semibold px-8" asChild>
                 <Link href={`/${locale}/auth/register?role=SALON`}>
                   {t("salon_cta")} <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
@@ -155,17 +271,17 @@ export default async function HomePage({
         </section>
 
         {/* ── Groomer Value Proposition ── */}
-        <section className="py-16 md:py-24 bg-primary text-primary-foreground">
+        <section className="py-16 md:py-24 bg-[#055864] text-white">
           <div className="container mx-auto px-4 max-w-5xl">
             <div className="text-center mb-12">
               <Badge className="bg-white/15 text-white hover:bg-white/20 mb-4">
                 <Award className="h-3.5 w-3.5 mr-1" />
                 {locale === "fr" ? "Pour les toiletteurs" : "For groomers"}
               </Badge>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: "var(--font-cormorant), serif" }}>
                 {t("groomer_section_title")}
               </h2>
-              <p className="text-lg text-primary-foreground/75 max-w-2xl mx-auto">
+              <p className="text-lg text-white/75 max-w-2xl mx-auto">
                 {t("groomer_section_subtitle")}
               </p>
             </div>
@@ -178,16 +294,16 @@ export default async function HomePage({
               ].map(({ icon: Icon, title, desc }) => (
                 <div key={title} className="rounded-xl bg-white/10 border border-white/10 p-6">
                   <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-white/15 mb-4">
-                    <Icon className="h-6 w-6 text-accent" />
+                    <Icon className="h-6 w-6 text-[#E8D2AE]" />
                   </div>
                   <h3 className="font-semibold text-base mb-2">{title}</h3>
-                  <p className="text-primary-foreground/70 text-sm leading-relaxed">{desc}</p>
+                  <p className="text-white/70 text-sm leading-relaxed">{desc}</p>
                 </div>
               ))}
             </div>
 
             <div className="text-center">
-              <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold px-8" asChild>
+              <Button size="lg" className="bg-[#E8D2AE] text-[#055864] hover:bg-[#E8D2AE]/90 font-semibold px-8" asChild>
                 <Link href={`/${locale}/auth/register?role=GROOMER`}>
                   {t("groomer_cta")} <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
@@ -196,59 +312,13 @@ export default async function HomePage({
           </div>
         </section>
 
-        {/* ── Features Grid ── */}
-        <section className="py-16 md:py-20 bg-card">
-          <div className="container mx-auto px-4 max-w-5xl">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Card className="border border-border/70 bg-white shadow-sm hover:shadow-md transition-shadow">
-                <CardContent className="pt-8 pb-6 px-6 text-center">
-                  <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-primary/10 mb-5">
-                    <Scissors className="h-7 w-7 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2 text-[#1F2933]">{t("feature_shifts_title")}</h3>
-                  <p className="text-[#4a6260] text-sm leading-relaxed">{t("feature_shifts_desc")}</p>
-                  <Link href={`/${locale}/shifts`} className="mt-4 inline-flex items-center text-sm font-medium text-[#055864] hover:underline underline-offset-4">
-                    {tNav("shifts")} →
-                  </Link>
-                </CardContent>
-              </Card>
-
-              <Card className="border border-border/70 bg-white shadow-sm hover:shadow-md transition-shadow">
-                <CardContent className="pt-8 pb-6 px-6 text-center">
-                  <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-primary/10 mb-5">
-                    <Briefcase className="h-7 w-7 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2 text-[#1F2933]">{t("feature_jobs_title")}</h3>
-                  <p className="text-[#4a6260] text-sm leading-relaxed">{t("feature_jobs_desc")}</p>
-                  <Link href={`/${locale}/jobs`} className="mt-4 inline-flex items-center text-sm font-medium text-[#055864] hover:underline underline-offset-4">
-                    {tNav("jobs")} →
-                  </Link>
-                </CardContent>
-              </Card>
-
-              <Card className="border border-border/70 bg-white shadow-sm hover:shadow-md transition-shadow">
-                <CardContent className="pt-8 pb-6 px-6 text-center">
-                  <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-primary/10 mb-5">
-                    <GraduationCap className="h-7 w-7 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2 text-[#1F2933]">{t("feature_schools_title")}</h3>
-                  <p className="text-[#4a6260] text-sm leading-relaxed">{t("feature_schools_desc")}</p>
-                  <Link href={`/${locale}/schools`} className="mt-4 inline-flex items-center text-sm font-medium text-[#055864] hover:underline underline-offset-4">
-                    {tNav("schools")} →
-                  </Link>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-
         {/* ── Social Proof — Launch Mode ── */}
         <section className="py-12 bg-muted/60">
           <div className="container mx-auto px-4 max-w-3xl text-center">
-            <Badge className="bg-accent text-accent-foreground hover:bg-accent/90 mb-4">
+            <Badge className="bg-[#E8D2AE] text-[#055864] hover:bg-[#E8D2AE]/90 mb-4">
               {t("launch_proof_badge")}
             </Badge>
-            <h2 className="text-2xl font-bold text-[#1F2933] mb-3">
+            <h2 className="text-2xl font-bold text-[#1F2933] mb-3" style={{ fontFamily: "var(--font-cormorant), serif" }}>
               {t("launch_proof_title")}
             </h2>
             <p className="text-sm text-[#4a6260]">
@@ -260,14 +330,14 @@ export default async function HomePage({
         {/* ── FAQ ── */}
         <section className="py-16 bg-background">
           <div className="container mx-auto px-4 max-w-3xl">
-            <h2 className="text-2xl font-bold text-center text-[#1F2933] mb-10">
+            <h2 className="text-2xl font-bold text-center text-[#1F2933] mb-10" style={{ fontFamily: "var(--font-cormorant), serif" }}>
               {t("faq_title")}
             </h2>
             <div className="space-y-4">
               {(["faq_q1", "faq_q2", "faq_q3"] as const).map((qKey) => {
                 const aKey = qKey.replace("_q", "_a") as "faq_a1" | "faq_a2" | "faq_a3";
                 return (
-                  <div key={qKey} className="rounded-xl border border-border bg-white p-5 shadow-sm">
+                  <div key={qKey} className="rounded-xl border border-[#CBBBA6]/50 bg-white p-5 shadow-sm">
                     <p className="font-semibold text-[#1F2933] mb-2">{t(qKey)}</p>
                     <p className="text-sm text-[#4a6260]">{t(aKey)}</p>
                   </div>
@@ -278,14 +348,14 @@ export default async function HomePage({
         </section>
 
         {/* ── Final CTA ── */}
-        <section className="py-16 bg-gradient-to-r from-primary to-accent">
+        <section className="py-16 bg-gradient-to-r from-[#055864] to-[#3A7F87]">
           <div className="container mx-auto px-4 text-center max-w-3xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-8" style={{ fontFamily: "var(--font-cormorant), serif" }}>
               {t("final_cta_title")}
             </h2>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <div className="flex flex-col items-center gap-2">
-                <Button size="lg" className="bg-white text-primary hover:bg-white/90 font-semibold text-base px-8" asChild>
+                <Button size="lg" className="bg-white text-[#055864] hover:bg-white/90 font-semibold text-base px-8" asChild>
                   <Link href={`/${locale}/auth/register?role=SALON`}>
                     {t("final_cta_salon")} <ArrowRight className="h-4 w-4 ml-2" />
                   </Link>
@@ -338,13 +408,14 @@ export default async function HomePage({
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-2 text-[#1F2933] font-semibold">
-              <Scissors className="h-4 w-4 text-primary" />
-              Tout Toilettage
+              <Image src="/logo.png" alt="ToutToilettage" width={24} height={24} className="rounded-full" />
+              ToutToilettage
             </div>
             <div className="flex items-center gap-4 flex-wrap justify-center">
               <Link href={`/${locale}/shifts`} className="hover:underline underline-offset-4">{tNav("shifts")}</Link>
               <Link href={`/${locale}/jobs`} className="hover:underline underline-offset-4">{tNav("jobs")}</Link>
               <Link href={`/${locale}/schools`} className="hover:underline underline-offset-4">{tNav("schools")}</Link>
+              <Link href={`/${locale}/partenaires`} className="hover:underline underline-offset-4">{tNav("partners")}</Link>
               <Link href={`/${locale}/pricing`} className="hover:underline underline-offset-4">{tNav("pricing")}</Link>
               <Link href={`/${locale}/contact`} className="hover:underline underline-offset-4">Contact</Link>
             </div>

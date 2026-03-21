@@ -3,7 +3,8 @@
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { Scissors, Shield, Activity, BookOpen, FileText, Star, Users, Coins, Handshake, GraduationCap, Menu } from "lucide-react";
+import Image from "next/image";
+import { Shield, Activity, BookOpen, FileText, Star, Users, Coins, Handshake, GraduationCap, Menu } from "lucide-react";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 import { MobileBottomNav, type MobileNavItem } from "./MobileBottomNav";
 
@@ -27,7 +28,7 @@ export function AdminSidebar({ locale }: AdminSidebarProps) {
     { href: `${base}/reviews`,       icon: Star,     label: t("reviews") },
     { href: `${base}/users`,         icon: Users,    label: t("users") },
     { href: `${base}/credits`,       icon: Coins,    label: t("credits") },
-    { href: `${base}/partners`,      icon: Handshake, label: lang === "fr" ? "Partenaires" : "Partners" },
+    { href: `${base}/partners`,      icon: Handshake, label: "La Vitrine" },
   ];
 
   // Mobile: 4 primary items for bottom bar
@@ -47,8 +48,8 @@ export function AdminSidebar({ locale }: AdminSidebarProps) {
             href={`/${locale}`}
             className="flex items-center gap-2 text-sidebar-foreground font-bold text-lg"
           >
-            <Scissors className="h-5 w-5" />
-            Tout Toilettage
+            <Image src="/logo.png" alt="ToutToilettage" width={28} height={28} className="rounded-full" />
+            ToutToilettage
           </Link>
           <p className="text-xs text-sidebar-foreground/60 mt-1">Administration</p>
         </div>
