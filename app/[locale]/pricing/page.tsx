@@ -265,28 +265,26 @@ export default async function PricingPage({
         <p className="text-primary-foreground/75 mb-8 max-w-lg mx-auto text-sm">
           {t("final_cta.subtitle")}
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-start sm:items-end">
-          <div className="flex flex-col items-center gap-1 self-center sm:self-auto">
-            <Button
-              size="lg"
-              className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold"
-              asChild
-            >
-              <Link href={`/${locale}/auth/register`}>
-                {t("final_cta.primary")} <ArrowRight className="h-4 w-4 ml-2" />
-              </Link>
-            </Button>
-          </div>
-          <div className="self-center sm:self-auto sm:mb-[22px]">
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10"
-              asChild
-            >
-              <a href="#decouverte">{t("final_cta.secondary")}</a>
-            </Button>
-          </div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px", flexWrap: "wrap" }}>
+          <Button
+            size="lg"
+            className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold"
+            style={{ padding: "14px 28px" }}
+            asChild
+          >
+            <Link href={`/${locale}/auth/register`}>
+              {t("final_cta.primary")} <ArrowRight className="h-4 w-4 ml-2" />
+            </Link>
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            className="border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10"
+            style={{ padding: "14px 28px" }}
+            asChild
+          >
+            <a href="#decouverte">{t("final_cta.secondary")}</a>
+          </Button>
         </div>
       </section>
 
