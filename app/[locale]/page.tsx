@@ -44,7 +44,7 @@ export default async function HomePage({
             {/* Wordmark logo — tagline is baked into the image */}
             <div className="flex justify-center mb-10">
               <Image
-                src="/logo-wordmark.png"
+                src="/logo-wordmark-white.png"
                 alt="ToutToilettage — Le réseau du toilettage"
                 width={320}
                 height={120}

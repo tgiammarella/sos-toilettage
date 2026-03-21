@@ -29,11 +29,12 @@ export function Navbar() {
         ? `/${locale}/dashboard/admin`
         : `/${locale}/dashboard/groomer`;
 
-  const navLinks = [
+  const navLinks: { href: string; label: string; badge?: string }[] = [
     { href: `/${locale}/shifts`, label: t("shifts") },
     { href: `/${locale}/jobs`, label: t("jobs") },
     { href: `/${locale}/schools`, label: t("schools") },
     { href: `/${locale}/partenaires`, label: t("partners") },
+    { href: `/${locale}/marketplace`, label: "Marketplace", badge: locale === "fr" ? "Bientôt" : "Coming soon" },
     { href: `/${locale}/pricing`, label: t("pricing") },
   ];
 
@@ -41,9 +42,15 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border/80 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <Link href={`/${locale}`} className="flex items-center gap-2 font-bold text-xl text-foreground">
-          <Image src="/logo.png" alt="ToutToilettage" width={36} height={36} className="rounded-full" />
-          <span className="tracking-tight">ToutToilettage</span>
+        <Link href={`/${locale}`} className="flex items-center shrink-0">
+          <Image
+            src="/logo-wordmark.png"
+            alt="ToutToilettage"
+            width={180}
+            height={44}
+            className="h-[44px] w-auto"
+            priority
+          />
         </Link>
 
         {/* Desktop nav */}
@@ -52,9 +59,14 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-semibold text-[#055864] hover:text-[#055864]/75 hover:underline underline-offset-4 transition-colors"
+              className="text-sm font-semibold text-[#055864] hover:text-[#055864]/75 hover:underline underline-offset-4 transition-colors inline-flex items-center gap-1.5"
             >
               {link.label}
+              {link.badge && (
+                <span className="inline-flex items-center rounded-full bg-[#E8D2AE] text-[#055864] text-[10px] font-semibold px-1.5 py-0.5 leading-none">
+                  {link.badge}
+                </span>
+              )}
             </Link>
           ))}
         </nav>
@@ -111,10 +123,15 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-semibold text-[#055864] py-1"
+              className="text-sm font-semibold text-[#055864] py-1 inline-flex items-center gap-1.5"
               onClick={() => setMobileOpen(false)}
             >
               {link.label}
+              {link.badge && (
+                <span className="inline-flex items-center rounded-full bg-[#E8D2AE] text-[#055864] text-[10px] font-semibold px-1.5 py-0.5 leading-none">
+                  {link.badge}
+                </span>
+              )}
             </Link>
           ))}
           <div className="flex items-center gap-2 pt-2 border-t">
