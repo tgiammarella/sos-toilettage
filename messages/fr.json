@@ -374,6 +374,10 @@
     "count": "{count} remplacement disponible",
     "count_plural": "{count} remplacements disponibles",
     "no_shifts": "Aucun remplacement disponible pour l'instant.",
+    "empty_title": "Aucun remplacement pour l'instant.",
+    "empty_text": "Les remplacements urgents apparaissent ici dès qu'un salon publie une annonce. Inscrivez-vous pour être notifié(e) en premier.",
+    "empty_cta": "Créer mon profil gratuitement",
+    "empty_note": "Gratuit pour les toiletteurs. Toujours.",
     "salon_in_city": "Salon de toilettage à {city}",
     "view_details": "Voir détails",
     "previous": "Précédent",
@@ -390,6 +394,10 @@
     "applied": "Candidature envoyée",
     "filled": "Comblé",
     "no_jobs": "Aucune offre d'emploi disponible pour l'instant.",
+    "empty_title": "Aucune offre d'emploi pour l'instant.",
+    "empty_text": "Les offres de postes permanents en toilettage apparaissent ici. Revenez bientôt — ou créez votre profil pour être contacté(e) directement par les salons.",
+    "empty_cta_groomer": "Je suis toiletteur — m'inscrire",
+    "empty_cta_salon": "Je suis un salon — publier une offre",
     "count": "{count} offre disponible",
     "count_plural": "{count} offres disponibles",
     "salon_in_city": "Salon de toilettage à {city}",
@@ -404,7 +412,9 @@
     "school": "École",
     "training": "Formation",
     "visit_website": "Visiter le site",
-    "no_listings": "Aucune école ou formation répertoriée pour l'instant."
+    "no_listings": "Aucune école ou formation répertoriée pour l'instant.",
+    "empty_title": "Aucune école répertoriée pour l'instant.",
+    "empty_text": "Nous ajoutons les écoles et formations reconnues au Québec. Vous offrez une formation? Contactez-nous pour être parmi les premiers à figurer dans le répertoire."
   },
   "errors": {
     "required": "Ce champ est requis.",

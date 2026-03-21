@@ -77,11 +77,34 @@ export default async function ShiftsPage({
           </p>
 
           {shifts.length === 0 ? (
-            <Card className="border-dashed bg-card/80">
-              <CardContent className="py-16 text-center text-muted-foreground">
-                {t("no_shifts")}
-              </CardContent>
-            </Card>
+            <div
+              className="rounded-lg text-center"
+              style={{ background: "#FFFFFF", border: "1px solid #CBBBA6", padding: "48px 24px" }}
+            >
+              <div className="text-4xl mb-4">🔔</div>
+              <h2
+                className="mb-3 text-[#1F2933]"
+                style={{ fontFamily: "var(--font-cormorant), serif", fontSize: "22px", fontWeight: 700 }}
+              >
+                {t("empty_title")}
+              </h2>
+              <p
+                className="mx-auto max-w-md mb-6"
+                style={{ fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "14px", color: "#4A5568" }}
+              >
+                {t("empty_text")}
+              </p>
+              <Link
+                href={`/${locale}/auth/register`}
+                className="inline-flex items-center justify-center rounded-md"
+                style={{ background: "#E8D2AE", color: "#055864", fontWeight: 600, fontSize: "15px", padding: "12px 28px", borderRadius: "6px" }}
+              >
+                {t("empty_cta")}
+              </Link>
+              <p style={{ fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "12px", color: "#9CA3AF", marginTop: "12px" }}>
+                {t("empty_note")}
+              </p>
+            </div>
           ) : (
             <div className="space-y-4">
               {shifts.map((shift) => {

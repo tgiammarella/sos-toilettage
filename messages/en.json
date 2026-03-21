@@ -374,6 +374,10 @@
     "count": "{count} shift available",
     "count_plural": "{count} shifts available",
     "no_shifts": "No shifts available at the moment.",
+    "empty_title": "No replacements available right now.",
+    "empty_text": "Urgent replacements appear here as soon as a salon posts. Register to be notified first.",
+    "empty_cta": "Create my free profile",
+    "empty_note": "Always free for groomers.",
     "salon_in_city": "Grooming salon in {city}",
     "view_details": "View details",
     "previous": "Previous",
@@ -390,6 +394,10 @@
     "applied": "Applied",
     "filled": "Filled",
     "no_jobs": "No job offers available at the moment.",
+    "empty_title": "No job postings right now.",
+    "empty_text": "Permanent grooming positions appear here. Check back soon — or create your profile to be contacted directly by salons.",
+    "empty_cta_groomer": "I'm a groomer — register",
+    "empty_cta_salon": "I'm a salon — post a job",
     "count": "{count} offer available",
     "count_plural": "{count} offers available",
     "salon_in_city": "Grooming salon in {city}",
@@ -404,7 +412,9 @@
     "school": "School",
     "training": "Training",
     "visit_website": "Visit website",
-    "no_listings": "No schools or training programs listed yet."
+    "no_listings": "No schools or training programs listed yet.",
+    "empty_title": "No schools listed yet.",
+    "empty_text": "We're adding recognized Quebec grooming schools and training programs. Offering training? Contact us to be among the first listed in the directory."
   },
   "errors": {
     "required": "This field is required.",

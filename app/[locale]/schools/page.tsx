@@ -84,11 +84,29 @@ export default async function SchoolsPage({
 
           {/* ── All listings ── */}
           {listings.length === 0 ? (
-            <Card className="border-dashed">
-              <CardContent className="py-16 text-center text-muted-foreground">
-                {t("no_listings")}
-              </CardContent>
-            </Card>
+            <div
+              className="rounded-lg text-center"
+              style={{ background: "#FFFFFF", border: "1px solid #CBBBA6", padding: "48px 24px" }}
+            >
+              <h2
+                className="mb-3 text-[#1F2933]"
+                style={{ fontFamily: "var(--font-cormorant), serif", fontSize: "22px", fontWeight: 700 }}
+              >
+                {t("empty_title")}
+              </h2>
+              <p
+                className="mx-auto max-w-md mb-6"
+                style={{ fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "14px", color: "#4A5568" }}
+              >
+                {t("empty_text")}
+              </p>
+              <Button asChild className="shrink-0">
+                <Link href={`/${locale}/contact`}>
+                  <Mail className="h-4 w-4 mr-2" />
+                  {lang === "fr" ? "Ajouter votre formation" : "Add your program"}
+                </Link>
+              </Button>
+            </div>
           ) : regular.length > 0 ? (
             <>
               {featured.length > 0 && (
