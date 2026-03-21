@@ -39,7 +39,7 @@ export default async function HomePage({
 
       <main className="flex-1">
         {/* ── Hero ── */}
-        <section className="relative overflow-hidden bg-[#055864] py-12 md:py-16">
+        <section className="relative overflow-hidden bg-[#055864] py-10 md:py-14">
           <div className="container mx-auto px-4 text-center max-w-3xl">
             {/* Wordmark logo — tagline is baked into the image */}
             <div className="flex justify-center" style={{ background: "transparent" }}>
@@ -53,18 +53,18 @@ export default async function HomePage({
               />
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white mt-6 mb-4" style={{ fontFamily: "var(--font-cormorant), serif" }}>
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white mt-4 mb-3" style={{ fontFamily: "var(--font-cormorant), serif" }}>
               {t("hero_title")}
             </h1>
-            <p className="text-lg md:text-xl text-white/85 mb-3 max-w-2xl mx-auto" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>
+            <p className="text-lg md:text-xl text-white/85 mb-2 max-w-2xl mx-auto" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>
               {t("hero_subtitle")}
             </p>
-            <p className="text-base md:text-lg text-[#E8D2AE] italic font-light mb-6 max-w-xl mx-auto">
+            <p className="text-base md:text-lg text-[#E8D2AE] italic font-light mb-5 max-w-xl mx-auto">
               {t("hero_connector")}
             </p>
 
             {/* Trust badges */}
-            <div className="flex justify-center gap-6 mb-8 flex-wrap text-sm text-white/70">
+            <div className="flex justify-center gap-6 mb-6 flex-wrap text-sm text-white/70">
               <span className="flex items-center gap-1.5">
                 <CheckCircle className="h-4 w-4 text-[#E8D2AE]" /> {t("hero_trust1")}
               </span>
@@ -92,7 +92,7 @@ export default async function HomePage({
                 {t("cta_groomer")}
               </Link>
             </div>
-            <div className="mt-6 text-center">
+            <div className="mt-4 text-center">
               <a
                 href="#pillars"
                 className="inline-flex items-center text-white/60 hover:text-white/80 transition-colors"
