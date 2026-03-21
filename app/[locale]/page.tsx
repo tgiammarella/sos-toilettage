@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Scissors, Briefcase, GraduationCap, CheckCircle, ArrowRight,
-  Clock, Zap, Shield, Star, DollarSign, Smartphone, Award, ShoppingBag, CalendarDays, ShoppingCart,
+  Zap, Shield, Star, DollarSign, Smartphone, Award, ShoppingBag, CalendarDays, ShoppingCart,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getFeaturedPartners } from "@/lib/partners";
@@ -229,15 +229,45 @@ export default async function HomePage({
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10 relative">
               {[
-                { num: "1", icon: Clock, title: t("step1_title"), desc: t("step1_desc") },
-                { num: "2", icon: Smartphone, title: t("step2_title"), desc: t("step2_desc") },
-                { num: "3", icon: CheckCircle, title: t("step3_title"), desc: t("step3_desc") },
+                {
+                  num: "1",
+                  title: t("step1_title"),
+                  desc: t("step1_desc"),
+                  icon: (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#055864]">
+                      <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5"/>
+                      <path d="M17.5 3.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 7.5-7.5z"/>
+                    </svg>
+                  ),
+                },
+                {
+                  num: "2",
+                  title: t("step2_title"),
+                  desc: t("step2_desc"),
+                  icon: (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#055864]">
+                      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                      <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                  ),
+                },
+                {
+                  num: "3",
+                  title: t("step3_title"),
+                  desc: t("step3_desc"),
+                  icon: (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#055864]">
+                      <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                      <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                  ),
+                },
               ].map((step, i) => (
                 <div key={step.num} className="relative flex flex-col items-center text-center">
                   <div className="h-14 w-14 rounded-2xl bg-[#055864] flex items-center justify-center text-white font-bold text-xl mb-5">
                     {step.num}
                   </div>
-                  <step.icon className="h-6 w-6 text-[#E8D2AE] mb-3" />
+                  <div className="mb-3">{step.icon}</div>
                   <h3 className="font-semibold text-lg mb-2 text-[#1F2933]">{step.title}</h3>
                   <p className="text-[#4a6260] text-sm">{step.desc}</p>
                   {i < 2 && (
@@ -434,8 +464,7 @@ export default async function HomePage({
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-2 text-[#1F2933] font-semibold">
-              <Image src="/logo.png" alt="ToutToilettage" width={24} height={24} className="rounded-full" />
-              ToutToilettage
+              <Image src="/logo-wordmark.png" alt="ToutToilettage" width={160} height={42} className="h-[42px] w-auto" />
             </div>
             <div className="flex items-center gap-4 flex-wrap justify-center">
               <Link href={`/${locale}/shifts`} className="hover:underline underline-offset-4">{tNav("shifts")}</Link>
