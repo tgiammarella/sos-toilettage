@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2 } from "lucide-react";
-import Image from "next/image";
 
 type FormData = { email: string };
 
@@ -49,9 +48,8 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen flex items-center justify-center bg-muted/50 px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href={`/${locale}`} className="inline-flex items-center gap-2 text-primary font-bold text-2xl">
-            <Image src="/logo.png" alt="ToutToilettage" width={40} height={40} className="rounded-full" />
-            ToutToilettage
+          <Link href={`/${locale}`} className="inline-block">
+            <img src="/logo-wordmark.png" alt="ToutToilettage" width={180} height={48} style={{ width: '180px', height: '48px', objectFit: 'contain' }} />
           </Link>
         </div>
 

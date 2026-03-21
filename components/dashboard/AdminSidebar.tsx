@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import Image from "next/image";
 import { Shield, Activity, BookOpen, FileText, Star, Users, Coins, Handshake, GraduationCap, Menu } from "lucide-react";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 import { MobileBottomNav, type MobileNavItem } from "./MobileBottomNav";
@@ -46,10 +45,9 @@ export function AdminSidebar({ locale }: AdminSidebarProps) {
         <div className="p-6 border-b border-sidebar-border">
           <Link
             href={`/${locale}`}
-            className="flex items-center gap-2 text-sidebar-foreground font-bold text-lg"
+            className="flex items-center gap-2"
           >
-            <Image src="/logo.png" alt="ToutToilettage" width={28} height={28} className="rounded-full" />
-            ToutToilettage
+            <img src="/logo-wordmark.png" alt="ToutToilettage" width={180} height={48} style={{ width: '180px', height: '48px', objectFit: 'contain' }} />
           </Link>
           <p className="text-xs text-sidebar-foreground/60 mt-1">Administration</p>
         </div>
