@@ -525,6 +525,14 @@
     },
     "riskReduction": "Si vous ne recevez aucune candidature, votre crédit n'est pas utilisé.",
     "job_posting_standalone": "Vous pouvez aussi publier une offre d'emploi sans abonnement — {price} $ / {days} jours.",
+    "jobCard": {
+      "label": "Offres d'emploi permanent",
+      "headline": "{price} $ CAD par affichage",
+      "subtext": "Visibilité {days} jours · Aucun abonnement requis · Flux DRAFT → paiement → PUBLIÉ",
+      "bullet1": "Visible par tous les toiletteurs inscrits",
+      "bullet2": "Expire automatiquement après {days} jours",
+      "bullet3": "Renouvelable à tout moment"
+    },
     "perPublication": "≈ {price} $ par publication",
     "tiers": {
       "ESSENTIEL": {

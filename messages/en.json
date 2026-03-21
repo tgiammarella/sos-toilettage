@@ -525,6 +525,14 @@
     },
     "riskReduction": "If you receive no applications, your credit is not used.",
     "job_posting_standalone": "You can also post a job without a subscription — ${price} / {days} days.",
+    "jobCard": {
+      "label": "Permanent job postings",
+      "headline": "${price} CAD per posting",
+      "subtext": "{days}-day visibility · No subscription required · DRAFT → payment → PUBLISHED flow",
+      "bullet1": "Visible to all registered groomers",
+      "bullet2": "Automatically expires after {days} days",
+      "bullet3": "Renewable at any time"
+    },
     "perPublication": "≈ ${price} per post",
     "tiers": {
       "ESSENTIEL": {

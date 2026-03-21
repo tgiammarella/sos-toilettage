@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Check, ArrowRight, Zap, FileText, Users, Gift } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PRICING_TIERS } from "@/lib/pricing";
+import { PRICING_TIERS, JOB_POSTING } from "@/lib/pricing";
 import { PricingPlansSection } from "@/components/pricing/PricingPlansSection";
 import { Navbar } from "@/components/nav/Navbar";
 import Link from "next/link";
@@ -140,6 +140,35 @@ export default async function PricingPage({
               </a>
             </Button>
           </div>
+        </div>
+      </section>
+
+      {/* ── Standalone job posting ─────────────────────── */}
+      <section className="bg-background px-4 py-10">
+        <div className="max-w-4xl mx-auto rounded-2xl border-l-4 border-[#055864] bg-[#F6EFE6] p-6">
+          <p className="text-xs font-semibold uppercase tracking-wider text-[#055864] mb-2">
+            {t("jobCard.label")}
+          </p>
+          <h2 className="text-2xl font-bold text-[#1F2933] mb-1">
+            {t("jobCard.headline", { price: JOB_POSTING.priceCAD })}
+          </h2>
+          <p className="text-sm text-[#4a6260] mb-4">
+            {t("jobCard.subtext", { days: JOB_POSTING.durationDays })}
+          </p>
+          <ul className="space-y-1.5 text-sm text-[#1F2933]">
+            <li className="flex items-center gap-2">
+              <Check className="h-3.5 w-3.5 text-[#055864] shrink-0" />
+              {t("jobCard.bullet1")}
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-3.5 w-3.5 text-[#055864] shrink-0" />
+              {t("jobCard.bullet2", { days: JOB_POSTING.durationDays })}
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-3.5 w-3.5 text-[#055864] shrink-0" />
+              {t("jobCard.bullet3")}
+            </li>
+          </ul>
         </div>
       </section>
 
