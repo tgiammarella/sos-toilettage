@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import { useSession, signOut } from "next-auth/react";
 import { useState } from "react";
@@ -29,7 +28,7 @@ export function Navbar() {
         ? `/${locale}/dashboard/admin`
         : `/${locale}/dashboard/groomer`;
 
-  const navLinks: { href: string; label: string; badge?: string }[] = [
+  const navLinks = [
     { href: `/${locale}/shifts`, label: t("shifts") },
     { href: `/${locale}/jobs`, label: t("jobs") },
     { href: `/${locale}/schools`, label: t("schools") },
@@ -40,40 +39,74 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/80 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <div className="container mx-auto flex h-20 items-center justify-between px-4">
-        {/* Logo */}
-        <Link href={`/${locale}`} className="flex items-center">
-          <div style={{ position: "relative", width: "220px", height: "56px", minWidth: "220px" }}>
-            <Image
-              src="/logo-wordmark.png"
-              alt="ToutToilettage"
-              fill
-              style={{ objectFit: "contain", objectPosition: "left center" }}
-              priority
-            />
-          </div>
+      {/* Desktop: three-section layout */}
+      <div
+        className="hidden md:flex"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          height: "72px",
+          padding: "0 24px",
+          width: "100%",
+        }}
+      >
+        {/* Left: Logo — fixed 220px, no shrink */}
+        <Link
+          href={`/${locale}`}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            flexShrink: 0,
+            width: "220px",
+            height: "58px",
+            position: "relative",
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-wordmark.png"
+            alt="ToutToilettage"
+            style={{
+              width: "220px",
+              height: "58px",
+              objectFit: "contain",
+              objectPosition: "left center",
+              display: "block",
+            }}
+          />
         </Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-6">
+        {/* Center: Nav links */}
+        <nav
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flex: 1,
+            gap: "32px",
+          }}
+        >
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-semibold text-[#055864] hover:text-[#055864]/75 hover:underline underline-offset-4 transition-colors inline-flex items-center gap-1.5"
+              className="text-sm font-semibold text-[#055864] hover:text-[#055864]/75 hover:underline underline-offset-4 transition-colors whitespace-nowrap"
             >
               {link.label}
-              {link.badge && (
-                <span className="inline-flex items-center rounded-full bg-[#E8D2AE] text-[#055864] text-[10px] font-semibold px-1.5 py-0.5 leading-none">
-                  {link.badge}
-                </span>
-              )}
             </Link>
           ))}
         </nav>
 
-        {/* Desktop actions */}
-        <div className="hidden md:flex items-center gap-2">
+        {/* Right: Language + auth — no shrink */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            flexShrink: 0,
+          }}
+        >
           <LocaleToggle />
           {session ? (
             <DropdownMenu>
@@ -97,7 +130,10 @@ export function Navbar() {
             </DropdownMenu>
           ) : (
             <>
-              <Link href={`/${locale}/auth/login`} className="inline-flex items-center justify-center rounded-md h-8 px-3 text-sm font-medium text-[#055864] hover:bg-[#055864]/10 transition-colors">
+              <Link
+                href={`/${locale}/auth/login`}
+                className="inline-flex items-center justify-center rounded-md h-8 px-3 text-sm font-medium text-[#055864] hover:bg-[#055864]/10 transition-colors"
+              >
                 {t("login")}
               </Link>
               <Button size="sm" asChild>
@@ -106,10 +142,36 @@ export function Navbar() {
             </>
           )}
         </div>
+      </div>
 
-        {/* Mobile hamburger */}
+      {/* Mobile: logo + hamburger */}
+      <div className="flex md:hidden items-center justify-between h-16 px-4">
+        <Link
+          href={`/${locale}`}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            flexShrink: 0,
+            width: "180px",
+            height: "48px",
+            position: "relative",
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-wordmark.png"
+            alt="ToutToilettage"
+            style={{
+              width: "180px",
+              height: "48px",
+              objectFit: "contain",
+              objectPosition: "left center",
+              display: "block",
+            }}
+          />
+        </Link>
         <button
-          className="md:hidden p-2"
+          className="p-2"
           onClick={() => setMobileOpen((v) => !v)}
           aria-label="Menu"
         >
@@ -124,15 +186,10 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-semibold text-[#055864] py-1 inline-flex items-center gap-1.5"
+              className="text-sm font-semibold text-[#055864] py-1"
               onClick={() => setMobileOpen(false)}
             >
               {link.label}
-              {link.badge && (
-                <span className="inline-flex items-center rounded-full bg-[#E8D2AE] text-[#055864] text-[10px] font-semibold px-1.5 py-0.5 leading-none">
-                  {link.badge}
-                </span>
-              )}
             </Link>
           ))}
           <div className="flex items-center gap-2 pt-2 border-t">
@@ -155,7 +212,11 @@ export function Navbar() {
               </>
             ) : (
               <>
-                <Link href={`/${locale}/auth/login`} onClick={() => setMobileOpen(false)} className="inline-flex items-center justify-center rounded-md h-8 px-3 text-sm font-medium text-[#055864] hover:bg-[#055864]/10 transition-colors">
+                <Link
+                  href={`/${locale}/auth/login`}
+                  onClick={() => setMobileOpen(false)}
+                  className="inline-flex items-center justify-center rounded-md h-8 px-3 text-sm font-medium text-[#055864] hover:bg-[#055864]/10 transition-colors"
+                >
                   {t("login")}
                 </Link>
                 <Button size="sm" asChild>
