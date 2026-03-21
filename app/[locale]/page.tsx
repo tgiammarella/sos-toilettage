@@ -463,9 +463,16 @@ export default async function HomePage({
       <footer className="border-t py-10 text-sm text-[#4a6260] bg-white">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-2 text-[#1F2933] font-semibold">
-              <Image src="/logo-wordmark.png" alt="ToutToilettage" width={160} height={42} className="h-[42px] w-auto" />
-            </div>
+            <Link href={`/${locale}`} className="flex items-center">
+              <div style={{ position: "relative", width: "160px", height: "42px", minWidth: "160px" }}>
+                <Image
+                  src="/logo-wordmark.png"
+                  alt="ToutToilettage"
+                  fill
+                  style={{ objectFit: "contain", objectPosition: "left center" }}
+                />
+              </div>
+            </Link>
             <div className="flex items-center gap-4 flex-wrap justify-center">
               <Link href={`/${locale}/shifts`} className="hover:underline underline-offset-4">{tNav("shifts")}</Link>
               <Link href={`/${locale}/jobs`} className="hover:underline underline-offset-4">{tNav("jobs")}</Link>

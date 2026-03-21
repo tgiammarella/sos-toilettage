@@ -42,15 +42,16 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border/80 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <Link href={`/${locale}`} className="flex items-center shrink-0" style={{ minWidth: "200px" }}>
-          <Image
-            src="/logo-wordmark.png"
-            alt="ToutToilettage"
-            width={200}
-            height={52}
-            className="h-[52px] w-auto"
-            priority
-          />
+        <Link href={`/${locale}`} className="flex items-center">
+          <div style={{ position: "relative", width: "180px", height: "48px", minWidth: "180px" }}>
+            <Image
+              src="/logo-wordmark.png"
+              alt="ToutToilettage"
+              fill
+              style={{ objectFit: "contain", objectPosition: "left center" }}
+              priority
+            />
+          </div>
         </Link>
 
         {/* Desktop nav */}
