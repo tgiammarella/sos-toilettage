@@ -112,7 +112,7 @@ export default async function PricingPage({
 
       {/* ── Découverte Offer ───────────────────────────── */}
       <section className="bg-background px-4 py-10">
-        <div className="max-w-4xl mx-auto rounded-2xl border-[1.5px] border-solid border-[#055864] bg-accent/10 p-6 md:flex md:items-center md:justify-between md:gap-8">
+        <div className="max-w-4xl mx-auto rounded-2xl border-[1.5px] border-solid border-[#055864] bg-white p-6 md:flex md:items-center md:justify-between md:gap-8">
           <div className="mb-4 md:mb-0">
             <Badge className="mb-2 bg-accent text-accent-foreground hover:bg-accent/90">
               {t("decouverte.badge")}
@@ -145,7 +145,7 @@ export default async function PricingPage({
 
       {/* ── Standalone job posting ─────────────────────── */}
       <section className="bg-background px-4 py-10">
-        <div className="max-w-4xl mx-auto rounded-2xl border-[1.5px] border-solid border-[#CBBBA6] bg-accent/10 p-6">
+        <div className="max-w-4xl mx-auto rounded-2xl border-[1.5px] border-solid border-[#CBBBA6] bg-white p-6">
           <p style={{ color: "#3A7F87", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", fontWeight: 600 }} className="mb-2">
             {t("jobCard.label")}
           </p>
