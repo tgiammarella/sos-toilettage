@@ -276,7 +276,6 @@ export default async function PricingPage({
                 {t("final_cta.primary")} <ArrowRight className="h-4 w-4 ml-2" />
               </Link>
             </Button>
-            <p className="text-xs text-primary-foreground/50">{t("final_cta.primary_note")}</p>
           </div>
           <div className="self-center sm:self-auto sm:mb-[22px]">
             <Button

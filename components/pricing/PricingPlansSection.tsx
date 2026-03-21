@@ -168,11 +168,6 @@ function TierCard({
             </a>
           )}
         </Button>
-        {hasTrial && (
-          <p className="text-[10px] text-[#4a6260] text-center mt-1.5">
-            {t("trial_cta_note")}
-          </p>
-        )}
       </div>
     </div>
   );
