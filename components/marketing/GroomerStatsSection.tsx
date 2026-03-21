@@ -71,7 +71,7 @@ function StatCard({
   return (
     <div className="flex flex-col items-center text-center p-4 rounded-xl bg-white/10 border border-primary-foreground/10">
       <div className="mb-2">{icon}</div>
-      <p className="text-2xl font-bold text-primary-foreground">{value}</p>
+      <p className="text-2xl font-bold text-primary-foreground tabular-nums">{value}</p>
       <p className="text-xs text-primary-foreground/60 mt-1 leading-tight">{label}</p>
     </div>
   );

@@ -130,7 +130,7 @@ export default async function PricingPage({
           </div>
           <div className="flex flex-col items-start gap-3 md:items-end md:text-right shrink-0">
             <div>
-              <span className="text-4xl font-bold text-foreground">{t("decouverte.price")}</span>
+              <span className="text-4xl font-bold text-foreground tabular-nums">{t("decouverte.price")}</span>
               <p className="text-sm text-muted-foreground">{t("decouverte.credits")} · {t("decouverte.priceNote")}</p>
             </div>
             <Button className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>

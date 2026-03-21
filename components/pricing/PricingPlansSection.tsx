@@ -122,7 +122,7 @@ function TierCard({
 
       <div className="mb-2">
         <div className="flex items-end gap-1">
-          <span className="text-3xl font-bold text-[#1F2933]">
+          <span className="text-3xl font-bold text-[#1F2933] tabular-nums">
             {isChaine ? `${price} $+` : `${price} $`}
           </span>
           <span className="mb-1 text-sm text-[#4a6260]">{t("perMonth")}</span>

@@ -143,7 +143,7 @@ export function CvUploadButton({
             <p className="text-sm font-medium">{t.uploading}</p>
             <div className="w-full max-w-xs bg-muted rounded-full h-1.5 overflow-hidden">
               <div
-                className="bg-primary h-full rounded-full transition-all duration-300"
+                className="bg-primary h-full rounded-full transition-[width]"
                 style={{ width: `${progress}%` }}
               />
             </div>

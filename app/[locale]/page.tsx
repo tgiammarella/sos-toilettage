@@ -183,7 +183,7 @@ export default async function HomePage({
                       alt={p.name}
                       width={120}
                       height={40}
-                      className="max-w-[120px] max-h-[40px] object-contain grayscale hover:grayscale-0 transition-all"
+                      className="max-w-[120px] max-h-[40px] object-contain grayscale hover:grayscale-0 transition-[filter]"
                     />
                   )
                 ))}

@@ -138,7 +138,7 @@ export default function RegisterPage() {
               <button
                 onClick={() => selectRole("SALON")}
                 className={cn(
-                  "w-full flex items-start gap-4 p-4 rounded-xl border-2 text-left transition-all",
+                  "w-full flex items-start gap-4 p-4 rounded-xl border-2 text-left transition-colors",
                   "hover:border-primary hover:bg-accent/50",
                 )}
               >
@@ -154,7 +154,7 @@ export default function RegisterPage() {
               <button
                 onClick={() => selectRole("GROOMER")}
                 className={cn(
-                  "w-full flex items-start gap-4 p-4 rounded-xl border-2 text-left transition-all",
+                  "w-full flex items-start gap-4 p-4 rounded-xl border-2 text-left transition-colors",
                   "hover:border-primary hover:bg-accent/50",
                 )}
               >
