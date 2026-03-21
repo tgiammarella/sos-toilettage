@@ -38,7 +38,7 @@ export function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/80 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+    <header className="sticky top-0 z-50 w-full border-b border-border/80 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80" style={{ minHeight: "80px" }}>
       {/* Desktop: three-section layout */}
       <div
         className="hidden md:flex"
@@ -46,20 +46,20 @@ export function Navbar() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          height: "72px",
+          height: "80px",
           padding: "0 24px",
           width: "100%",
         }}
       >
-        {/* Left: Logo — fixed 220px, no shrink */}
+        {/* Left: Logo — fixed 210px, no shrink */}
         <Link
           href={`/${locale}`}
           style={{
             display: "flex",
             alignItems: "center",
             flexShrink: 0,
-            width: "220px",
-            height: "58px",
+            width: "210px",
+            height: "56px",
             position: "relative",
           }}
         >
@@ -68,11 +68,12 @@ export function Navbar() {
             src="/logo-wordmark.png"
             alt="ToutToilettage"
             style={{
-              width: "220px",
-              height: "58px",
+              width: "210px",
+              height: "56px",
               objectFit: "contain",
               objectPosition: "left center",
               display: "block",
+              flexShrink: 0,
             }}
           />
         </Link>
