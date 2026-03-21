@@ -34,7 +34,7 @@ export function Navbar() {
     { href: `/${locale}/jobs`, label: t("jobs") },
     { href: `/${locale}/schools`, label: t("schools") },
     { href: `/${locale}/partenaires`, label: t("partners") },
-    { href: `/${locale}/marketplace`, label: "Marketplace", badge: locale === "fr" ? "Bientôt" : "Coming soon" },
+    { href: `/${locale}/marketplace`, label: "Marketplace" },
     { href: `/${locale}/pricing`, label: t("pricing") },
   ];
 
@@ -46,9 +46,9 @@ export function Navbar() {
           <Image
             src="/logo-wordmark.png"
             alt="ToutToilettage"
-            width={180}
-            height={44}
-            className="h-[44px] w-auto"
+            width={200}
+            height={52}
+            className="h-[52px] w-auto"
             priority
           />
         </Link>
