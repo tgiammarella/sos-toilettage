@@ -161,8 +161,8 @@ function TierCard({
 
       <div className="mt-auto">
         <Button
-          variant={tier.recommended ? "default" : "outline"}
-          className={tier.recommended
+          variant={hasTrial ? "default" : "outline"}
+          className={hasTrial
             ? "w-full bg-primary text-primary-foreground hover:bg-primary/90"
             : "w-full border-[1.5px] border-[#055864] text-[#055864] bg-transparent hover:bg-[#055864]/5"}
           asChild={!isChaine}
