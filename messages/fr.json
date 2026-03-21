@@ -528,7 +528,7 @@
     "jobCard": {
       "label": "Offres d'emploi permanent",
       "headline": "{price} $ CAD par affichage",
-      "subtext": "Visibilité {days} jours · Aucun abonnement requis · Flux DRAFT → paiement → PUBLIÉ",
+      "subtext": "Visibilité {days} jours · Aucun abonnement requis · Publiez quand vous êtes prêt",
       "bullet1": "Visible par tous les toiletteurs inscrits",
       "bullet2": "Expire automatiquement après {days} jours",
       "bullet3": "Renouvelable à tout moment"

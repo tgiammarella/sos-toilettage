@@ -145,8 +145,8 @@ export default async function PricingPage({
 
       {/* ── Standalone job posting ─────────────────────── */}
       <section className="bg-background px-4 py-10">
-        <div className="max-w-4xl mx-auto rounded-2xl border-l-4 border-[#055864] bg-[#F6EFE6] p-6">
-          <p className="text-xs font-semibold uppercase tracking-wider text-[#055864] mb-2">
+        <div className="max-w-4xl mx-auto rounded-2xl border-[1.5px] border-solid border-[#CBBBA6] bg-accent/10 p-6">
+          <p style={{ color: "#3A7F87", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", fontWeight: 600 }} className="mb-2">
             {t("jobCard.label")}
           </p>
           <h2 className="text-2xl font-bold text-[#1F2933] mb-1">

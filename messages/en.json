@@ -528,7 +528,7 @@
     "jobCard": {
       "label": "Permanent job postings",
       "headline": "${price} CAD per posting",
-      "subtext": "{days}-day visibility · No subscription required · DRAFT → payment → PUBLISHED flow",
+      "subtext": "{days}-day visibility · No subscription required · Publish when you're ready",
       "bullet1": "Visible to all registered groomers",
       "bullet2": "Automatically expires after {days} days",
       "bullet3": "Renewable at any time"
