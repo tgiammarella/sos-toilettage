@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Scissors, Briefcase, GraduationCap, CheckCircle, ArrowRight, ArrowDown,
-  Clock, Zap, Shield, Star, DollarSign, Smartphone, Award, ShoppingBag, CalendarDays,
+  Clock, Zap, Shield, Star, DollarSign, Smartphone, Award, ShoppingBag, CalendarDays, ShoppingCart,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getFeaturedPartners } from "@/lib/partners";
@@ -41,18 +41,16 @@ export default async function HomePage({
         {/* ── Hero ── */}
         <section className="relative overflow-hidden bg-[#055864] py-20 md:py-32">
           <div className="container mx-auto px-4 text-center max-w-3xl">
-            {/* Logo + tagline */}
-            <div className="flex flex-col items-center gap-3 mb-8">
+            {/* Wordmark logo — tagline is baked into the image */}
+            <div className="flex justify-center mb-10">
               <Image
-                src="/logo.png"
-                alt="ToutToilettage"
-                width={72}
-                height={72}
-                className="rounded-full border-2 border-white/20"
+                src="/logo-wordmark.png"
+                alt="ToutToilettage — Le réseau du toilettage"
+                width={320}
+                height={120}
+                className="w-[220px] md:w-[320px] h-auto"
+                priority
               />
-              <p className="text-sm font-medium tracking-widest uppercase text-[#E8D2AE]">
-                {t("hero_tagline")}
-              </p>
             </div>
 
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-6" style={{ fontFamily: "var(--font-cormorant), serif" }}>
@@ -175,9 +173,9 @@ export default async function HomePage({
               </Card>
 
               {/* Pillar 5: Open Slots — coming soon */}
-              <Card className="border border-[#CBBBA6] bg-white shadow-sm hover:shadow-md transition-shadow relative">
+              <Card className="border border-[#CBBBA6] bg-white/80 shadow-sm relative opacity-80">
                 <CardContent className="pt-7 pb-5 px-6 text-center">
-                  <Badge className="absolute top-3 right-3 bg-[#3A7F87] text-white text-[10px]">
+                  <Badge className="absolute top-3 right-3 bg-[#E8D2AE] text-[#055864] text-[10px]">
                     {t("pillar_slots_badge")}
                   </Badge>
                   <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-[#055864]/10 mb-4">
@@ -191,6 +189,26 @@ export default async function HomePage({
                   </p>
                 </CardContent>
               </Card>
+
+              {/* Pillar 6: Marketplace — coming soon */}
+              <Link href={`/${locale}/marketplace`} className="block">
+                <Card className="border border-[#CBBBA6] bg-white/80 shadow-sm relative opacity-80 hover:opacity-95 transition-opacity h-full">
+                  <CardContent className="pt-7 pb-5 px-6 text-center">
+                    <Badge className="absolute top-3 right-3 bg-[#E8D2AE] text-[#055864] text-[10px]">
+                      {t("pillar_marketplace_badge")}
+                    </Badge>
+                    <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-[#055864]/10 mb-4">
+                      <ShoppingCart className="h-7 w-7 text-[#055864]" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2 text-[#1F2933]" style={{ fontFamily: "var(--font-cormorant), serif" }}>
+                      🛒 {t("pillar_marketplace_title")}
+                    </h3>
+                    <p className="text-[#4a6260] text-sm leading-relaxed mb-4" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>
+                      {t("pillar_marketplace_desc")}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
             </div>
           </div>
         </section>

@@ -33,6 +33,9 @@
     "pillar_slots_title": "Créneaux disponibles",
     "pillar_slots_desc": "Partagez vos disponibilités et remplissez votre agenda.",
     "pillar_slots_badge": "Bientôt",
+    "pillar_marketplace_title": "Marketplace",
+    "pillar_marketplace_desc": "Achetez, vendez et échangez de l'équipement de toilettage entre professionnels.",
+    "pillar_marketplace_badge": "Bientôt",
     "feature_shifts_title": "Remplacements",
     "feature_shifts_desc": "Trouvez des remplacements urgents ou planifiés dans votre région. Les salons paient, vous postulez gratuitement.",
     "feature_jobs_title": "Offres d'emploi",
@@ -832,5 +835,19 @@
     "locked_bullet3": "✓ Crédit retourné si aucune candidature reçue",
     "locked_cta": "Voir les plans →",
     "locked_login_link": "Déjà abonné(e)? Connectez-vous"
+  },
+  "marketplace": {
+    "badge": "Bientôt disponible",
+    "headline": "Le marché de l'équipement de toilettage arrive.",
+    "subheadline": "Un endroit dédié pour acheter, vendre et échanger de l'équipement de toilettage professionnel entre salons et toiletteurs du Québec. Plus besoin de groupes Facebook désorganisés.",
+    "feature1": "🛒 Équipement, outils, produits et mobilier de salon",
+    "feature2": "🔄 Achat, vente, échange et dons entre professionnels",
+    "feature3": "📍 Filtré par région du Québec",
+    "notify_label": "Soyez notifié(e) au lancement",
+    "notify_placeholder": "Votre adresse courriel",
+    "notify_button": "M'avertir au lancement",
+    "notify_fine_print": "Aucun spam. Un seul courriel au lancement.",
+    "notify_success": "✓ Parfait! On vous avertit dès que c'est prêt.",
+    "back_home": "← Retour à l'accueil"
   }
 }

@@ -33,6 +33,9 @@
     "pillar_slots_title": "Open Slots",
     "pillar_slots_desc": "Share your availability and fill your schedule.",
     "pillar_slots_badge": "Coming soon",
+    "pillar_marketplace_title": "Marketplace",
+    "pillar_marketplace_desc": "Buy, sell and trade grooming equipment between professionals.",
+    "pillar_marketplace_badge": "Coming soon",
     "feature_shifts_title": "Replacement Shifts",
     "feature_shifts_desc": "Find urgent or planned replacement shifts in your area. Salons pay to post, groomers apply for free.",
     "feature_jobs_title": "Job Offers",
@@ -832,5 +835,19 @@
     "locked_bullet3": "✓ Credit returned if no applications received",
     "locked_cta": "See plans →",
     "locked_login_link": "Already subscribed? Sign in"
+  },
+  "marketplace": {
+    "badge": "Coming soon",
+    "headline": "The grooming equipment marketplace is coming.",
+    "subheadline": "A dedicated place to buy, sell and trade professional grooming equipment between Quebec salons and groomers. No more disorganized Facebook groups.",
+    "feature1": "🛒 Equipment, tools, products and salon furniture",
+    "feature2": "🔄 Buy, sell, trade and giveaways between professionals",
+    "feature3": "📍 Filtered by Quebec region",
+    "notify_label": "Get notified at launch",
+    "notify_placeholder": "Your email address",
+    "notify_button": "Notify me at launch",
+    "notify_fine_print": "No spam. One email at launch.",
+    "notify_success": "✓ Perfect! We'll notify you as soon as it's ready.",
+    "back_home": "← Back to home"
   }
 }
