@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Check } from "lucide-react";
+import { Check, Gift } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck } from "lucide-react";
@@ -16,10 +16,10 @@ export function PricingPlansSection({ locale }: { locale: string }) {
     <section id="plans" className="bg-background px-4 py-16">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-2xl font-bold text-center text-[#1F2933] mb-3">
-          {locale === "fr" ? "Plans d'abonnement" : "Subscription plans"}
+          {t("plans_title")}
         </h2>
         <p className="text-center text-[#4a6260] mb-8 text-sm">
-          {locale === "fr" ? "Résiliez à tout moment." : "Cancel anytime."}
+          {t("plans_subtitle")}
         </p>
 
         {/* Billing toggle */}
@@ -76,6 +76,7 @@ function TierCard({
   const price = annual ? tier.annualMonthlyCAD : tier.monthlyPriceCAD;
   const billingLabel = annual ? t("billedAnnually") : t("billedMonthly");
   const isChaine = tier.key === "CHAINE";
+  const hasTrial = tier.key === "ESSENTIEL" || tier.key === "SALON";
 
   const features: string[] = [
     t("features.creditsPerMonth", { n: tier.creditsPerMonth }),
@@ -135,9 +136,19 @@ function TierCard({
       </div>
 
       {/* Per-publication cost */}
-      <p className="text-xs font-semibold text-accent mb-5">
+      <p className="text-xs font-semibold text-accent mb-3">
         {t("perPublication", { price: tier.pricePerCreditIncluded.toFixed(2) })}
       </p>
+
+      {/* Trial badge for Starter + Salon */}
+      {hasTrial && (
+        <div className="mb-4 rounded-lg bg-emerald-50 border border-emerald-200 px-3 py-2 text-center">
+          <p className="text-xs font-medium text-emerald-700 flex items-center justify-center gap-1.5">
+            <Gift className="h-3.5 w-3.5" />
+            {t("trial_badge_card")}
+          </p>
+        </div>
+      )}
 
       <ul className="mb-6 flex-1 space-y-2">
         {features.map((f) => (
@@ -148,21 +159,28 @@ function TierCard({
         ))}
       </ul>
 
-      <Button
-        variant={tier.recommended ? "default" : "outline"}
-        className={tier.recommended
-          ? "w-full bg-primary text-primary-foreground hover:bg-primary/90"
-          : "w-full border-[1.5px] border-[#055864] text-[#055864] bg-transparent hover:bg-[#055864]/5"}
-        asChild={!isChaine}
-      >
-        {isChaine ? (
-          <span>{t(`tiers.${tier.key}.cta`)}</span>
-        ) : (
-          <a href={`/${locale}/auth/register`}>
-            {t(`tiers.${tier.key}.cta`)}
-          </a>
+      <div className="mt-auto">
+        <Button
+          variant={tier.recommended ? "default" : "outline"}
+          className={tier.recommended
+            ? "w-full bg-primary text-primary-foreground hover:bg-primary/90"
+            : "w-full border-[1.5px] border-[#055864] text-[#055864] bg-transparent hover:bg-[#055864]/5"}
+          asChild={!isChaine}
+        >
+          {isChaine ? (
+            <span>{t(`tiers.${tier.key}.cta`)}</span>
+          ) : (
+            <a href={`/${locale}/auth/register`}>
+              {hasTrial ? t("trial_cta") : t(`tiers.${tier.key}.cta`)}
+            </a>
+          )}
+        </Button>
+        {hasTrial && (
+          <p className="text-[10px] text-[#4a6260] text-center mt-1.5">
+            {t("trial_cta_note")}
+          </p>
         )}
-      </Button>
+      </div>
     </div>
   );
 }

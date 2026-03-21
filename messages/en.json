@@ -425,13 +425,14 @@
     "hero": {
       "badge": "Transparent pricing",
       "title": "A missed replacement costs a full day of revenue.",
-      "subtitle": "Tout Toilettage helps you find a groomer quickly through a specialized platform.",
+      "subtitle": "ToutToilettage connects you with the right groomers, fast — no commission fees, no forced contracts.",
       "bullet1": "Qualified candidates",
       "bullet2": "Post in 30 seconds",
       "bullet3": "No commission fees",
       "cta_primary": "Post a replacement",
       "cta_secondary": "See plans",
-      "taxNote": "All prices in CAD, before taxes (GST 5% + QST 9.975%)"
+      "taxNote": "All prices in CAD, before taxes (GST 5% + QST 9.975%)",
+      "trial_badge": "🎁 14-day free trial on Starter and Salon plans — no credit card required"
     },
     "credits": {
       "title": "How credits work",
@@ -441,7 +442,8 @@
       "step2_desc": "One credit is deducted at publishing, regardless of duration or applications.",
       "step3_title": "You receive applications",
       "step3_desc": "Qualified groomers in your area see and apply to your listing.",
-      "explanation": "One credit = one replacement shift or job post."
+      "explanation": "One credit = one replacement shift or job post.",
+      "reassurance": "✓ If no applications are received, your credit is automatically returned."
     },
     "toggle": {
       "monthly": "Monthly",
@@ -459,8 +461,9 @@
       "validity": "Valid 12 months",
       "noCommitment": "No subscription required",
       "cta": "Start trial",
-      "description": "Publish up to 3 replacements to discover the quality of candidates in your region.",
-      "valueNote": "One saved replacement can represent $300–$700 in revenue."
+      "description": "Post up to 3 replacements to see the quality of applicants in your area. No subscription. No saved credit card. Just results.",
+      "valueNote": "One saved replacement can represent $300–$700 in revenue.",
+      "stackable": "Credits carry over if you upgrade to a plan"
     },
     "riskReduction": "If you receive no applications, your credit is not used.",
     "perPublication": "≈ ${price} per post",
@@ -513,10 +516,12 @@
       "stats": "Analytics",
       "priority_support": "Priority support",
       "multi_site": "Multi-site management",
-      "unlimited": "Unlimited"
+      "unlimited": "Unlimited",
+      "trial": "14-day free trial"
     },
     "social": {
-      "title": "Trusted by salons across Quebec"
+      "title": "Joined by Quebec's early-adopter salons",
+      "launch_message": "We're in launch phase. Salons joining now lock in the lowest rate we'll ever offer — guaranteed for life."
     },
     "perMonth": "/ mo",
     "billedAnnually": "billed annually",
@@ -531,7 +536,25 @@
       "q3": "Can I change plans?",
       "a3": "Yes, at any time. Upgrades take effect immediately. Downgrades take effect at the next billing cycle.",
       "q4": "How many applications will I receive?",
-      "a4": "Most replacements receive 3–10 applications within 24 hours, depending on your region and the type of position."
+      "a4": "Most replacements receive 3–10 applications within 24 hours, depending on your region and the type of position.",
+      "q5": "How does the 14-day free trial work?",
+      "a5": "Choose the Starter or Salon plan and start immediately. No credit card required for the first 14 days. If you decide to continue, you enter your payment info at the end of the trial. Cancel before then and you pay nothing.",
+      "q6": "Do groomers pay?",
+      "a6": "No. The platform is completely free for groomers applying to replacements and job postings.",
+      "q7": "What's the difference between monthly and annual?",
+      "a7": "The annual plan saves you 17% — roughly 2 free months over the year."
+    },
+    "plans_title": "Subscription plans",
+    "plans_subtitle": "Cancel anytime. No penalties.",
+    "trial_badge_card": "🎁 14-day free trial — no credit card required",
+    "trial_cta": "Try free for 14 days",
+    "trial_cta_note": "No card required · Cancel anytime",
+    "final_cta": {
+      "title": "Ready to stop canceling on your clients?",
+      "subtitle": "Start with the Discovery Pack — $29 one time, no commitment. Or try a Starter or Salon plan free for 14 days.",
+      "primary": "Try free for 14 days",
+      "primary_note": "Starter or Salon — no card required",
+      "secondary": "See the $29 Discovery Pack"
     }
   },
   "ui": {

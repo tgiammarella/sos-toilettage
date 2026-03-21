@@ -1,11 +1,11 @@
 import { getTranslations } from "next-intl/server";
-import { Check, ArrowRight, Zap, FileText, Users } from "lucide-react";
+import { Check, ArrowRight, Zap, FileText, Users, Gift } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PRICING_TIERS } from "@/lib/pricing";
-import { GroomerStatsSection } from "@/components/marketing/GroomerStatsSection";
 import { PricingPlansSection } from "@/components/pricing/PricingPlansSection";
 import { Navbar } from "@/components/nav/Navbar";
+import Link from "next/link";
 
 export default async function PricingPage({
   params,
@@ -28,16 +28,26 @@ export default async function PricingPage({
         <h1 className="mx-auto mb-5 max-w-3xl text-4xl md:text-5xl font-bold leading-tight">
           {t("hero.title")}
         </h1>
-        <p className="mx-auto mb-8 max-w-xl text-lg text-primary-foreground/75">
+        <p className="mx-auto mb-6 max-w-xl text-lg text-primary-foreground/75">
           {t("hero.subtitle")}
         </p>
-        <div className="flex justify-center gap-6 mb-10 flex-wrap text-sm text-primary-foreground/80">
+
+        {/* Trust badges */}
+        <div className="flex justify-center gap-6 mb-6 flex-wrap text-sm text-primary-foreground/80">
           {(["bullet1", "bullet2", "bullet3"] as const).map((k) => (
             <span key={k} className="flex items-center gap-1.5">
               <Check className="h-4 w-4 text-accent" /> {t(`hero.${k}`)}
             </span>
           ))}
         </div>
+
+        {/* Trial badge */}
+        <div className="mb-8">
+          <span className="inline-flex items-center gap-2 bg-white/15 text-primary-foreground text-sm font-medium px-4 py-2 rounded-full">
+            {t("hero.trial_badge")}
+          </span>
+        </div>
+
         <div className="flex gap-4 justify-center flex-wrap">
           <Button
             size="lg"
@@ -86,7 +96,15 @@ export default async function PricingPage({
               </div>
             ))}
           </div>
-          <p className="text-center text-sm font-medium text-secondary mt-8 bg-muted rounded-lg py-3 px-6">
+
+          {/* Reassurance — moved up from bottom of page */}
+          <div className="mt-8 bg-emerald-50 border border-emerald-200 rounded-lg py-3 px-6 text-center">
+            <p className="text-sm font-medium text-emerald-700">
+              {t("credits.reassurance")}
+            </p>
+          </div>
+
+          <p className="text-center text-sm font-medium text-secondary mt-4 bg-muted rounded-lg py-3 px-6">
             {t("credits.explanation")}
           </p>
         </div>
@@ -105,6 +123,7 @@ export default async function PricingPage({
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-success-foreground" />{t("decouverte.validity")}</span>
               <span className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-success-foreground" />{t("decouverte.noCommitment")}</span>
+              <span className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-success-foreground" />{t("decouverte.stackable")}</span>
               <span className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-success-foreground" />{t("decouverte.perCredit")}</span>
             </div>
             <p className="mt-3 text-xs text-muted-foreground italic">{t("decouverte.valueNote")}</p>
@@ -124,8 +143,17 @@ export default async function PricingPage({
         </div>
       </section>
 
-      {/* ── Groomer stats (right above plan cards) ────── */}
-      <GroomerStatsSection locale={locale} />
+      {/* ── Social proof — launch mode ─────────────────── */}
+      <section className="bg-muted py-12 px-4">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-xl font-bold text-[#1F2933] mb-3">
+            {t("social.title")}
+          </h2>
+          <p className="text-sm text-[#4a6260]">
+            {t("social.launch_message")}
+          </p>
+        </div>
+      </section>
 
       {/* ── Subscription plans (client — billing toggle) ─ */}
       <section id="plans" className="scroll-mt-24">
@@ -159,29 +187,13 @@ export default async function PricingPage({
                 <ComparisonRow label={t("comparison.stats")} values={PRICING_TIERS.map(tier => tier.hasStats)} />
                 <ComparisonRow label={t("comparison.priority_support")} values={PRICING_TIERS.map(tier => tier.hasPrioritySupport)} />
                 <ComparisonRow label={t("comparison.multi_site")} values={PRICING_TIERS.map(tier => tier.creditPooled)} />
+                <ComparisonRow
+                  label={t("comparison.trial")}
+                  values={PRICING_TIERS.map(tier => tier.key === "ESSENTIEL" || tier.key === "SALON")}
+                  highlight
+                />
               </tbody>
             </table>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Social proof ───────────────────────────────── */}
-      <section className="bg-muted py-16 px-4">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-center text-[#1F2933] mb-10">
-            {t("social.title")}
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { name: "Salon Élite, Montréal",      quote: locale === "fr" ? "\"Nous avons trouvé un remplaçant en moins de 2 heures. Ça a sauvé notre journée.\""  : "\"We found a replacement in under 2 hours. It saved our day.\"" },
-              { name: "Toilettage Prestige, Laval",  quote: locale === "fr" ? "\"La qualité des candidats est impressionnante. Je recommande à tous les salons.\""   : "\"The quality of candidates is impressive. I recommend it to all salons.\"" },
-              { name: "Le Salon Canin, Québec",      quote: locale === "fr" ? "\"Publication simple, candidatures rapides. Exactement ce qu'il nous fallait.\""      : "\"Simple posting, quick applications. Exactly what we needed.\"" },
-            ].map(({ name, quote }) => (
-              <div key={name} className="bg-white border border-border rounded-xl p-6 shadow-sm">
-                <p className="text-sm text-[#4a6260] italic mb-4">{quote}</p>
-                <p className="text-sm font-semibold text-[#1F2933]">{name}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -193,14 +205,15 @@ export default async function PricingPage({
             {t("faq.title")}
           </h2>
           <div className="space-y-4">
-            {(["q1", "q2", "q3", "q4"] as const).map((qKey) => (
-              <div key={qKey} className="rounded-xl border border-border bg-white p-5 shadow-sm">
-                <p className="font-semibold text-[#1F2933] mb-2">{t(`faq.${qKey}`)}</p>
-                <p className="text-sm text-[#4a6260]">
-                  {t(`faq.${qKey.replace("q", "a") as "a1" | "a2" | "a3" | "a4"}`)}
-                </p>
-              </div>
-            ))}
+            {(["q5", "q1", "q2", "q6", "q3", "q7", "q4"] as const).map((qKey) => {
+              const aKey = qKey.replace("q", "a") as "a1" | "a2" | "a3" | "a4" | "a5" | "a6" | "a7";
+              return (
+                <div key={qKey} className="rounded-xl border border-border bg-white p-5 shadow-sm">
+                  <p className="font-semibold text-[#1F2933] mb-2">{t(`faq.${qKey}`)}</p>
+                  <p className="text-sm text-[#4a6260]">{t(`faq.${aKey}`)}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -208,22 +221,33 @@ export default async function PricingPage({
       {/* ── Final CTA ──────────────────────────────────── */}
       <section className="bg-primary text-primary-foreground py-16 px-4 text-center">
         <h2 className="text-2xl font-bold mb-4">
-          {locale === "fr" ? "Prêt à ne plus jamais annuler une journée?" : "Ready to never cancel a day again?"}
+          {t("final_cta.title")}
         </h2>
-        <p className="text-primary-foreground/75 mb-8 max-w-md mx-auto text-sm">
-          {locale === "fr"
-            ? "Commencez avec l'Offre Découverte — 29 $ une seule fois, sans engagement."
-            : "Start with the Discovery Offer — $29 one-time, no commitment."}
+        <p className="text-primary-foreground/75 mb-8 max-w-lg mx-auto text-sm">
+          {t("final_cta.subtitle")}
         </p>
-        <Button
-          size="lg"
-          className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold"
-          asChild
-        >
-          <a href={`/${locale}/auth/register`}>
-            {t("hero.cta_primary")} <ArrowRight className="h-4 w-4 ml-2" />
-          </a>
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex flex-col items-center gap-1">
+            <Button
+              size="lg"
+              className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold"
+              asChild
+            >
+              <Link href={`/${locale}/auth/register`}>
+                {t("final_cta.primary")} <ArrowRight className="h-4 w-4 ml-2" />
+              </Link>
+            </Button>
+            <p className="text-xs text-primary-foreground/50">{t("final_cta.primary_note")}</p>
+          </div>
+          <Button
+            size="lg"
+            variant="outline"
+            className="border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10"
+            asChild
+          >
+            <a href="#decouverte">{t("final_cta.secondary")}</a>
+          </Button>
+        </div>
       </section>
 
     </main>
@@ -231,15 +255,15 @@ export default async function PricingPage({
   );
 }
 
-function ComparisonRow({ label, values }: { label: string; values: (string | boolean)[] }) {
+function ComparisonRow({ label, values, highlight }: { label: string; values: (string | boolean)[]; highlight?: boolean }) {
   return (
-    <tr className="border-b border-border last:border-0 hover:bg-muted/40 transition-colors">
-      <td className="py-3 px-4 text-[#4a6260] font-medium">{label}</td>
+    <tr className={`border-b border-border last:border-0 hover:bg-muted/40 transition-colors ${highlight ? "bg-emerald-50/50" : ""}`}>
+      <td className={`py-3 px-4 font-medium ${highlight ? "text-[#1F2933] font-semibold" : "text-[#4a6260]"}`}>{label}</td>
       {values.map((val, i) => (
         <td key={i} className="py-3 px-4 text-center">
           {typeof val === "boolean" ? (
             val
-              ? <Check className="h-4 w-4 text-success-foreground mx-auto" />
+              ? <Check className={`h-4 w-4 mx-auto ${highlight ? "text-emerald-600" : "text-success-foreground"}`} />
               : <span className="text-muted-foreground/50 text-lg leading-none">—</span>
           ) : (
             <span className="font-medium text-foreground">{val}</span>

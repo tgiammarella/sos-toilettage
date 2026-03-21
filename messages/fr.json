@@ -425,13 +425,14 @@
     "hero": {
       "badge": "Tarification transparente",
       "title": "Un remplacement raté coûte une journée de revenus.",
-      "subtitle": "Tout Toilettage vous aide à trouver un toiletteur rapidement grâce à une plateforme spécialisée.",
+      "subtitle": "Tout Toilettage vous connecte aux bons toiletteurs, rapidement — sans frais de commission, sans contrat forcé.",
       "bullet1": "Candidats qualifiés",
       "bullet2": "Publication en 30 secondes",
       "bullet3": "Aucun frais de commission",
       "cta_primary": "Publier un remplacement",
       "cta_secondary": "Voir les plans",
-      "taxNote": "Tous les prix en CAD, avant taxes (TPS 5 % + TVQ 9,975 %)"
+      "taxNote": "Tous les prix en CAD, avant taxes (TPS 5 % + TVQ 9,975 %)",
+      "trial_badge": "🎁 Essai gratuit de 14 jours sur les plans Starter et Salon — aucune carte de crédit requise"
     },
     "credits": {
       "title": "Comment fonctionnent les crédits",
@@ -441,7 +442,8 @@
       "step2_desc": "Un seul crédit est débité à la publication, peu importe la durée ou les candidatures.",
       "step3_title": "Vous recevez des candidatures",
       "step3_desc": "Les toiletteurs qualifiés de votre région voient et postulent à votre annonce.",
-      "explanation": "Un crédit = une publication de remplacement ou d'offre d'emploi."
+      "explanation": "Un crédit = une publication de remplacement ou d'offre d'emploi.",
+      "reassurance": "✓ Si aucune candidature n'est reçue, votre crédit vous est retourné automatiquement."
     },
     "toggle": {
       "monthly": "Mensuel",
@@ -459,8 +461,9 @@
       "validity": "Valide 12 mois",
       "noCommitment": "Aucun abonnement requis",
       "cta": "Commencer l'essai",
-      "description": "Publiez jusqu'à 3 remplacements pour découvrir la qualité des candidatures dans votre région.",
-      "valueNote": "Un remplacement sauvé peut représenter 300 $ à 700 $ de revenus."
+      "description": "Publiez jusqu'à 3 remplacements pour voir la qualité des candidatures dans votre région. Pas d'abonnement. Pas de carte de crédit enregistrée. Juste des résultats.",
+      "valueNote": "Un remplacement sauvé peut représenter 300 $ à 700 $ de revenus.",
+      "stackable": "Cumulable avec un plan si vous passez à l'abonnement"
     },
     "riskReduction": "Si vous ne recevez aucune candidature, votre crédit n'est pas utilisé.",
     "perPublication": "≈ {price} $ par publication",
@@ -513,10 +516,12 @@
       "stats": "Statistiques",
       "priority_support": "Support prioritaire",
       "multi_site": "Gestion multi-sites",
-      "unlimited": "Illimité"
+      "unlimited": "Illimité",
+      "trial": "Essai 14 jours gratuit"
     },
     "social": {
-      "title": "Des salons au Québec nous font confiance"
+      "title": "Rejoint par les premiers salons du Québec",
+      "launch_message": "Nous sommes en phase de lancement. Les salons qui s'inscrivent maintenant obtiennent le tarif le plus bas que nous offrirons jamais — garanti à vie."
     },
     "perMonth": "/ mois",
     "billedAnnually": "facturé annuellement",
@@ -531,7 +536,25 @@
       "q3": "Puis-je changer de plan?",
       "a3": "Oui, en tout temps. La mise à niveau est immédiate. Le rétrogradage prend effet au prochain cycle de facturation.",
       "q4": "Combien de candidats vais-je recevoir?",
-      "a4": "La plupart des remplacements reçoivent entre 3 et 10 candidatures en 24 heures, selon la région et le type de poste."
+      "a4": "La plupart des remplacements reçoivent entre 3 et 10 candidatures en 24 heures, selon la région et le type de poste.",
+      "q5": "Comment fonctionne l'essai de 14 jours?",
+      "a5": "Choisissez le plan Starter ou Salon et commencez immédiatement. Aucune carte de crédit requise pendant les 14 premiers jours. Si vous décidez de continuer, vous entrez vos informations de paiement à la fin de l'essai. Si vous annulez avant, vous ne payez rien.",
+      "q6": "Est-ce que les toiletteurs paient?",
+      "a6": "Non. La plateforme est entièrement gratuite pour les toiletteurs qui postulent aux remplacements et aux offres d'emploi.",
+      "q7": "C'est quoi la différence entre mensuel et annuel?",
+      "a7": "L'abonnement annuel vous fait économiser 17 % — l'équivalent d'environ 2 mois gratuits sur l'année."
+    },
+    "plans_title": "Plans d'abonnement",
+    "plans_subtitle": "Résiliez à tout moment. Aucune pénalité.",
+    "trial_badge_card": "🎁 14 jours gratuits — aucune carte de crédit requise",
+    "trial_cta": "Essayer 14 jours gratuitement",
+    "trial_cta_note": "Aucune carte requise · Annulez n'importe quand",
+    "final_cta": {
+      "title": "Prête à ne plus jamais annuler une journée?",
+      "subtitle": "Commencez avec l'Offre Découverte — 29 $ une seule fois, sans engagement. Ou essayez un plan Starter ou Salon gratuitement pendant 14 jours.",
+      "primary": "Essayer gratuitement 14 jours",
+      "primary_note": "Starter ou Salon — aucune carte requise",
+      "secondary": "Voir l'Offre Découverte à 29 $"
     }
   },
   "ui": {
